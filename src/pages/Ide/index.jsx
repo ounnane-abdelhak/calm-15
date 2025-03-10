@@ -26,6 +26,7 @@ import {helpDescription} from "../../Constants/HelpDescription";
 import {HexaToCode} from "../../HexaToCode/HexaToCode"
 import { Errorcalm } from "../../assembler/Errorcalm";
 import { useLocation } from 'react-router-dom';
+import IOUnit from '../../Emulator/IO_Unit.js';
 
 
 ////////////////animations declarations////////////////////////////////
@@ -37,6 +38,7 @@ let Contextarray=[];
 let memory=new MC();
 let sequenceur=new Sequenceur();
 let queue = new Queue();
+let ioUnit = new IOUnit();
 let addressingModes=new AddressingModes();
 let IP=new Register();
 let R1= new generalPurposeRegister();
@@ -670,5 +672,5 @@ ${result}`}</pre>
 }
 
 export default Ide;
-export {BR,IR,memory,Registers,queue,addressingModes,Alu1,IP};
+export {BR,IR,memory,Registers,queue,addressingModes,Alu1,IP,ioUnit};
 
