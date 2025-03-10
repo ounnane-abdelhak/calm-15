@@ -222,43 +222,40 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
 
   
   const handleStoreCode = (nb) => {
-
     const editor = codeMirrorRef.current.editor;
     const code = editor.getValue();
   
     const commentArray = [];
-  
     let lines = code.split('\n').filter(line => line.trim() !== '');
-    
   
     lines.forEach((line, lineIndex) => {
       const singleLineComment = line.match(/(\/\/.*$|;.*$)/);
       if (singleLineComment) {
         commentArray.push(singleLineComment[0].trim());
       }
-  
       lines[lineIndex] = line.replace(/(\/\/.*$|;.*$)/, '').trim().toUpperCase();
     });
-    
- 
+  
+    // Join lines into a string
     lines = lines.join('\n');
   
-    const macrosBlockRegex = /^(?:\s*(?:(?:(?:\/\/|;)[^\n]*\n)|MACRO\s*(?:\s+[A-Za-z_]*\w*(?: \s+(?:[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*))?)?\s*\r?\n[\s\S]*?\r?\nENDM\s*))*\s*/i;
+    const macrosBlockRegex = /^(?:\s*(?:(?:(?:\/\/|;)[^\n]*\n)|MACRO\s*(?:\s+[A-Za-z_]\w*(?:\s+(?:[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*))?)?\s*\r?\n[\s\S]*?\r?\nENDM\s*))*\s*/i;
     const macroBlockMatch = code.match(macrosBlockRegex);
     const macroBlockLength = macroBlockMatch ? macroBlockMatch[0].length : 0;
+  
     const macroRegex = /(^MACRO\s*(?:\s+([A-Za-z_]\w*)(?:[ \t]+((?:[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*)))?)?[ \t]*\r?\n([\s\S]*?)\r?\nENDM\s*$)/img;
-
+  
     const macros = [];
     let match;
     while ((match = macroRegex.exec(lines)) !== null) {
-  
       const start = match.index;
-      const name = match[2];
-      if(name){name.toUpperCase()}
+      let name = match[2];
+      if (name) {
+        name = name.toUpperCase();
+      }
       const params = match[3] ? match[3].split(/\s*,\s*/) : [];
       const body = (match[4] || '').split('\n');
-      
-     
+  
       if (body) {
         body.forEach((line, index) => {
           if (!line.trim().startsWith('//') && !line.trim().startsWith(';')) {
@@ -267,37 +264,42 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
         });
       }
       const numparam = params.length;
-  
       macros.push({ name, params, numparam, body: body });
     }
-
-const exist=[];
-for(let i=0;i<macros.length/2;i++){
-  for(let j=0;j<macros.length;j++){
-    if(macros[i].name==macros[j].name && j!=i){if(exist){if(exist.every(lin=>lin.line!=j)){exist.push({error: "MACRO name already used", line: j});}}else{exist.push({error:"MACRO name already used",line:j})}}
-  }
-}
-
-if(nb===2){return exist}
-
+  
+    const exist = [];
+    for (let i = 0; i < macros.length / 2; i++) {
+      for (let j = 0; j < macros.length; j++) {
+        if (macros[i].name === macros[j].name && i !== j) {
+          if (exist.every(item => item.line !== j)) {
+            exist.push({ error: "MACRO name already used", line: j });
+          }
+        }
+      }
+    }
+  
+    if (nb === 2) {
+      return exist;
+    }
+  
     // Remove macros from the code.
     let codeWithoutMacros = lines.replace(macroRegex, '');
     codeWithoutMacros = codeWithoutMacros.split('\n').filter(line => line.trim() !== '');
-
-    
-    for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+  
+    // Use codeWithoutMacros.length here instead of lines.length
+    for (let lineIndex = 0; lineIndex < codeWithoutMacros.length; lineIndex++) {
       let line = codeWithoutMacros[lineIndex];
       for (const macro of macros) {
-   
         let escapedName = macro.name;
-      if(escapedName){escapedName=escapedName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}
-        const regex = new RegExp(`^${escapedName}(?:\\s+([A-Za-z0-9_\\s,]+))?$`,'i');
-        const match = regex.exec(line); 
-    
-        if (match) {
+        if (escapedName) {
+          escapedName = escapedName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+        const regex = new RegExp(`^${escapedName}(?:\\s+([A-Za-z0-9_\\s,]+))?$`, 'i');
+        const match = regex.exec(line);
   
+        if (match) {
           const params = match[1] ? match[1].split(/\s*,\s*/).filter(p => p) : [];
-    
+  
           const substitutedBody = macro.body.map(line => {
             for (let i = 0; i < macro.numparam; i++) {
               const paramRegex = new RegExp(`\\b${macro.params[i]}\\b`, 'g');
@@ -305,19 +307,17 @@ if(nb===2){return exist}
             }
             return line;
           });
-    
-   
+  
           codeWithoutMacros.splice(lineIndex, 1, ...substitutedBody);
-          lineIndex--; 
+          lineIndex--;
           break;
         }
       }
     }
-    
-      
+  
     const labelTable = [];
     const codeArray = [];
-    
+  
     codeWithoutMacros.forEach((line, lineIndex) => {
       // Extract label at the beginning of the line.
       const labelMatch = line.match(/^\s*([^:]+):/);
@@ -327,25 +327,32 @@ if(nb===2){return exist}
           line: lineIndex,
         });
       }
-      
+  
       // Remove the label portion and add the remaining code.
       const newline = line.replace(/^\s*[^:]+:\s*/, '');
       if (newline !== '') {
         codeArray.push(newline.toUpperCase());
       }
     });
-    if(labelTable){
-labelTable.forEach((label)=>{
-  let pos=0;
-  for(let i=0;i<label.line;i++){
-pos+=getInstLeng(codeArray[i]);
-  }
-  label.line=pos;
-});}
-    console.log("yourlab",labelTable);
-if(nb===0){return codeArray}
-if(nb===1){return labelTable}
+  
+    if (labelTable) {
+      labelTable.forEach((label) => {
+        let pos = 0;
+        for (let i = 0; i < label.line; i++) {
+          pos += getInstLeng(codeArray[i]);
+        }
+        label.line = pos;
+      });
+    }
+
+    if (nb === 0) {
+      return codeArray;
+    }
+    if (nb === 1) {
+      return labelTable;
+    }
   };
+  
   
 
   
@@ -671,4 +678,3 @@ ${result}`}</pre>
 
 export default Ide;
 export {BR,IR,memory,Registers,queue,addressingModes,Alu1,IP,ioUnit};
-
