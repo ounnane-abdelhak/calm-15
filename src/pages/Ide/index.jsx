@@ -294,24 +294,32 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
         }
         const regex = new RegExp(`^${escapedName}(?:\\s+([A-Za-z0-9_\\s,]+))?$`, 'i');
         const match = regex.exec(line);
-  
+    
         if (match) {
           const params = match[1] ? match[1].split(/\s*,\s*/).filter(p => p) : [];
-  
-          const substitutedBody = macro.body.map(line => {
+          
+       
+          if (params.length !== macro.numparam) {
+            continue;
+          }
+    
+          let substitutedBody = [];
+          for (let j = 0; j < macro.body.length; j++) {
+            let newLine = macro.body[j];
             for (let i = 0; i < macro.numparam; i++) {
               const paramRegex = new RegExp(`\\b${macro.params[i]}\\b`, 'g');
-              line = line.replace(paramRegex, params[i] || '');
+              newLine = newLine.replace(paramRegex, params[i]);
             }
-            return line;
-          });
-  
+            substitutedBody.push(newLine);
+          }
+    
           codeWithoutMacros.splice(lineIndex, 1, ...substitutedBody);
           lineIndex--;
           break;
         }
       }
     }
+    
   
     const labelTable = [];
     const codeArray = [];
