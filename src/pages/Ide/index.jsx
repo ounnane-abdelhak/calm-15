@@ -173,7 +173,7 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
     let tokens = line.split(/[\s,]+/).filter(t => t.length > 0);
     if (tokens.length === 0) return 0;
   
-    let mnemonic = tokens[0].toLowerCase();
+    let inst = tokens[0].toLowerCase();
   
     // Helper function: Determine if a token is an immediate value.
     // This checks for either a decimal number or a hex literal starting with "0x".
@@ -182,13 +182,13 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
     }
   
     // Branch instructions (BNE, BE, etc.) use 1 byte opcode + 2 bytes for the target address.
-    if (mnemonic === 'bne' || mnemonic === 'be' || mnemonic === 'bs' ||
-        mnemonic === 'bi' || mnemonic === 'bie' || mnemonic === 'bse' || mnemonic === 'br') {
+    if (inst === 'bne' || inst === 'be' || inst === 'bs' ||
+      inst === 'bi' || inst === 'bie' || inst === 'bse' || inst === 'br') {
       return 3;
     }
   
     // For MOV instructions:
-    if (mnemonic === 'mov') {
+    if (inst === 'mov') {
       // Expecting two operands: destination and source.
       if (tokens.length < 3) return 0;
       let src = tokens[2];
@@ -201,12 +201,12 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
     }
   
     // For arithmetic instructions like ADD and MUL, assume both operands are registers.
-    if (mnemonic === 'add' || mnemonic === 'mul') {
+    if (inst === 'add' || inst === 'mul') {
       return 2;
     }
   
     // For SUB: if subtracting an immediate value then it's 4 bytes, otherwise 2 bytes.
-    if (mnemonic === 'sub') {
+    if (inst === 'sub') {
       if (tokens.length < 3) return 0;
       let operand = tokens[2];
       if (isImmediate(operand)) {
@@ -241,8 +241,6 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
   
     const macrosBlockRegex = /^(?:\s*(?:(?:(?:\/\/|;)[^\n]*\n)|MACRO\s*(?:\s+[A-Za-z_]\w*(?:\s+(?:[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*))?)?\s*\r?\n[\s\S]*?\r?\nENDM\s*))*\s*/i;
     const macroBlockMatch = code.match(macrosBlockRegex);
-    const macroBlockLength = macroBlockMatch ? macroBlockMatch[0].length : 0;
-  
     const macroRegex = /(^MACRO\s*(?:\s+([A-Za-z_]\w*)(?:[ \t]+((?:[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*)))?)?[ \t]*\r?\n([\s\S]*?)\r?\nENDM\s*$)/img;
   
     const macros = [];
@@ -678,4 +676,3 @@ ${result}`}</pre>
 
 export default Ide;
 export {BR,IR,memory,Registers,queue,addressingModes,Alu1,IP,ioUnit};
-
