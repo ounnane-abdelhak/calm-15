@@ -1,16 +1,25 @@
+import { Register } from "./Register";
+
+class IOController {
+    constructor() {}
+}
+
 class IOUnit {
-    constructor(buffer) {
-    this.buffer = buffer;
+    constructor() {
+        this.ioController = new IOController();
+        this.buffer = [
+            new Register(),
+            new Register(),
+            new Register(),
+            new Register()
+        ];
     }
     getBuffer() {
-    return this.buffer;
+        return this.buffer;
     }
-    setBuffer(buffer) {
-    this.buffer = buffer;
-    }
-    write() {
-    console.log(this.buffer);
+    setBuffer(value) {
+        this.buffer.setvalue(value);
     }
 }
-export default IOUnit;
 
+export default IOUnit;
