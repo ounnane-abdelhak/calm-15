@@ -1,0 +1,53 @@
+#examplesBloc {
+    background: var(--adress-mode-color);
+    width: 70vw;
+    height: 60vh;
+    border: 20px solid var(--main-accent-color);
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+    padding-top: 3em;
+    padding-left: 3em;
+    padding-right: 3em;
+}
+
+#examplesBloc::-webkit-scrollbar {
+    width: 8px;
+    background: transparent;
+}
+
+#examplesBloc.scrolling::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    transition: transform 1s ease-in-out;
+}
+
+#examplesBloc.scrolling::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: #ffffff56;
+    transition: transform 1s ease-in-out;
+}
+
+#example-icon {
+    width: 25rem;
+    height: 4.375rem;
+    position: absolute;
+    top: -20px;
+    left: 36%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--main-accent-color);
+    border-radius: 25px;
+    font-family: "Mona sans", sans-serif;
+    z-index: 19;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 63px;
+    color: #000000;
+}
