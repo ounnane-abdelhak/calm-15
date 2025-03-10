@@ -7,7 +7,7 @@ function Dec2bin(dec){
     return ("00000000" + (parseInt(dec, 10)).toString(2)).substr(-8);
 }
 function hex2bin(hex){
-    return ("00000000" + ((parseInt(hex, 16)).toString(2)===''? "00000000" :(parseInt(hex, 16)).toString(2)));
+    return ("0".repeat(16-(parseInt(hex, 16)).toString(2).length) + (parseInt(hex, 16)).toString(2));
 }
 /////////////////animations to test////////////////////
 let speed=3;
