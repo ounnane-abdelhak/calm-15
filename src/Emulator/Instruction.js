@@ -1,4 +1,4 @@
-import { Registers, memory, Alu1, IP ,queue } from "../pages/Ide";
+import { Registers, memory, Alu1, IP ,queue, ioUnit } from "../pages/Ide";
 import { TwosComplement } from "./ALU.js";
 import { gsap } from "gsap";
 // import { Register } from "./Register.js";
@@ -4319,4 +4319,68 @@ class InstructionPOPA{
     }
 }
 
-export {InstructionADD,InstructionMOV00,InstructionMOV01,InstructionMOV10,InstructionMOV11,InstructionSUB,InstructionMUL,InstructionDIV,InstructionBSE,InstructionBIE,InstructionBI,InstructionBS,InstructionBNE,InstructionBE,InstructionBR,InstructionPOP,InstructionPUSH,InstructionAND,InstructionOR,InstructionNAND,InstructionNOR,InstructionXOR,InstructionNEG,InstructionNOT,InstructionROL,InstructionROR,InstructionSHL,InstructionSHR,InstructionPOPA,InstructionPUSHA}
+class InstructionREAD{
+    constructor(){
+        this.value1=0;
+        this.value2=0;
+        this.addresse1=0;
+        this.register1=0;
+        this.addresse2=0;
+        this.register2=0;
+        this.taille=0;
+        this.stepsNum=1;
+        this.name="READ";
+        this.steps=[(animations)=>{
+            let adr = this.addresse1;
+            let str = this.value1;
+            let i = 0;
+           
+             do{
+                memory.setRam(Dec2bin(adr));
+                memory.setRim(Dec2bin(str[i]));
+                memory.write(false);
+                i ++ ;
+                adr++;
+           
+            }  while (str[i]!== '$') ;
+            console.log(str);
+        }
+        ];
+        this.buildanim=function(){
+            return[];
+        }
+    }
+}
+
+class InstructionWRITE{
+    constructor(){
+        this.value1=0;
+        this.value2=0;
+        this.addresse1=0;
+        this.register1=0;
+        this.addresse2=0;
+        this.register2=0;
+        this.taille=0;
+        this.stepsNum=1;
+        this.name="WRITE";
+        this.steps=[(animations)=>{
+            let adr = this.addresse1;
+            memory.setRam(Dec2bin(adr));
+            memory.read(false);
+            let str = "";
+            while (memory.getRim() !== '$') {
+                str += memory.getRim();
+                adr++;
+                memory.setRam(Dec2bin(adr));
+                memory.read(false);
+            }
+            console.log(str);
+        }
+        ];
+        this.buildanim=function(){
+            return[];
+        }
+    }
+}
+
+export {InstructionREAD,InstructionWRITE,InstructionADD,InstructionMOV00,InstructionMOV01,InstructionMOV10,InstructionMOV11,InstructionSUB,InstructionMUL,InstructionDIV,InstructionBSE,InstructionBIE,InstructionBI,InstructionBS,InstructionBNE,InstructionBE,InstructionBR,InstructionPOP,InstructionPUSH,InstructionAND,InstructionOR,InstructionNAND,InstructionNOR,InstructionXOR,InstructionNEG,InstructionNOT,InstructionROL,InstructionROR,InstructionSHL,InstructionSHR,InstructionPOPA,InstructionPUSHA}
