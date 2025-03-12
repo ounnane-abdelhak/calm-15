@@ -167,58 +167,67 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
 
   const codeMirrorRef = useRef(null); 
   
-  function getInstLeng(instruction) {
-    let line=instruction;
-    // This simple tokenizer assumes the format: mnemonic operand1, operand2
-    let tokens = line.split(/[\s,]+/).filter(t => t.length > 0);
-    if (tokens.length === 0) return 0;
   
-    let inst = tokens[0].toLowerCase();
-  
-    // Helper function: Determine if a token is an immediate value.
-    // This checks for either a decimal number or a hex literal starting with "0x".
-    function isImmediate(token) {
-      return /^(\d+|0x[0-9a-fA-F]+)$/.test(token);
-    }
-  
-    // Branch instructions (BNE, BE, etc.) use 1 byte opcode + 2 bytes for the target address.
-    if (inst === 'bne' || inst === 'be' || inst === 'bs' ||
-      inst === 'bi' || inst === 'bie' || inst === 'bse' || inst === 'br') {
-      return 3;
-    }
-  
-    // For MOV instructions:
-    if (inst === 'mov') {
-      // Expecting two operands: destination and source.
-      if (tokens.length < 3) return 0;
-      let src = tokens[2];
-      // If the source is an immediate constant, it's a 4-byte instruction.
-      if (isImmediate(src)) {
-        return 4;
-      } else {
-        return 2;
-      }
-    }
-  
-    // For arithmetic instructions like ADD and MUL, assume both operands are registers.
-    if (inst === 'add' || inst === 'mul') {
-      return 2;
-    }
-  
-    // For SUB: if subtracting an immediate value then it's 4 bytes, otherwise 2 bytes.
-    if (inst === 'sub') {
-      if (tokens.length < 3) return 0;
-      let operand = tokens[2];
-      if (isImmediate(operand)) {
-        return 4;
-      } else {
-        return 2;
-      }
-    }
   
     // For other instructions, default to a base length of 2 bytes.
-    return 2;
-  }
+    function getInstLeng(instruction) {
+      // Tokenizer: expects format: mnemonic operand1, operand2 (if any)
+      let tokens = instruction.split(/[\s,]+/).filter(t => t.length > 0);
+      if (tokens.length === 0) return 0;
+      
+      // Use uppercase for consistency.
+      let inst = tokens[0].toUpperCase();
+    
+      // Helper: Check if a token is an immediate constant (decimal or hex).
+      function isImmediate(token) {
+        return /^(\d+|0x[0-9a-fA-F]+)$/.test(token);
+      }
+    
+
+      const branchInst = ['BNE', 'BE', 'BS', 'BI', 'BIE', 'BSE', 'BRI'];
+      if (branchInst.includes(inst)) {
+
+        return 3;
+      }
+      
+      if (inst === 'MOV') {
+        if (tokens.length < 3) return 0;
+        return isImmediate(tokens[2]) ? 4 : 2;
+      }
+ 
+      const twoOpInst = ['ADD', 'SUB', 'MUL', 'DIV', 'AND', 'OR', 'XOR', 'NOR', 'NAND', 'CMP'];
+      if (twoOpInst.includes(inst)) {
+        if (tokens.length < 3) return 0;
+
+        return isImmediate(tokens[2]) ? 4 : 2;
+      }
+
+      if (inst === 'CALL') {
+        return 3;
+      }
+
+      const noOpInst = ['RET', 'PUSHA', 'POPA'];
+      if (noOpInst.includes(inst)) {
+        return 1;
+      }
+ 
+      const reducedInst = ['NOT', 'NEG', 'SHL', 'SHR', 'READ', 'WRITE', 'PUSH', 'POP', 'ROR', 'ROL'];
+      if (reducedInst.includes(inst)) {
+
+        if (tokens.length < 2) {
+          return 1;
+        }
+        let operand = tokens[1];
+ 
+        if (isImmediate(operand) || (operand.startsWith('[') && operand.endsWith(']'))) {
+          return 2;
+        } else {
+          return 1;
+        }
+      }
+      return 0;
+    }
+    
 
   
   const handleStoreCode = (nb) => {
@@ -345,7 +354,7 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
       labelTable.forEach((label) => {
         let pos = 0;
         for (let i = 0; i < label.line; i++) {
-          pos += getInstLeng(codeArray[i]);
+          pos += getInstLeng(codeArray[i].toUpperCase());
         }
         label.line = pos;
       });
