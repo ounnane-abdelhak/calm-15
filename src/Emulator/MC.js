@@ -4,16 +4,10 @@ class MC {
     constructor(){
     this.rim=new Register()
     this.ram=new Register() 
-    this.stack = new Array(100)//size à revoir
-    this.data = new Array (100)
-    this.code = new Array(100) 
-    this.label= new Array(100) 
-    }
-    getadrlab(label){
-        return this.label[label];
-    }
-    setadrlab(label,adr){
-        this.label[label]=adr;
+    this.stack = new Array(65536)//size à revoir
+    this.data = new Array (65536)
+    this.code = new Array(65536) 
+
     }
 
     setcode(code){

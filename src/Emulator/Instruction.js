@@ -18,6 +18,7 @@ function binaryToHex(binaryString) {
     const decimalValue = parseInt(binaryString, 2);
     let hexString = decimalValue.toString(16).toUpperCase();
   if(hexString.length%2==1){hexString="0"+hexString;}
+  if(hexString.length==2){hexString="00"+hexString;}
     return hexString;
   }
 
@@ -4261,21 +4262,37 @@ class InstructionPUSHA{
         this.stepsNum=1;
         this.name="PUSHA";
         this.steps=[()=>{
-            memory.setRim(binaryToHex(Registers[0].getvalue()));
+            memory.setRim(binaryToHex(Registers[0].getvalue()).slice(0,2));
             memory.pushval();
-            memory.setRim(binaryToHex(Registers[1].getvalue()));
+{memory.setRim(binaryToHex(Registers[0].getvalue()).slice(-2));}
             memory.pushval();
-            memory.setRim(binaryToHex(Registers[2].getvalue()));
+            memory.setRim(binaryToHex(Registers[1].getvalue()).slice(0,2));
             memory.pushval();
-            memory.setRim(binaryToHex(Registers[3].getvalue()));
+{memory.setRim(binaryToHex(Registers[1].getvalue()).slice(-2));}
             memory.pushval();
-            memory.setRim(binaryToHex(Registers[4].getvalue()));
+            memory.setRim(binaryToHex(Registers[2].getvalue()).slice(0,2));
             memory.pushval();
-            memory.setRim(binaryToHex(Registers[5].getvalue()));
+{memory.setRim(binaryToHex(Registers[2].getvalue()).slice(-2));}
             memory.pushval();
-            memory.setRim(binaryToHex(Registers[6].getvalue()));
+            memory.setRim(binaryToHex(Registers[3].getvalue()).slice(0,2));
             memory.pushval();
-            memory.setRim(binaryToHex(Registers[7].getvalue()));
+ {memory.setRim(binaryToHex(Registers[3].getvalue()).slice(-2));}
+            memory.pushval();
+            memory.setRim(binaryToHex(Registers[4].getvalue()).slice(0,2));
+            memory.pushval();
+{memory.setRim(binaryToHex(Registers[4].getvalue()).slice(-2));}
+            memory.pushval();
+            memory.setRim(binaryToHex(Registers[5].getvalue()).slice(0,2));
+            memory.pushval();
+{memory.setRim(binaryToHex(Registers[5].getvalue()).slice(-2));}
+            memory.pushval();
+            memory.setRim(binaryToHex(Registers[6].getvalue()).slice(0,2));
+            memory.pushval();
+{memory.setRim(binaryToHex(Registers[6].getvalue()).slice(-2));}
+            memory.pushval();
+            memory.setRim(binaryToHex(Registers[7].getvalue()).slice(0,2));
+            memory.pushval();
+ {memory.setRim(binaryToHex(Registers[7].getvalue()).slice(-2));}
             memory.pushval();
         }
         ];
@@ -4296,23 +4313,48 @@ class InstructionPOPA{
         this.taille=0;
         this.stepsNum=1;
         this.name="POPA";
+        let reg; 
         this.steps=[()=>{
             memory.popval();
-            Registers[7].setvalue(hex2bin(memory.getRim()));
+            reg=memory.getRim();
             memory.popval();
-            Registers[6].setvalue(hex2bin(memory.getRim()));
+            reg=memory.getRim()+reg;
+            Registers[7].setvalue(hex2bin(reg));
             memory.popval();
-            Registers[5].setvalue(hex2bin(memory.getRim()));
+            reg=memory.getRim();
             memory.popval();
-            Registers[4].setvalue(hex2bin(memory.getRim()));
+            reg=memory.getRim()+reg;
+            Registers[6].setvalue(hex2bin(reg));
             memory.popval();
-            Registers[3].setvalue(hex2bin(memory.getRim()));
+            reg=memory.getRim();
             memory.popval();
-            Registers[2].setvalue(hex2bin(memory.getRim()));
+            reg=memory.getRim()+reg;
+            Registers[5].setvalue(hex2bin(reg));
             memory.popval();
-            Registers[1].setvalue(hex2bin(memory.getRim()));
+            reg=memory.getRim();
             memory.popval();
-            Registers[0].setvalue(hex2bin(memory.getRim()));
+            reg=memory.getRim()+reg;
+            Registers[4].setvalue(hex2bin(reg));
+            memory.popval();
+            reg=memory.getRim();
+            memory.popval();
+            reg=memory.getRim()+reg;
+            Registers[3].setvalue(hex2bin(reg));
+            memory.popval();
+            reg=memory.getRim();
+            memory.popval();
+            reg=memory.getRim()+reg;
+            Registers[2].setvalue(hex2bin(reg));
+            memory.popval();          
+              reg=memory.getRim();
+            memory.popval();
+            reg=memory.getRim()+reg;
+            Registers[1].setvalue(hex2bin(reg));
+            memory.popval();
+            reg=memory.getRim();
+            memory.popval();
+            reg=memory.getRim()+reg;
+            Registers[0].setvalue(hex2bin(reg));
         }
         ];
         this.buildanim=function(){}

@@ -906,7 +906,7 @@ export class  Assembler{
                 
                 }
                 console.log("\nAssembled code: \n",assembledcode)
-                console.log('macros',input3.length);
+                console.log('macros',toassmb);
                 return assembledcode;
  
                 
