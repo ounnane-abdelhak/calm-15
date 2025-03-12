@@ -1,4 +1,4 @@
-import { InstructionREAD,InstructionWRITE,InstructionADD,InstructionMOV00,InstructionMOV01,InstructionMOV10,InstructionMOV11,InstructionSUB,InstructionMUL,InstructionDIV, InstructionPUSH, InstructionBR, InstructionNOR, InstructionNEG, InstructionROR, InstructionROL, InstructionSHL, InstructionSHR, InstructionBE, InstructionBS, InstructionBSE, InstructionBI, InstructionBIE, InstructionBNE, InstructionNOT, InstructionOR, InstructionAND, InstructionNAND, InstructionXOR,InstructionPUSHA,InstructionPOPA } from "./Instruction.js";
+import { InstructionCMP,InstructionREAD,InstructionWRITE,InstructionADD,InstructionMOV00,InstructionMOV01,InstructionMOV10,InstructionMOV11,InstructionSUB,InstructionMUL,InstructionDIV, InstructionPUSH, InstructionBR, InstructionNOR, InstructionNEG, InstructionROR, InstructionROL, InstructionSHL, InstructionSHR, InstructionBE, InstructionBS, InstructionBSE, InstructionBI, InstructionBIE, InstructionBNE, InstructionNOT, InstructionOR, InstructionAND, InstructionNAND, InstructionXOR,InstructionPUSHA,InstructionPOPA } from "./Instruction.js";
 
 function hash(key){
     if(key=="0000000"){
@@ -63,8 +63,12 @@ function hash(key){
         return 29;
     }else if(key=="0001011"){//WRITE
         return 30;
+    }else if(key=="0001001"){//CMP
+        return 31;
     }
+
 }
+let CMPinst=new InstructionCMP();
 let ADDinst=new InstructionADD();
 let MOV00inst=new InstructionMOV00();
 let MOV01inst=new InstructionMOV01();
@@ -222,5 +226,9 @@ let hashmap=[
     key:"16",
     instrObject:WRITEinst,
 },
+{
+    key:"12",
+    instrObject:CMPinst,
+}
 ];
 export {hash,hashmap};

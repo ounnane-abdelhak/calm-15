@@ -86,11 +86,47 @@ class Alu{
         return this.Flags;
     }
 
+
+
        //!!!! Note:
        // Flags will b modified in all methods 
 
        //Arithmetic Methods:
        //-------------------
+
+       compareBinary(size) {
+        let diff = '';
+        let borrow = 0;
+        let i = this.Rual1.value.length - 1;
+        while (i >= 0) {
+          const bitA = parseInt(this.Rual1.value[i]);
+          const bitB = parseInt(this.Rual2.value[i]);
+          let sub = bitA - bitB - borrow;
+          if (sub < 0) {
+            sub += 2;
+            borrow = 1;
+          } else {
+            borrow = 0;
+          }
+          diff = sub.toString() + diff;
+          if (i === size) {
+            break;
+          }
+          i--;
+        }
+        this.Flags[0] = (parseInt(diff, 2) === 0) ? '1' : '0';
+        this.Flags[1] = diff[0];
+        this.Flags[2] = borrow.toString();
+        const onesCount = (diff.match(/1/g) || []).length;
+        this.Flags[3] = (onesCount % 2).toString();
+        this.Flags[4] = diff[diff.length - 1];
+        const signA = this.Rual1.getvalue()[0];
+        const signB = this.Rual2.getvalue()[0];
+        const signDiff = diff[0];
+        this.Flags[5] = (signA !== signB && signDiff !== signA) ? '1' : '0';
+      }
+      
+
     addBinary(size) {
         let sum = '';
         let carry = 0;

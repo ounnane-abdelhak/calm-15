@@ -31,9 +31,9 @@ const IounitToBus={
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball", {height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.221,y:h*0.39,opacity:"0"}, {opacity:"1",duration:1*2*speed});
-    gsap.fromTo(".ball", {x:w*0.221,y:h*0.39}, {y:h*0.46 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".ball", {height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.221,y:h*0.39,opacity:"0"}, {opacity:"1",duration:1});
+    gsap.fromTo(".ball", {x:w*0.221,y:h*0.39}, {y:h*0.46 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
     },
 }
 
@@ -42,9 +42,10 @@ const BusToRual1={
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.143,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.143,y:h*0.56},{y:h*0.625 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    ///depart: ( 54% , 24,45% )
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.143,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.143,y:h*0.56},{y:h*0.625 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
 },}
 
 const Rual1ToBus={
@@ -52,344 +53,358 @@ const Rual1ToBus={
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.143,y:h*0.625,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.143,y:h*0.625},{ y:h*0.56,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    ///depart: ( 54% , 24,45% )
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.143,y:h*0.625,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.143,y:h*0.625},{ y:h*0.56,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
   },}
   
-const BusToRual2={
+  const BusToRual2={
     value:"",
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.299,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.299,y:h*0.56},{y:h*0.625 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    ///depart: ( 54% , 35,2% )
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.299,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.299,y:h*0.56},{y:h*0.625 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
   },}
   
-const BusToRegisters={
+  const BusToRegisters={
     value:"",
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.481,y:h*0.555,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.481,y:h*0.555},{y:h*0.58 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    ///depart: ( 53.7% , 47.8% )
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.481,y:h*0.555,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.481,y:h*0.555},{y:h*0.58 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
   },}
 
-const RegistersToBus={
+  const RegistersToBus={
     value:"",
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.481,y:h*0.58,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.481,y:h*0.58},{y:h*0.555 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    ///depart: ( 53.7% , 47.8% )
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.481,y:h*0.58,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.481,y:h*0.58},{y:h*0.555 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
   },}
 
-const IrToDecoder={
+  const IrToDecoder={
     value:"",
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.644,y:h*0.708,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.644,y:h*0.708},{y:h*0.725 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    ///depart: ( 59% , 78.2% )
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.644,y:h*0.708,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.644,y:h*0.708},{y:h*0.725 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
   },}
   
-const DecoderToSequencer={
+  const DecoderToSequencer={
     value:"",
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.644,y:h*0.813,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.644,y:h*0.813},{y:h*0.827 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    ///depart: ( 59% , 78.2% )
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.644,y:h*0.813,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.644,y:h*0.813},{y:h*0.827 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
   },}
   
-const QueueToIr={
+  const QueueToIr={
     value:"",
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.726,y:h*0.6638,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.726,y:h*0.6638},{x:w*0.711 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    ///depart: ( 64.9% , 64.2% )  W:1.4% ,H:2.812
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.726,y:h*0.6638,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.726,y:h*0.6638},{x:w*0.711 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
   },}
   
-const BusToQueue={
+  const BusToQueue={
     value:"",
     target:".ball",
     time:4000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.931,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.931,y:h*0.56},{y:h*0.6638 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{x:w*0.921 ,duration:1*2*speed,delay:2*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:3*2*speed});
+    ///depart: ( 79.1% , 53.6% )  W:1.4% ,H:2.812
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.931,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.931,y:h*0.56},{y:h*0.6638 ,duration:1,delay:1});
+    gsap.to(".ball",{x:w*0.921 ,duration:1,delay:2});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
   
-const BusToAcc={
+  const BusToAcc={
     value:"",
     target:".ball",
     time:4000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.361,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.361,y:h*0.56},{y:h*0.923 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{x:w*0.282 ,duration:1*2*speed,delay:2*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:3*2*speed});
+    ///depart: ( 39.7% , 54% )  W:1.4% ,H:2.812
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.361,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.361,y:h*0.56},{y:h*0.923 ,duration:1,delay:1});
+    gsap.to(".ball",{x:w*0.282 ,duration:1,delay:2});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
-
-const AccToBus={
+  const AccToBus={
     value:"",
     target:".ball",
     time:4000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.282,y:h*0.923,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.282,y:h*0.923},{x:w*0.361 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{y:h*0.56 ,duration:1*2*speed,delay:2*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:3*2*speed});
+    ///depart: ( 39.7% , 54% )  W:1.4% ,H:2.812
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.282,y:h*0.923,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.282,y:h*0.923},{x:w*0.361 ,duration:1,delay:1});
+    gsap.to(".ball",{y:h*0.56 ,duration:1,delay:2});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
   
-const AluToAcc={
+  const AluToAcc={
     value:"",
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.226,y:h*0.863,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.226,y:h*0.863},{y:h*0.877 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    ///depart: ( 30.3% , 83.5% )  W:1.4% ,H:2.812
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.226,y:h*0.863,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.226,y:h*0.863},{y:h*0.877 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
   },}
   
-const MdrToBus={
+  const MdrToBus={
     value:"",
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.539,y:h*0.445,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.539,y:h*0.445},{y:h*0.465 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    ///depart: ( 51.8% , 43.2% )
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.539,y:h*0.445,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.539,y:h*0.445},{y:h*0.465 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
   },}
 
-const BusToMdr={
+  const BusToMdr={
     value:"",
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.539,y:h*0.465,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.539,y:h*0.465},{y:h*0.445 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    ///depart: ( 51.8% , 43.2% )
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.539,y:h*0.465,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.539,y:h*0.465},{y:h*0.445 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
   },}
   
-const AdrToBus={
+  const AdrToBus={
     value:"",
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.784,y:h*0.137,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.784,y:h*0.137},{y:h*0.18 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    ///depart: ( 66.3% , 25.4% )
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.784,y:h*0.137,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.784,y:h*0.137},{y:h*0.18 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
   },}
   
-const IpToAdr={
+  const IpToAdr={
     value:"",
     target:".ball",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.746,y:h*0.26,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.746,y:h*0.26},{y:h*0.46 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    ///depart: ( 69% , 13.7% )
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.746,y:h*0.26,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.746,y:h*0.26},{y:h*0.46 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
   },}
   
-const MdrTOQue={
+  /////////////data bus animations/////////////////:
+  
+  const MdrTOQue={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.874,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1})
+    gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.874,duration:1,delay:1})
+    gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
   
-const MdrToReg={
+  const MdrToReg={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.44,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.44,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
 
-const RegToMdr={
+  const RegToMdr={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.44,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.44},{x:w*0.497,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.44,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.44},{x:w*0.497,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
-
-let queueExitToReg={
+  let queueExitToReg={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1*2*speed})
-        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.44,duration:1*2*speed,delay:1*2*speed})
-        gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1})
+        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.44,duration:1,delay:1})
+        gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
     }
 }
-
-const MdrToIO={
+  const MdrToIO={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.182,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.182,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
-
-const IOToMdr={
+  const IOToMdr={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.182,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.182},{x:w*0.497,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.182,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.182},{x:w*0.497,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
-
-const MdrToRual1={
+  const MdrToRual1={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.262,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.262,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
 
-const RegToRual1={
+  const RegToRual1={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.44,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.44},{x:w*0.262,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
-  },}
+    gsap.fromTo(".box-data",{x:w*0.44,opacity:"0"},{opacity:"1",duration:1})
+    gsap.fromTo(".box-data",{x:w*0.44},{x:w*0.262,duration:1,delay:1})
+    gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+    },}
 
 const MdrToRual2={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.106,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
-  },}
+    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1})
+    gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.106,duration:1,delay:1})
+    gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+    },}
 
-const RegToRual2={
+  const RegToRual2={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.44,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.44},{x:w*0.106,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.44,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.44},{x:w*0.106,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
 
-const AccToMDR={
+  const AccToMDR={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.497,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.497,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
-
-const MDRToAcc={
+  const MDRToAcc={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.321,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.321,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
 
-const AccToReg={
+  const AccToReg={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.44,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.44,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
 
-const RegToAcc={
+  const RegToAcc={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.44,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.44},{x:w*0.321,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.44,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.44},{x:w*0.321,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
   
-const MdrToADR={
+  const MdrToADR={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.705,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.705,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
 
-const AccToADR={
+  const AccToADR={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.705,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.705,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
 
-const Rual1ToADR={
+
+  const Rual1ToADR={
     value:"",
     target:".box-data",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.44,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-data",{x:w*0.44},{x:w*0.705,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-data",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-data",{x:w*0.44,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.44},{x:w*0.705,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
   },}
 
-const BusToIr={
+  const BusToIr={
     value:"",
     target:".ball",
     time:4000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{x:w*0.931,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    gsap.fromTo(".ball",{x:w*0.931,y:h*0.56},{y:h*0.6638 ,duration:1*2*speed,delay:1*2*speed});
-    gsap.to(".ball",{x:w*0.711 ,duration:1*2*speed,delay:2*2*speed});
-    gsap.to(".ball",{opacity:"0" ,duration:1*2*speed,delay:3*2*speed});
+    ///depart: ( 79.1% , 53.6% )  W:1.4% ,H:2.812
+    gsap.fromTo(".ball",{x:w*0.931,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.931,y:h*0.56},{y:h*0.6638 ,duration:1,delay:1});
+    gsap.to(".ball",{x:w*0.711 ,duration:1,delay:2});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
 
+  //////////////// Adresse bus animations ///////////////////////////////
 const IPToMAR={
     value:"",
     target:".box-ADR",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-ADR",{x:w*0.753,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-ADR",{x:w*0.753},{x:w*0.648,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-ADR",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-ADR",{x:w*0.753,opacity:"0"},{opacity:"1",duration:1})
+    gsap.fromTo(".box-ADR",{x:w*0.753},{x:w*0.648,duration:1,delay:1})
+    gsap.to(".box-ADR",{opacity:"0" ,duration:1,delay:2});
   },}
 
 const ADRToMAR={
@@ -397,233 +412,323 @@ const ADRToMAR={
     target:".box-ADR",
     time:3000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-ADR",{x:w*0.712,opacity:"0"},{opacity:"1",duration:1*2*speed})
-    gsap.fromTo(".box-ADR",{x:w*0.712},{x:w*0.648,duration:1*2*speed,delay:1*2*speed})
-    gsap.to(".box-ADR",{opacity:"0" ,duration:1*2*speed,delay:2*2*speed});
+    gsap.fromTo(".box-ADR",{x:w*0.712,opacity:"0"},{opacity:"1",duration:1})
+    gsap.fromTo(".box-ADR",{x:w*0.712},{x:w*0.648,duration:1,delay:1})
+    gsap.to(".box-ADR",{opacity:"0" ,duration:1,delay:2});
   },}
   
-const fitToRual1={
+  ////////////////////////fitting animations//////////////////////
+  const fitToRual1={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"20px",width:w*0.067,height:h*0.05,x:w*0.12,y:h*0.658,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
+    gsap.fromTo(".ball",{borderRadius:"20px",width:w*0.067,height:h*0.05,x:w*0.12,y:h*0.658,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"20px",width:w*0.067,height:h*0.05,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
-
-const infitToRual1={
+  const infitToRual1={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-        gsap.to(".ball",{opacity:"0" ,duration:1*2*speed});
+        // gsap.fromTo(".ball",{x:w*0.12,y:h*0.658,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+        // gsap.fromTo(".ball",{x:w*0.12,y:h*0.658,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
+        // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
+        gsap.to(".ball",{opacity:"0" ,duration:1});
+    },}
+  const fitToRual2={
+    value:"",
+    target:".ball",
+    time:1000,
+    anim:(val,h,w)=>{
+    gsap.fromTo(".ball",{borderRadius:"20px",width:w*0.067,height:h*0.05,x:w*0.275,y:h*0.658,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"20px",width:w*0.067,height:h*0.05,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
+  },}
+  const fitToR2={
+    value:"",
+    target:".ball",
+    time:1000,
+    anim:(val,h,w)=>{
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.666,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
+  },}
+  const infitToR2={
+    value:"",
+    target:".ball",
+    time:1000,
+    anim:(val,h,w)=>{
+        // gsap.fromTo(".ball",{x:w*0.442,y:h*0.666,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+        // gsap.fromTo(".ball",{x:w*0.442,y:h*0.666,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
+        // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
+        gsap.to(".ball",{opacity:"0" ,duration:1});
     },}
 
-const fitToRual2={
+  const fitToR1={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"20px",width:w*0.067,height:h*0.05,x:w*0.275,y:h*0.658,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-  },}
-
-const fitToR2={
-    value:"",
-    target:".ball",
-    time:1000,
-    anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.666,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-  },}
-
-const infitToR2={
-    value:"",
-    target:".ball",
-    time:1000,
-    anim:(val,h,w)=>{
-        gsap.to(".ball",{opacity:"0" ,duration:1*2*speed});
+      gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.6105,opacity:"0"},{opacity:"1" ,duration:1});
+    //   gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+    //   gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
     },}
-
-const fitToR1={
-    value:"",
-    target:".ball",
-    time:1000,
-    anim:(val,h,w)=>{
-      gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.6105,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-    },}
-
-const infitToR1={
+    const infitToR1={
         value:"",
         target:".ball",
         time:1000,
         anim:(val,h,w)=>{
-            gsap.to(".ball",{opacity:"0" ,duration:1*2*speed});
+            // gsap.fromTo(".ball",{x:w*0.442,y:h*0.6105,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+            // gsap.fromTo(".ball",{x:w*0.442,y:h*0.6105,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
+            // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
+            gsap.to(".ball",{opacity:"0" ,duration:1});
         },}
 
-const fitToR3={
+  const fitToR3={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.7205,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.7205,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
 
-const infitToR3={
+  const infitToR3={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-        gsap.to(".ball",{opacity:"0" ,duration:1*2*speed});
+        // gsap.fromTo(".ball",{x:w*0.442,y:h*0.7205,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+        // gsap.fromTo(".ball",{x:w*0.442,y:h*0.7205,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
+        // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
+        gsap.to(".ball",{opacity:"0" ,duration:1});
     },}
 
-const fitToR4={
+  const fitToR4={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.7735,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.7735,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
 
-const infitToR4={
+  const infitToR4={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-        gsap.to(".ball",{opacity:"0" ,duration:1*2*speed});
+        // gsap.fromTo(".ball",{x:w*0.442,y:h*0.7735,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+        // gsap.fromTo(".ball",{x:w*0.442,y:h*0.7735,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
+        // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
+        gsap.to(".ball",{opacity:"0" ,duration:1});
     },}
 
-const fitToIdr={
+  const fitToIdr={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.8277,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.8277,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
-
-const infitToIdr={
+  const infitToIdr={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-        gsap.to(".ball",{opacity:"0" ,duration:1*2*speed});
+        // gsap.fromTo(".ball",{x:w*0.442,y:h*0.8277,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+        // gsap.fromTo(".ball",{x:w*0.442,y:h*0.8277,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
+        // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
+        gsap.to(".ball",{opacity:"0" ,duration:1});
     },}
-
-const fitToBr={
+  const fitToBr={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.8815,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.8815,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
-
-const infitToBr={
+  const infitToBr={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-        gsap.to(".ball",{opacity:"0" ,duration:1*2*speed});
+        // gsap.fromTo(".ball",{x:w*0.442,y:h*0.8815,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+        // gsap.fromTo(".ball",{x:w*0.442,y:h*0.8815,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
+        // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
+        gsap.to(".ball",{opacity:"0" ,duration:1});
     },}
-
-const fitToSr={
+  const fitToSr={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.9347,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.9347,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
-
-const infitToSR={
+  const infitToSR={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-        gsap.to(".ball",{opacity:"0" ,duration:1*2*speed});
+        // gsap.fromTo(".ball",{x:w*0.442,y:h*0.9347,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+        // gsap.fromTo(".ball",{x:w*0.442,y:h*0.9347,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
+        // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
+        gsap.to(".ball",{opacity:"0" ,duration:1});
     },}
-
-const fitToIr={
+  const fitToIr={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.055,x:w*0.6,y:h*0.6495,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.055,x:w*0.6,y:h*0.6495,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.055,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
-
-const fitToDecode={
+  const fitToDecode={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.055,x:w*0.6,y:h*0.753,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.055,x:w*0.6,y:h*0.753,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.055,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
-
-const fitToSequencer={
+  const fitToSequencer={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.055,x:w*0.6,y:h*0.858,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.055,x:w*0.6,y:h*0.858,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.055,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
-
-const fitToAcc={
+  const fitToAcc={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.07,height:h*0.055,x:w*0.1995,y:h*0.91,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.07,height:h*0.055,x:w*0.1995,y:h*0.91,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.07,height:h*0.055,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
-
-const infitToAcc={
+  const infitToAcc={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-        gsap.to(".ball",{opacity:"0" ,duration:1*2*speed});
+        // gsap.fromTo(".ball",{x:w*0.1995,y:h*0.91,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+        // gsap.fromTo(".ball",{x:w*0.1995,y:h*0.91,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
+        // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
+        gsap.to(".ball",{opacity:"0" ,duration:1});
     },}
-
-const fitToMdr={
+  const fitToMdr={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.11,height:h*0.06,x:w*0.49,y:h*0.38,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.11,height:h*0.06,x:w*0.49,y:h*0.38,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.11,height:h*0.06,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
-
-const infitToMdr={
+  const infitToMdr={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-        gsap.to(".ball",{opacity:"0" ,duration:1*2*speed});
+        // gsap.fromTo(".ball",{x:w*0.49,y:h*0.38,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+        // gsap.fromTo(".ball",{x:w*0.49,y:h*0.38,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
+        // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
+        gsap.to(".ball",{opacity:"0" ,duration:1});
     },}
-
-const fitToMar={
+  const fitToMar={
     value:"",
     target:".ball",
     time:1000,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.032,height:h*0.14,x:w*0.623,y:h*0.165,opacity:"0"},{opacity:"1" ,duration:1*2*speed});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.032,height:h*0.14,x:w*0.623,y:h*0.165,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.032,height:h*0.14,duration:1,delay:1});
+    // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
 
-const addanim={
+  const addanim={
     value:"",
     target:".ALU",
     time:2000,
     anim:(val,h,w)=>{
-        gsap.fromTo(".ALU",{opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-        gsap.fromTo(".ALU",{opacity:"1"},{opacity:"0" ,duration:1*2*speed,delay:1*2*speed});
+        gsap.fromTo(".ALU",{opacity:"0"},{opacity:"1" ,duration:1});
+        gsap.fromTo(".ALU",{opacity:"1"},{opacity:"0" ,duration:1,delay:1});
     },}
 
-const MCanim={
-    value:"",
-    target:".MC",
-    time:2000,
-    anim:(val,h,w)=>{
-        gsap.fromTo(".MC",{opacity:"0"},{opacity:"1" ,duration:1*2*speed});
-        gsap.fromTo(".MC",{opacity:"1"},{opacity:"0" ,duration:1*2*speed,delay:1*2*speed});
-    },}
-
+    const MCanim={
+        value:"",
+        target:".MC",
+        time:2000,
+        anim:(val,h,w)=>{
+            gsap.fromTo(".MC",{opacity:"0"},{opacity:"1" ,duration:1});
+            gsap.fromTo(".MC",{opacity:"1"},{opacity:"0" ,duration:1,delay:1});
+        },}
 ////////////////////////////////////////////////
 
 
-
+class InstructionCMP{
+    constructor(){
+        this.value1=0;
+        this.value2=0;
+        this.addresse1=0;
+        this.register1=0;
+        this.addresse2=0;
+        this.register2=0;
+        this.taille=0;
+        this.stepsNum=1;
+        this.res=0;
+        this.name="CMP";
+        this.steps=[()=>{
+            if(this.taille===0){
+                Alu1.Rual1.setright(TwosComplement(this.value1,8));
+                Alu1.Rual2.setleft(TwosComplement(this.value2,8));
+                Alu1.compareBinary(8);
+                
+            }else{
+                Alu1.Rual1.setvalue(TwosComplement(this.value1,16));
+                Alu1.Rual2.setvalue(TwosComplement(this.value2,16));
+                Alu1.compareBinary(16);
+            }
+        }
+        ];
+        this.buildanim=function(){
+            return[{
+                value:"CMP",
+                target:addanim.target,
+                time:addanim.time,
+                anim:addanim.anim,
+            },
+            {
+                value:"",
+                target:AluToAcc.target,
+                time:AluToAcc.time,
+                anim:AluToAcc.anim,
+            },
+            {
+                value:"res",
+                target:fitToAcc.target,
+                time:fitToAcc.time,
+                anim:fitToAcc.anim,
+            },
+        ];
+        }
+    }
+    
+}
 
 class InstructionADD{
     constructor(){
@@ -4425,4 +4530,4 @@ class InstructionWRITE{
     }
 }
 
-export {InstructionREAD,InstructionWRITE,InstructionADD,InstructionMOV00,InstructionMOV01,InstructionMOV10,InstructionMOV11,InstructionSUB,InstructionMUL,InstructionDIV,InstructionBSE,InstructionBIE,InstructionBI,InstructionBS,InstructionBNE,InstructionBE,InstructionBR,InstructionPOP,InstructionPUSH,InstructionAND,InstructionOR,InstructionNAND,InstructionNOR,InstructionXOR,InstructionNEG,InstructionNOT,InstructionROL,InstructionROR,InstructionSHL,InstructionSHR,InstructionPOPA,InstructionPUSHA}
+export {InstructionCMP,InstructionREAD,InstructionWRITE,InstructionADD,InstructionMOV00,InstructionMOV01,InstructionMOV10,InstructionMOV11,InstructionSUB,InstructionMUL,InstructionDIV,InstructionBSE,InstructionBIE,InstructionBI,InstructionBS,InstructionBNE,InstructionBE,InstructionBR,InstructionPOP,InstructionPUSH,InstructionAND,InstructionOR,InstructionNAND,InstructionNOR,InstructionXOR,InstructionNEG,InstructionNOT,InstructionROL,InstructionROR,InstructionSHL,InstructionSHR,InstructionPOPA,InstructionPUSHA}
