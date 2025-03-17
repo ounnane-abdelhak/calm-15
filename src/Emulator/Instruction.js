@@ -705,7 +705,7 @@ const ADRToMAR={
             time:3000,
             anim:(val,h,w)=>{
             ///depart: ( 51.8% , 43.2% )
-            gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.221,y:h*0.39,opacity:"0"},{opacity:"1" ,duration:1});
+            gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"25%",x:w*0.221,y:h*0.39,opacity:"0"},{opacity:"1" ,duration:1});
             gsap.fromTo(".ball",{x:w*0.221,y:h*0.39},{y:h*0.465 ,duration:1,delay:1});
             gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
           },}
@@ -717,7 +717,7 @@ const ADRToMAR={
             time:3000,
             anim:(val,h,w)=>{
             ///depart: ( 51.8% , 43.2% )
-            gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.221,y:h*0.465,opacity:"0"},{opacity:"1" ,duration:1});
+            gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"25%",x:w*0.221,y:h*0.465,opacity:"0"},{opacity:"1" ,duration:1});
             gsap.fromTo(".ball",{x:w*0.221,y:h*0.465},{y:h*0.39 ,duration:1,delay:1});
             gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
           },}
@@ -4586,22 +4586,16 @@ class InstructionWRITE{
         this.buildanim=function(){
             return[ 
                 {
-                    value:this.value1,
+                    value:this.value2,
                     target:infitToR4.target,
                     time:infitToR4.time,
                     anim:infitToR4.anim,
                 },
                 {
-                    value:this.value1,
+                    value:this.value2,
                     target:fitToR4.target,
                     time: fitToR4.time,
                     anim: fitToR4.anim,
-                },
-                {
-                    value:this.value1,
-                    target:BusToBuffer.target,
-                    time:BusToBuffer.time,
-                    anim:BusToBuffer.anim,
                 },
                 {
                     value:this.value1,
@@ -4609,7 +4603,12 @@ class InstructionWRITE{
                     time:BusToIO.time,
                     anim:BusToIO.anim,
                 },
-
+                {
+                    value:this.value1,
+                    target:BusToBuffer.target,
+                    time:BusToBuffer.time,
+                    anim:BusToBuffer.anim,
+                },
         ];
      }
     }

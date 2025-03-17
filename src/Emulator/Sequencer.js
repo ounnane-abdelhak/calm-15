@@ -2448,7 +2448,8 @@ class Sequenceur{
         let res;
         for (let i = 0; i < instrObject.stepsNum ; i++) {
             if (instrObject.name === 'READ' || instrObject.name === 'WRITE') {
-                //here we set the logic
+                instrObject.value1 = String.fromCharCode(parseInt(Registers[3].getvalue(),2));
+                instrObject.value2 = parseInt(Registers[3].getvalue(),2);
                 res = instrObject.steps[i](animations);
             } else {
                 res = instrObject.steps[i](animations);
