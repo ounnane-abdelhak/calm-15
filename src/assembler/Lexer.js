@@ -29,7 +29,7 @@ export class Lexer {
       //console.log(code.m atch(/([a-zA-Z0-9]+\d*(?:[a-zA-Z09]+)?|\*|,|\+)/g))
       this.LexicalList = code.match(/([A-Za-z0-9]+|[*,+~`!@#$%\^&()_=\[\]{};:'",.<>?\\-])/g).filter(function (t) {
         return t.length > 0;
-      }).map((t,index)=> {
+      }).map((t,index) => {
         if (isNaN(t)) {
           switch (t) {
             case 'R1':
@@ -56,9 +56,9 @@ export class Lexer {
               case 'PUSHA':
               case 'POPA':
               return{
-                    type: 'INST0',
-                    value: t
-                    };
+                type: 'INST0',
+                value: t
+              };
             case 'NEG':
             case 'NOT':
             case 'SHL':

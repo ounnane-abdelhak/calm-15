@@ -677,6 +677,50 @@ const ADRToMAR={
             gsap.fromTo(".MC",{opacity:"0"},{opacity:"1" ,duration:1});
             gsap.fromTo(".MC",{opacity:"1"},{opacity:"0" ,duration:1,delay:1});
         },}
+
+        const IOToBus={
+            value:"",
+            target:".ball",
+            time:3000,
+            anim:(val,h,w)=>{
+            ///depart: ( 51.8% , 43.2% )
+            gsap.fromTo(".box-data",{x:w*0.182,opacity:"0"},{opacity:"1",duration:1})
+          gsap.fromTo(".box-data",{x:w*0.182},{x:w*0.442,duration:1,delay:1})
+          gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+          },}
+          const BusToIO={
+            value:"",
+            target:".ball",
+            time:3000,
+            anim:(val,h,w)=>{
+            ///depart: ( 51.8% , 43.2% )
+            gsap.fromTo(".box-data",{x:w*0.442,opacity:"0"},{opacity:"1",duration:1})
+          gsap.fromTo(".box-data",{x:w*0.442},{x:w*0.182,duration:1,delay:1})
+          gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+          },}
+        
+          const BufferToBus={
+            value:"",
+            target:".ball",
+            time:3000,
+            anim:(val,h,w)=>{
+            ///depart: ( 51.8% , 43.2% )
+            gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.221,y:h*0.39,opacity:"0"},{opacity:"1" ,duration:1});
+            gsap.fromTo(".ball",{x:w*0.221,y:h*0.39},{y:h*0.465 ,duration:1,delay:1});
+            gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
+          },}
+        
+        
+          const BusToBuffer={
+            value:"",
+            target:".ball",
+            time:3000,
+            anim:(val,h,w)=>{
+            ///depart: ( 51.8% , 43.2% )
+            gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.221,y:h*0.465,opacity:"0"},{opacity:"1" ,duration:1});
+            gsap.fromTo(".ball",{x:w*0.221,y:h*0.465},{y:h*0.39 ,duration:1,delay:1});
+            gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
+          },}
 ////////////////////////////////////////////////
 
 
@@ -4402,7 +4446,7 @@ class InstructionPUSHA{
         }
         ];
         this.buildanim=function(){
-            return [];
+            return[];
         }
     }
 }
@@ -4462,7 +4506,9 @@ class InstructionPOPA{
             Registers[0].setvalue(hex2bin(reg));
         }
         ];
-        this.buildanim=function(){}
+        this.buildanim=function(){
+            return[];
+        }
     }
 }
 
@@ -4478,27 +4524,46 @@ class InstructionREAD{
         this.stepsNum=1;
         this.name="READ";
         this.steps=[(animations)=>{
-            let adr = this.addresse1;
-            let str = this.value1;
-            let i = 0;
+
+            let chr = this.value1.charCodeAt(0);
            
-             do{
-                memory.setRam(Dec2bin(adr));
-                memory.setRim(Dec2bin(str[i]));
-                memory.write(false);
-                i ++ ;
-                adr++;
+            ioUnit.setBuffer(Dec2bin(chr));
            
-            }  while (str[i]!== '$') ;
-            console.log(str);
+            Registers[3].setvalue(ioUnit.getBuffer());
         }
         ];
-        this.buildanim=function(){
-            return[];
-        }
+        
+         this.buildanim=function(){
+                return[
+                    {
+                        value:this.value1,
+                        target:BufferToBus.target,
+                        time:BufferToBus.time,
+                        anim:BufferToBus.anim,
+                    },
+                    {
+                        value:this.value1,
+                        target:IOToBus.target,
+                        time:IOToBus.time,
+                        anim:IOToBus.anim,
+                    },
+                    {
+                        value:this.value1,
+                        target:fitToR4.target,
+                        time: fitToR4.time,
+                        anim: fitToR4.anim,
+                    },
+                    {
+                        value:this.value1,
+                        target:infitToR4.target,
+                        time:infitToR4.time,
+                        anim:infitToR4.anim,
+                    },
+                ];
+            }
     }
 }
-
+let txt = [];
 class InstructionWRITE{
     constructor(){
         this.value1=0;
@@ -4510,24 +4575,47 @@ class InstructionWRITE{
         this.taille=0;
         this.stepsNum=1;
         this.name="WRITE";
-        this.steps=[(animations)=>{
-            let adr = this.addresse1;
-            memory.setRam(Dec2bin(adr));
-            memory.read(false);
-            let str = "";
-            while (memory.getRim() !== '$') {
-                str += memory.getRim();
-                adr++;
-                memory.setRam(Dec2bin(adr));
-                memory.read(false);
-            }
-            console.log(str);
+        this.steps=[()=>{
+     
+            ioUnit.buffer.setvalue(  Registers[3].getvalue());
+            let chr = ioUnit.buffer.getvalue();
+            this.value1=String.fromCharCode(parseInt(chr,2));    
+            txt.push(this.value1);
         }
         ];
         this.buildanim=function(){
-            return[];
-        }
+            return[ 
+                {
+                    value:this.value1,
+                    target:infitToR4.target,
+                    time:infitToR4.time,
+                    anim:infitToR4.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToR4.target,
+                    time: fitToR4.time,
+                    anim: fitToR4.anim,
+                },
+                {
+                    value:this.value1,
+                    target:BusToBuffer.target,
+                    time:BusToBuffer.time,
+                    anim:BusToBuffer.anim,
+                },
+                {
+                    value:this.value1,
+                    target:BusToIO.target,
+                    time:BusToIO.time,
+                    anim:BusToIO.anim,
+                },
+
+        ];
+     }
     }
 }
 
+
+
 export {InstructionCMP,InstructionREAD,InstructionWRITE,InstructionADD,InstructionMOV00,InstructionMOV01,InstructionMOV10,InstructionMOV11,InstructionSUB,InstructionMUL,InstructionDIV,InstructionBSE,InstructionBIE,InstructionBI,InstructionBS,InstructionBNE,InstructionBE,InstructionBR,InstructionPOP,InstructionPUSH,InstructionAND,InstructionOR,InstructionNAND,InstructionNOR,InstructionXOR,InstructionNEG,InstructionNOT,InstructionROL,InstructionROR,InstructionSHL,InstructionSHR,InstructionPOPA,InstructionPUSHA}
+export default txt  ;

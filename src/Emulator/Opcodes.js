@@ -59,9 +59,9 @@ function hash(key){
         return 27;
     }else if(key=="0010001"){//POPA
         return 28;
-    }else if(key=="0001010"){//READ
+    }else if(key=="1000"){//READ
         return 29;
-    }else if(key=="0001011"){//WRITE
+    }else if(key=="1001"){//WRITE
         return 30;
     }else if(key=="0001001"){//CMP
         return 31;
@@ -211,19 +211,19 @@ let hashmap=[
     instrObject:XORinst,
 },
 {
-    key:"20",
+    key:"21",
     instrObject:pushaInst,
 },
 {
-    key:"22",
+    key:"23",
     instrObject:popaInst,
 },
 {
-    key:"14",
+    key:"8",
     instrObject:READinst,
 },
 {
-    key:"16",
+    key:"9",
     instrObject:WRITEinst,
 },
 {

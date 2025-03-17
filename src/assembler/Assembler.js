@@ -776,7 +776,8 @@ export class  Assembler{
                             default:
                                 break;
                         }
-
+                         
+                        if (oppcode !== '1001') {
                         if (element.adrmode === 0 && input[1].type === 'REGISTER') {
                             switch(input[1].value){
                                 case 'R1':
@@ -851,6 +852,10 @@ export class  Assembler{
                             let instcode=oppcode+reg+size;
                             return FuncInterface.binaryToHexoneByte(instcode) ;
                         }
+                        } else {
+                            let instcode = oppcode + '011'+'1';
+                            return FuncInterface.binaryToHexoneByte(instcode) ;
+                        }
 
                     }else{
                     var oppcode = "";
@@ -893,11 +898,9 @@ export class  Assembler{
         static assemblecode(input1,input2,input3){
      
             for(let i=0;i<input3.length;i++){ if(input3[i]){Errorcalm.SemanticError.push(new Errorcalm(input3[i].error,null,input3[i].line));}}
-          
             let output = new Assembler(input1,input2) ;
             var assembledcode = [];
             var toassmb = (output && output.toAssemble && output.toAssemble.Semanticlist) ? output.toAssemble.Semanticlist : "Semanticlist is undefined";
-
             if ( Errorcalm.SemanticError.length ===0 ) {
 
                 for (let index = 0; index < toassmb.length; index++) {

@@ -2447,11 +2447,17 @@ class Sequenceur{
     execute(instrObject,is_animated,animations){
         let res;
         for (let i = 0; i < instrObject.stepsNum ; i++) {
-            res = instrObject.steps[i](animations);
+            if (instrObject.name === 'READ' || instrObject.name === 'WRITE') {
+                //here we set the logic
+                res = instrObject.steps[i](animations);
+            } else {
+                res = instrObject.steps[i](animations);
+            }
         }
+        console.log("instrObject res", res);
         console.log(instrObject);
         let animationSteps= instrObject.buildanim();
-        if(is_animated===1 && animationSteps>0){
+        if(is_animated===1 && animationSteps.length>0){
             for (let i = 0; i < animationSteps.length; i++) {
                 let tempobj={...animationSteps[i]};
                 if(tempobj.value==="value2"){
