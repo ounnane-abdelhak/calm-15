@@ -1,4 +1,5 @@
-import { Registers, memory, Alu1, IP ,queue, ioUnit } from "../pages/Ide";
+import  {BR,IR,memory,mess,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from './mess.js';
+
 import { TwosComplement } from "./ALU.js";
 import { gsap } from "gsap";
 // import { Register } from "./Register.js";

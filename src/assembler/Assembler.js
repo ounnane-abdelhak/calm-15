@@ -221,6 +221,28 @@ while (hexString.length < size) {
             //return the address
             return {type: 'NUMBER', value: labelobj.address}; 
     }},
+
+
+    
+    Label_To_Num3 : (labelname,linenumber)=>{
+        var labelobj = null ;
+      
+
+        Assembler.STRlist.forEach(element => { 
+            if(element.name === labelname){
+                labelobj = element
+            }
+        });
+
+        if (labelobj === null)
+        {
+            //error
+            Errorcalm.SemanticError.push(new Errorcalm("Label not found3",null,linenumber));
+            return {type: 'ERROR', value: null};
+        }else{
+            //return the address
+            return {type: 'NUMBER', value: labelobj.address}; 
+    }},
     
     Label_To_Num2 : (labelname,linenumber,labels)=>{
         var labelobj = null ;
@@ -453,6 +475,8 @@ export class  Assembler{
 
     static MAXNUM = 65535;
     static Labellist =[];
+    static STRlist =[];
+    
     // List of strings to exclude
     
 
@@ -909,7 +933,6 @@ export class  Assembler{
                 
                 }
                 console.log("\nAssembled code: \n",assembledcode)
-                console.log('macros',toassmb);
                 return assembledcode;
  
                 

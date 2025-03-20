@@ -1,9 +1,10 @@
 import { Register } from "./Register.js";
-import { queue, Registers, addressingModes } from "../pages/Ide";
+import  {BR,IR,memory,mess,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from './mess.js';
 import { hash, hashmap } from "./Opcodes.js";
 import { gsap } from "gsap";
 import { getSpeed } from "./Instruction";
-
+import { Assembler } from "../assembler/Assembler.js";
+let offset=0;
 // import Console from "../Console.jsx";____conflict!!!!!!!!!!
 const fitToR2={
     value:"",
@@ -663,6 +664,8 @@ class Sequenceur{
     queue.fetchInstruction(animations,4,false,Contextarray,1);//----///here we have the fetch from the memory
     }
     decode(animations,Contextarray){
+
+ 
         let instruction=this.RI.getvalue();
         let key=instruction.substring(0,4);
         let index=0;
@@ -711,26 +714,27 @@ class Sequenceur{
                 value =parseInt(Registers[parseInt(numreg, 2)].getvalue(), 2);
             }else{
                 if(numreg=='000'){
-                    value = parseInt(Registers[0].getright(),2);
+                    value =Registers[0].getright();
                 }else if(numreg=='001'){
-                    value = parseInt(Registers[0].getleft(),2);
+                    value = Registers[1].getright();
                 }
                 if(numreg=='010'){
-                    value = parseInt(Registers[1].getright(),2);
+                    value =Registers[2].getright();
                 }else if(numreg=='011'){
-                    value = parseInt(Registers[1].getleft(),2);
+                    value =Registers[4].getright();
                 }
                 if(numreg=='100'){
-                    value = parseInt(Registers[2].getright(),2);
+                    value =Registers[0].getleft();
                 }else if(numreg=='101'){
-                    value = parseInt(Registers[2].getleft(),2);
+                    value =Registers[1].getleft();
                 }
                 if(numreg=='110'){
-                    value = parseInt(Registers[3].getright(),2);
+                    value =Registers[2].getleft();
                 }else if(numreg=='111'){
-                    value = parseInt(Registers[3].getleft(),2);
+                    value =Registers[4].getleft();
                 }
             }
+
             instrObject.value1=value;
             instrObject.taille=taille;
             //}

@@ -1,6 +1,5 @@
-import { memory, BR, IR } from "../pages/Ide";
+import  {BR,IR,memory,mess,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from './mess.js';
 import { gsap } from "gsap";
-import Alu from "./ALU";
 import { getSpeed } from "./Instruction";
 
 let speed = getSpeed();

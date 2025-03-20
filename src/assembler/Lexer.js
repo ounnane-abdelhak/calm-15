@@ -27,110 +27,122 @@ export class Lexer {
 
     constructor(code,line) {
       //console.log(code.m atch(/([a-zA-Z0-9]+\d*(?:[a-zA-Z09]+)?|\*|,|\+)/g))
-      this.LexicalList = code.match(/([A-Za-z0-9]+|[*,+~`!@#$%\^&()_=\[\]{};:'",.<>?\\-])/g).filter(function (t) {
+  
+      this.LexicalList = code.match(/([A-Za-z0-9]+|[*,+~`!@#%\^&()_=\[\]{};:$"',.<>?\\-])/g).filter(function (t) {
         return t.length > 0;
-      }).map((t,index) => {
+      }).map((t,index)=> {
+
+
         if (isNaN(t)) {
-          switch (t) {
-            case 'R1':
-            case 'R2':
-            case 'R3':
-            case 'R4':
-            case 'ACC':
-            case 'BR':
-            case 'IDR':
-            case 'SR':
-            case 'R1R':
-            case 'R2R':
-            case 'R3R':
-            case 'ACCR':
-            case 'R1L':
-            case 'R2L':
-            case 'R3L':
-            case 'ACCL':
+          if (
+            t === 'R1' ||
+            t === 'R2' ||
+            t === 'R3' ||
+            t === 'R4' ||
+            t === 'ACC' ||
+            t === 'BR' ||
+            t === 'IDR' ||
+            t === 'SR' ||
+            t === 'R1R' ||
+            t === 'R2R' ||
+            t === 'R3R' ||
+            t === 'ACCR' ||
+            t === 'R1L' ||
+            t === 'R2L' ||
+            t === 'R3L' ||
+            t === 'ACCL'
+          ) {
+            return {
+              type: 'REGISTER',
+              value: t
+            };
+          } else if (
+            t === 'RET' ||
+            t === 'PUSHA' ||
+            t === 'POPA'
+          ) {
+            return {
+              type: 'INST0',
+              value: t
+            };
+          } else if (
+            t === 'NEG' ||
+            t === 'NOT' ||
+            t === 'SHL' ||
+            t === 'SHR' ||
+            t === 'READ' ||
+            t === 'WRITE' ||
+            t === 'PUSH' ||
+            t === 'POP' ||
+            t === 'ROR' ||
+            t === 'ROL' ||
+            t === 'CALL' ||
+            t === 'BE' ||
+            t === 'BNE' ||
+            t === 'BS' ||
+            t === 'BI' ||
+            t === 'BIE' ||
+            t === 'BSE' ||
+            t === 'BRI'
+          ) {
+            return {
+              type: 'INST1',
+              value: t
+            };
+          } else if (
+            t === 'NAND' ||
+            t === 'CMP' ||
+            t === 'MOV' ||
+            t === 'ADD' ||
+            t === 'SUB' ||
+            t === 'MUL' ||
+            t === 'DIV' ||
+            t === 'AND' ||
+            t === 'OR' ||
+            t === 'XOR' ||
+            t === 'NOR'
+          ) {
+            return {
+              type: 'INST2',
+              value: t
+            };
+          } else if (
+            t === '*' ||
+            t === ',' ||
+            t === '+' ||
+            t === '-'
+          ) {
+            return {
+              type: 'SPECIAL CHARACTER',
+              value: t
+            };
+          } else if (t === 'LABEL') {
+            return {
+              type: 'LABEL'
+            };
+          } else {
+            if (Lexer.isValidString(t)) {
               return {
-                type: 'REGISTER',
+                type: 'TEXT',
                 value: t
               };
-              case 'RET':
-              case 'PUSHA':
-              case 'POPA':
-              return{
-                type: 'INST0',
-                value: t
-              };
-            case 'NEG':
-            case 'NOT':
-            case 'SHL':
-            case 'SHR':
-            case 'READ':
-            case 'WRITE':
-            case 'PUSH':
-            case 'POP':
-            case 'ROR':
-            case 'ROL':
-            case 'CALL':
-            case 'BE':
-            case 'BNE':
-            case 'BS':
-            case 'BI':
-            case 'BIE':
-            case 'BSE':
-            case 'BRI':
-              return {
-                type: 'INST1',
-                value: t
-              };
-            case 'NAND':
-            case 'CMP':
-            case 'MOV':
-            case 'ADD':
-            case 'SUB':
-            case 'MUL':
-            case 'DIV':
-            case 'AND':
-            case 'OR':
-            case 'XOR':
-            case 'NOR':
-              return{ 
-                type: 'INST2',
-                value: t
-              };
-            case '*':
-            case ',':
-            case '+':
-            case '-':
-              return {
-                type: 'SPECIAL CHARACTER',
-                value: t
-              };
-            case 'LABEL':
-              return {
-                type: 'LABEL'
-              };
-              break;
-            default:
-              if (Lexer.isValidString(t)) {
-                return {
-                  type: 'TEXT',
-                  value: t
-                };
-              }else{
-              //change this 0 to the line number
-                Errorcalm.set_LexicalError(new Errorcalm("Invalid string", "LEXER", line));
-              }
+            } else {
+              Lexer.Errors.push(new Errorcalm("Invalid string", "LEXER", line));
+              Errorcalm.set_LexicalError(new Errorcalm("Invalid string", "LEXER", line));
+            }
           }
-        } else {
-          return {
-            type: 'NUMBER',
-            value: t
-          };
+          
+        } else{
+  
+            return { type: 'NUMBER', value: t };
+          
         }
       });
       let lexlist= this.LexicalList
       lexlist.forEach((element,index,lexlist) => {
         if (element.type =='NUMBER') {
           if ( lexlist[index-1].value=='-' && lexlist[index-1].type=='SPECIAL CHARACTER'  ){
+            console.log( '-'+element.value )
             lexlist.splice(index-1, 1);
             if( parseInt('-'+element.value,10) < -32768){
               Lexer.Errors.push(new Errorcalm("Number out of range", "LEXER", line)) ; //change this 0 to the line number

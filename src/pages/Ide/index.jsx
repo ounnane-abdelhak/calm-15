@@ -3,15 +3,13 @@ import Toggle from 'react-styled-toggle';
 import { Controlled as CodeMirror } from "react-codemirror2";
 import UAParser from 'ua-parser-js';
 import "./style.css"
+import  {BR,IR,memory,mess,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from '../../Emulator/mess.js';
+
 
 ///// import components //////
 import { NavBar, HelpSection, SaveCodeButton } from "../../components"
 ////// import machine components //////
-import MC from "../../Emulator/MC.js";
-import Sequenceur from "../../Emulator/Sequencer.js";
-import Queue from "../../Emulator/Queue.js";
-import AddressingModes from "../../Emulator/Adressing.js";
-import { generalPurposeRegister,Register } from "../../Emulator/Register.js";
+
 import Alu, { TwosComplement } from "../../Emulator/ALU.js";
 import Arch from '../Arch/index.jsx';
 import { getSpeed, setSpeed } from '../../Emulator/Instruction.js';
@@ -36,21 +34,6 @@ let animations=[];
 let Contextarray=[];
 
 ////////////////machine declarations////////////////////////////////
-let memory=new MC();
-let sequenceur=new Sequenceur();
-let queue = new Queue();
-let ioUnit = new IOUnit();
-let addressingModes=new AddressingModes();
-let IP=new Register();
-let R1= new generalPurposeRegister();
-let R2=new generalPurposeRegister();
-let R3=new generalPurposeRegister();
-let R4=new Register();
-let BR=new Register();
-let IR=new Register();
-let SR=new Register();
-let Alu1=new Alu();
-let Registers=[R1,R2,R3,R4,Alu1.Acc,BR,IR,SR];
 
 const handleRefresh = () => {
   window.location.reload();
@@ -66,7 +49,32 @@ function convertStrings(arr) {
   }
   return result;
 }
+function isValidString(str) {
+  // Check if the string contains any special characters
+  if (/[^a-zA-Z0-9_]/.test(str)) {
+    return false;
+  }else{
+  
+  // Check if the string begins with a number
+  if (/^\d/.test(str)) {
+    return false;
+  }else{
+  // Check if the string is in the excluded list
+  if (Assembler.excludedStrings.includes(str)) {
+    return false;
+  }else{    
+  // If none of the above conditions are met, the string is valid ;
+  //console.log("valid string")
+  return true;
+  }
+}}
+}   
 
+
+function convertNum(num, from, to) {
+  const todec = parseInt(num, from);
+  return todec.toString(to);
+}
 ///////////////////////////////////the component/////////////////////////
 const Ide = ({currentUser})=>{
   ////////////////////hooks///////////////////////////////:
@@ -82,8 +90,9 @@ const Ide = ({currentUser})=>{
   let [iserr,seterr]=useState(false);
   let [Speed,setspeed]=useState(getSpeed());
   let [rescode,setrescode]=useState("")
+  let offset=0;
+  let offset2=0;
 useEffect(()=>{setSpeed(Speed)},[Speed])
-
   ///////////////////////////////executions function////////////////////////////////////////
 
   const traitement= (codeArray)=>{
@@ -110,6 +119,19 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
     console.log(queue.getinstwithoutshift())
     
     let instrobject={};
+       for (let i = 0;i < mess.length;i++) {
+            for (let j = 0;j < mess[i].length;j++){ 
+              memory.setRim(mess[i][j].charCodeAt(0).toString(16));
+              memory.setRam( TwosComplement(offset2,16));
+              memory.write();
+              offset2++;
+              memory.setRim("00");
+              memory.setRam( TwosComplement(offset2,16));
+              memory.write();
+              offset2++;
+              }
+        console.log("here",mess)
+          }
     while(instrobject.name!=="stop"){
       sequenceur.getinstrbyte(animations,true,Contextarray);
       instrobject={...sequenceur.decode(animations,Contextarray)};
@@ -124,8 +146,9 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
   let [checktest,setChecktest]=useState(false);
 
   /////////////////////returning the component//////////////////
+
   let tablec=[];
-  memory.getData().forEach( (element,index) => {
+      memory.getData().forEach( (element,index) => {
     tablec.push(
       <tr>
         <td>
@@ -137,6 +160,7 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
       </tr>
     )
   });
+
 
   let tablestk=[];
   memory.getstack().forEach((element,index) => {
@@ -234,7 +258,6 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
   const handleStoreCode = (nb) => {
     const editor = codeMirrorRef.current.editor;
     const code = editor.getValue();
-  
     const commentArray = [];
     let lines = code.split('\n').filter(line => line.trim() !== '');
   
@@ -276,8 +299,8 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
     }
   
     const exist = [];
-    for (let i = 0; i < macros.length / 2; i++) {
-      for (let j = 0; j < macros.length; j++) {
+    for (let i = 0; i < macros.length ; i++) {
+      for (let j = i; j < macros.length; j++) {
         if (macros[i].name === macros[j].name && i !== j) {
           if (exist.every(item => item.line !== j)) {
             exist.push({ error: "MACRO name already used", line: j });
@@ -355,14 +378,94 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
       labelTable.forEach((label) => {
         let pos = 0;
         for (let i = 0; i < label.line; i++) {
-          pos += getInstLeng(codeArray[i].toUpperCase());
+          console.log("your array",codeArray[i])
+          if(codeArray[i]){ pos += getInstLeng(codeArray[i].toUpperCase());}
+   
         }
         label.line = pos;
       });
     }
+ // First, tokenize each line into code2.
+ let code2 = [];
+ codeArray.forEach(line => {
+   const tokens = line.match(/"[^"]*"|\S+/g);
+   code2.push(tokens);
+ });
+ 
+ let newCodeArray = [];
+ for (let i = 0; i < code2.length; i++) {
+   const line = code2[i];
+   let reg2 = /[a-zA-Z]*[a-z0-9A-Z_]+/;
+   let reg3 = /^"[^"]+"$/;
+   if (line[0] === "STR") {
+     if (line.length === 3) {
+       if (reg3.test(line[2])) {
+         if (reg2.test(line[1])) {
+           let valid = true;
+           for (let j = 0; j < i; j++) {
+             if (!["STR", "LABEL"].includes(code2[j][0])) {
+               valid = false;
+               break;
+             }
+           }
+           if (valid) {
+             if (isValidString(line[1])) {
+               let found = false;
+               let strname = line[1];
+               Assembler.STRlist.forEach(element => {
+                 if (element.name === strname) {
+                   found = true;
+                 }
+               });
+               if (!found) {
+                 let word = line[2];
+                 if (typeof word !== "string") {
+                   word = String(word);
+                 }
+                 let match = word.match(/"([^"]*)"/);
+                 if (match) {
+                   console.log("Extracted string:", match[1]);
+                   mess.push(match[1]);
+                 } else {
+                   Errorcalm.SemanticError.push(new Errorcalm("Could not extract string", null, i));
+                 }
+                 Assembler.STRlist.push({ name: line[1], address: line[2], begin: offset });
+                 offset += line[2].length - 2;
+               }
+             } else {
+               Errorcalm.SemanticError.push(new Errorcalm("STR name is not valid", null, i));
+             }
+           } else {
+             Errorcalm.SemanticError.push(new Errorcalm("STR must be defined before code", null, i));
+           }
+         } else {
+           Errorcalm.SemanticError.push(new Errorcalm("STR name not defined", null, i));
+         }
+       } else {
+         Errorcalm.SemanticError.push(new Errorcalm("STR must be a text", null, i));
+       }
+     } else {
+       if (isValidString(line[2])) {
+         Errorcalm.SemanticError.push(new Errorcalm("STR must have only two operands", null, i));
+       } else {
+         Errorcalm.SemanticError.push(new Errorcalm("STR name is not valid", null, i));
+       }
+     }
+  
+   } else {
+     newCodeArray.push(codeArray[i]);
+   }
+ }
+ 
 
+ codeArray.length = 0;
+ newCodeArray.forEach(item => codeArray.push(item));
+ 
+
+ 
+ 
     if (nb === 0) {
-      console.log("codeArray",codeArray);
+      console.log("codeArray",labelTable);
       return codeArray;
     }
     if (nb === 1) {
@@ -398,7 +501,7 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
     // Join array elements with newline character
     let code=[];
     for (let index = 0; index < codeArray.length; index++) {
-      if(codeArray[index].slice(0,codeArray[index].indexOf(" "))!=="LABEL"){code[index]=hexaArray[index]+"//"+codeArray[index]   }
+code[index]=hexaArray[index]+"//"+codeArray[index]   
     }    
   
     code = code.join('\n');
@@ -712,4 +815,4 @@ ${result}`}</pre>
 }
 
 export default Ide;
-export {BR,IR,memory,Registers,queue,addressingModes,Alu1,IP,ioUnit};
+

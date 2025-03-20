@@ -17,6 +17,7 @@ let [AluVal,setAluVal]=useState("");
 let [MCVal,setMCVal]=useState("");
 let MC=props.mem.getData();
 let tablec=[];
+
 MC.forEach((element,index) => {
     tablec.push( <tr>
     <td>
@@ -71,8 +72,8 @@ MC.forEach((element,index) => {
                 gsap.fromTo(".queuearrow",{top:"60%",left:"83%",opacity:"0"},{top:"60%",left:"73%",opacity:"1",duration:0.3});
                 gsap.to(".queuearrow",{opacity:"0",duration:"0.1",delay:"0.3"});
                 if(animqueuelen()==6){
-                    gsap.to(".queue5",{opacity:"1",duration:0.4})
                     gsap.to(".queue6",{opacity:"0",duration:0.4})
+                    gsap.to(".queue5",{opacity:"1",duration:0.4})
                     gsap.to(".queue4",{opacity:"1",duration:0.4})
                     gsap.to(".queue3",{opacity:"1",duration:0.4})
                     gsap.to(".queue2",{opacity:"1",duration:0.4})
@@ -232,14 +233,85 @@ MC.forEach((element,index) => {
     let q4=useRef();
     let q5=useRef();
     let q6=useRef();
-    const simulate=(h,w) => {
-        console.log("animation",props.anim)
+    const [inanim,incanim]=useState(0)
+const next=()=>{
+    document.getElementById("next").disabled=true;
+    document.getElementById("previous").disabled=true;
+    document.getElementById("stop").disabled = true;
+    document.getElementById("continue").disabled = true;
+    simulate(inanim);
+   
+    setTimeout(() => {
+         document.getElementById("next").disabled=false;
+         document.getElementById("previous").disabled=false; 
+         document.getElementById("stop").disabled = false;
+         document.getElementById("continue").disabled = false;  
+    },props.anim[inanim].time );
+ incanim(inanim+1);
+}
+const previous = () => {
+    document.getElementById("next").disabled = true;
+    document.getElementById("previous").disabled = true;
+    document.getElementById("stop").disabled = true;
+    document.getElementById("continue").disabled = true;
+    let newIndex = inanim;
+if(inanim>0){
+    newIndex -= 1;
+    incanim(newIndex);
+   }
+     simulate(newIndex);
+    setTimeout(() => {
+      document.getElementById("next").disabled = false;
+      document.getElementById("previous").disabled = false;
+      document.getElementById("stop").disabled = false;
+      document.getElementById("continue").disabled = false;
+    }, props.anim[newIndex].time);
+  };
+  const stopan = useRef(true);
+  const currentTimeout = useRef(null);
+  
+  const continu = () => {
+    document.getElementById("next").disabled = true;
+    document.getElementById("previous").disabled = true;
+    document.getElementById("continue").disabled = true;
+    
+    stopan.current = false;
+    let newIndex = inanim;
+  
+    function runAnimation() {
+      if (stopan.current || newIndex >= props.anim.length) {
+        document.getElementById("next").disabled = false;
+        document.getElementById("previous").disabled = false;
+        document.getElementById("continue").disabled = false;
+        return;
+      }
+      simulate(newIndex);
+      incanim(newIndex + 1);
+      const delay = props.anim[newIndex].time; 
+      newIndex++;
+      currentTimeout.current = setTimeout(runAnimation, delay/5);
+    }
+    
+    runAnimation();
+  };
+  
+  const stop = () => {
+    stopan.current = true;
+    clearTimeout(currentTimeout.current);
+    document.getElementById("next").disabled = false;
+    document.getElementById("previous").disabled = false;
+    document.getElementById("continue").disabled = false;
+  };
+  
+      let allow=true;
+      let allowtmp=0;
+      let dl=0;
+    const simulate=(j) => {
+      const h= myref.current.clientHeight;
+      const w= myref.current.clientWidth;
         let i=0;
-        let dl=0;
-        let allow=true;
-        let allowtmp=0;
-        let j=0
-        while(j<props.anim.length){
+console.log("anim",props.anim);
+        if(j<props.anim.length){
             let k=0;
             let stop=false;
             let chaine=false;
@@ -258,14 +330,14 @@ MC.forEach((element,index) => {
                 chaine=true;
                 allow=false;
                 allowtmp=0;
-            }
+            }  
+        
             animate(i,props.anim[j],h,w,dl,chaine);
-            dl+=props.anim[j].time+1;
+              dl=dl+props.anim[j].time+1;
             i++;
             // if((props.anim[j+1].nom==="QueueToIr")&(j<props.anim.length-4)&(props.anim[j+2].nom==="fitToIr"|props.anim[j+3].nom==="fitToIr")){//en cas instruction avec 2 general bytes
             // contin=false;
             // }
-            j++;
         };
     }
     
@@ -282,7 +354,7 @@ MC.forEach((element,index) => {
     return <>
     <div className="arch-contain">{/*///*/}
     {/* <img src={Archi} alt="" className="archi" ref={myref} onLoad={()=>{simulate(myref.current.clientHeight,myref.current.clientWidth)}}/> */}
-    <img src={Archi2} alt="" className="archi" ref={myref} onLoad={()=>{simulate(myref.current.clientHeight,myref.current.clientWidth)}}/>
+    <img src={Archi2} alt="" className="archi" ref={myref} onLoad={()=>{simulate()}}/>
 
     <div className="IP" style={{
         height:"4.2%",
@@ -519,8 +591,10 @@ MC.forEach((element,index) => {
         <label htmlFor="speed">Speed:{ props.Spe}</label>
             <input type="range" min="1" max="100" id="speed" value={props.Spe}  onChange={(e) => props.setspe(Number(e.target.value))} />
             <div>
-                <button className="control" >previous</button>
-                <button className="control" >next</button>
+                <button className="control" onClick={previous} id="previous">previous</button>
+                <button className="control" onClick={next} id="next" >next</button>
+                <button className="control" onClick={continu} id="continue">continue</button>
+                <button className="control" onClick={stop} id="stop" >stop</button>
             </div>
     </div>
     </>
