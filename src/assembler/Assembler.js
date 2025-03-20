@@ -777,7 +777,7 @@ export class  Assembler{
                                 break;
                         }
                          
-                        if (oppcode !== '1001') {
+                        if (oppcode != '1001' && oppcode != '1000') {
                         if (element.adrmode === 0 && input[1].type === 'REGISTER') {
                             switch(input[1].value){
                                 case 'R1':

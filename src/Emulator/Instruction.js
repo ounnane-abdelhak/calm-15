@@ -721,6 +721,27 @@ const ADRToMAR={
             gsap.fromTo(".ball",{x:w*0.221,y:h*0.465},{y:h*0.39 ,duration:1,delay:1});
             gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
           },}
+
+          const fitToIO={
+            value:"",
+            target:".ball",
+            time:1000,
+            anim:(val,h,w)=>{
+            gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.07,height:h*0.05,x:w*0.197,y:h*0.315,opacity:"0"},{opacity:"1" ,duration:1});
+            // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+            // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
+          },}
+
+          const infitToIO={
+            value:"",
+            target:".ball",
+            time:1000,
+            anim:(val,h,w)=>{
+                // gsap.fromTo(".ball",{x:w*0.442,y:h*0.7735,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+                // gsap.fromTo(".ball",{x:w*0.442,y:h*0.7735,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
+                // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
+                gsap.to(".ball",{opacity:"0" ,duration:1});
+            },}
 ////////////////////////////////////////////////
 
 
@@ -4523,11 +4544,10 @@ class InstructionREAD{
         this.taille=0;
         this.stepsNum=1;
         this.name="READ";
-        this.steps=[(animations)=>{
-
+        this.steps=[()=>{
             let chr = this.value1.charCodeAt(0);
-           
-            ioUnit.setBuffer(Dec2bin(chr));
+
+            ioUnit.buffer.setvalue('0'.repeat(8)+Dec2bin(chr));
            
             Registers[3].setvalue(ioUnit.getBuffer());
         }
@@ -4537,24 +4557,36 @@ class InstructionREAD{
                 return[
                     {
                         value:this.value1,
+                        target:fitToIO.target,
+                        time:fitToIO.time,
+                        anim:fitToIO.anim,
+                    },
+                    {
+                        value:this.value1,
+                        target:infitToIO.target,
+                        time:infitToIO.time,
+                        anim:infitToIO.anim,
+                    },
+                    {
+                        value:this.value1,
                         target:BufferToBus.target,
                         time:BufferToBus.time,
                         anim:BufferToBus.anim,
                     },
                     {
-                        value:this.value1,
+                        value:this.value2,
                         target:IOToBus.target,
                         time:IOToBus.time,
                         anim:IOToBus.anim,
                     },
                     {
-                        value:this.value1,
+                        value:this.value2,
                         target:fitToR4.target,
                         time: fitToR4.time,
                         anim: fitToR4.anim,
                     },
                     {
-                        value:this.value1,
+                        value:this.value2,
                         target:infitToR4.target,
                         time:infitToR4.time,
                         anim:infitToR4.anim,
@@ -4579,23 +4611,23 @@ class InstructionWRITE{
      
             ioUnit.buffer.setvalue(  Registers[3].getvalue());
             let chr = ioUnit.buffer.getvalue();
-            this.value1=String.fromCharCode(parseInt(chr,2));    
-            txt.push(this.value1);
+            const result = String.fromCharCode(parseInt(chr,2));    
+            txt.push(result);
         }
         ];
         this.buildanim=function(){
             return[ 
                 {
                     value:this.value2,
-                    target:infitToR4.target,
-                    time:infitToR4.time,
-                    anim:infitToR4.anim,
+                    target:fitToR4.target,
+                    time:fitToR4.time,
+                    anim:fitToR4.anim,
                 },
                 {
                     value:this.value2,
-                    target:fitToR4.target,
-                    time: fitToR4.time,
-                    anim: fitToR4.anim,
+                    target:infitToR4.target,
+                    time: infitToR4.time,
+                    anim: infitToR4.anim,
                 },
                 {
                     value:this.value1,
@@ -4608,6 +4640,18 @@ class InstructionWRITE{
                     target:BusToBuffer.target,
                     time:BusToBuffer.time,
                     anim:BusToBuffer.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToIO.target,
+                    time:fitToIO.time,
+                    anim:fitToIO.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToIO.target,
+                    time:infitToIO.time,
+                    anim:infitToIO.anim,
                 },
         ];
      }

@@ -7,11 +7,10 @@ class IOController {
 class IOUnit {
     constructor() {
         this.ioController = new IOController();
-        this.buffer =
-            new Register();
+        this.buffer = new Register();
     }
     getBuffer() {
-        return this.buffer;
+        return this.buffer.value;
     }
     setBuffer(value) {
         this.buffer.setvalue(value);

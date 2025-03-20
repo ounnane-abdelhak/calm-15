@@ -993,7 +993,20 @@ class Sequenceur{
                     time:fitToRual1.time,
                     anim:fitToRual1.anim,
                 })
-            }}
+            }} else {
+                if (instrObject.name === "WRITE") {                    
+                    instrObject.value1 = String.fromCharCode(parseInt(Registers[3].getvalue(),2));
+                    instrObject.value2 = parseInt(Registers[3].getvalue(),2);
+                } else if (instrObject.name === 'READ') {
+                    let readChar = prompt("Input:");
+                    if (!readChar) {
+                        readChar = "0";
+                    }
+                    instrObject.value1 = readChar[0];
+                    instrObject.value2 = readChar[0].charCodeAt(0);
+                }
+                return instrObject;
+            }
         }else{
             if(key>='0010' & key<='0011'){
                 key=instruction.substring(0,7);
@@ -2447,16 +2460,8 @@ class Sequenceur{
     execute(instrObject,is_animated,animations){
         let res;
         for (let i = 0; i < instrObject.stepsNum ; i++) {
-            if (instrObject.name === 'READ' || instrObject.name === 'WRITE') {
-                instrObject.value1 = String.fromCharCode(parseInt(Registers[3].getvalue(),2));
-                instrObject.value2 = parseInt(Registers[3].getvalue(),2);
-                res = instrObject.steps[i](animations);
-            } else {
-                res = instrObject.steps[i](animations);
-            }
+            res = instrObject.steps[i](animations);
         }
-        console.log("instrObject res", res);
-        console.log(instrObject);
         let animationSteps= instrObject.buildanim();
         if(is_animated===1 && animationSteps.length>0){
             for (let i = 0; i < animationSteps.length; i++) {

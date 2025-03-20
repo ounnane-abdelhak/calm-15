@@ -116,72 +116,73 @@ function hexToBin(hexString) {
             newstr = "error";
         }
   
-     if(newstr!="error"){        
-       
-      if (str3==='1') {
-          switch (opcode2) {
-            case "000":
-              newstr = newstr + " " + "R1";
-              break;
-            case "001":
-              newstr = newstr + " " + "R2";
-              break;
-            case "010":
-              newstr = newstr + " " + "R3";
-              break;
-            case "011":
-              newstr = newstr + " " + "R4";
-              break;
-            case "100":
-              newstr = newstr + " " + "ACC";
-              break;
-            case "101":
-              newstr = newstr + " " + "BR";
-              break;
-            case "110":
-              newstr = newstr + " " + "IDR";
-              break;
-            case "111":
-              newstr = newstr + " " + "SR";
-              break;
-            default:
-              newstr = "error";
+     if(newstr!="error"){ 
+        if (newstr == 'READ' || newstr == 'WRITE') {
+          return newstr;
+        } else {
+          if (str3==='1') {
+            switch (opcode2) {
+              case "000":
+                newstr = newstr + " " + "R1";
+                break;
+              case "001":
+                newstr = newstr + " " + "R2";
+                break;
+              case "010":
+                newstr = newstr + " " + "R3";
+                break;
+              case "011":
+                newstr = newstr + " " + "R4";
+                break;
+              case "100":
+                newstr = newstr + " " + "ACC";
+                break;
+              case "101":
+                newstr = newstr + " " + "BR";
+                break;
+              case "110":
+                newstr = newstr + " " + "IDR";
+                break;
+              case "111":
+                newstr = newstr + " " + "SR";
+                break;
+              default:
+                newstr = "error";
+            }
+          }else {
+    
+            switch (opcode2) {
+              case "000":
+                newstr = newstr + " " + "R1R";
+                break;
+              case "001":
+                newstr = newstr + " " + "R2R";
+                break;
+              case "010":
+                newstr = newstr + " " + "R3R";
+                break;
+              case "011":
+                newstr = newstr + " " + "ACCR";
+                break;
+              case "100":
+                newstr = newstr + " " + "R1L";
+                break;
+              case "101":
+                newstr = newstr + " " + "R2L";
+                break;
+              case "110":
+                newstr = newstr + " " + "R3L";
+                break;
+              case "111":
+                newstr = newstr + " " + "ACCL";
+                break;
+              default:
+                newstr = "error";
+            }
+            
+            
           }
-        }else {
-  
-          switch (opcode2) {
-            case "000":
-              newstr = newstr + " " + "R1R";
-              break;
-            case "001":
-              newstr = newstr + " " + "R2R";
-              break;
-            case "010":
-              newstr = newstr + " " + "R3R";
-              break;
-            case "011":
-              newstr = newstr + " " + "ACCR";
-              break;
-            case "100":
-              newstr = newstr + " " + "R1L";
-              break;
-            case "101":
-              newstr = newstr + " " + "R2L";
-              break;
-            case "110":
-              newstr = newstr + " " + "R3L";
-              break;
-            case "111":
-              newstr = newstr + " " + "ACCL";
-              break;
-            default:
-              newstr = "error";
-          }
-          
-          
-        }
-        
-        
+        } 
       }      
      }
   }else if(parseInt(str1, 2)>=2 && parseInt(str1, 2)<=3){

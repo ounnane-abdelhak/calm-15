@@ -474,10 +474,21 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
                     checked={checktest} 
                     onChange={()=>{
                         if(iscode){
+                          const editor = codeMirrorRef.current.editor;
+                          editor.setValue('');
+                          editor.setValue(Hexagen(handleStoreCode(0),Assembler.assemblecode(handleStoreCode(0),handleStoreCode(1),handleStoreCode(2))));
                           setIsCode(false);
                           setIsHexa(true);
                           setChecktest(!checktest);
                         }else{
+                          const editor = codeMirrorRef.current.editor;
+                          editor.setValue('');
+                          let code="";
+                          for (let m = 0; m <  handleStoreCode(0).length; m++) {
+                            code+=HexaToCode(handleStoreCode(0)[m])+"\n";
+                    
+                          }
+                          editor.setValue(code);
                           setIsCode(true);
                           setIsHexa(false);
                           setChecktest(!checktest);
@@ -520,7 +531,7 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
                   input.push("ff");
                   console.log("input: ", input);
                   try {
-    
+                    Errorcalm.errorr = Errorcalm.LexicalError.length + Errorcalm.SemanticError.length;
                     if (Errorcalm.errorr === 0) {
                       traitement(input);
                       let res = "";
