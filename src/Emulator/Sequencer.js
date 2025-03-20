@@ -541,12 +541,11 @@ class Sequenceur{
         let Inshex=queue.shift();
         let Ins=hex2bin(Inshex);
         this.RI.setvalue(Ins);
-        console.log(`this is RI here${this.RI.getvalue()}`)
         //the animation for this instruction goes here
         /////those 2 animations must be at the same time___________________
         if(is_animated){
             let key=hex2bin(Inshex).substring(0,4);
-            console.log(key);
+
             if(key>="0010"){//instructions with 1 general byte
                 animations.push({
                     value:"",

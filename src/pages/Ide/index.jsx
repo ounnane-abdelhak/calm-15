@@ -201,7 +201,7 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
       if (tokens.length === 0) return 0;
       
       // Use uppercase for consistency.
-      let inst = tokens[0].toUpperCase();
+      let inst = tokens[0];
     
       // Helper: Check if a token is an immediate constant (decimal or hex).
       function isImmediate(token) {
@@ -312,7 +312,6 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
     if (nb === 2) {
       return exist;
     }
-  
     // Remove macros from the code.
     let codeWithoutMacros = lines.replace(macroRegex, '');
     codeWithoutMacros = codeWithoutMacros.split('\n').filter(line => line.trim() !== '');
@@ -356,35 +355,38 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
   
     const labelTable = [];
     const codeArray = [];
-  
-    codeWithoutMacros.forEach((line, lineIndex) => {
-      // Extract label at the beginning of the line.
+    let codeLineIndex = 0;
+    
+    codeWithoutMacros.forEach((line) => {
       const labelMatch = line.match(/^\s*([^:]+):/);
       if (labelMatch) {
         labelTable.push({
           name: labelMatch[1].trim().replace(/\s/g, '').toUpperCase(),
-          line: lineIndex,
+          line: codeLineIndex,
         });
       }
-  
-      // Remove the label portion and add the remaining code.
       const newline = line.replace(/^\s*[^:]+:\s*/, '');
       if (newline !== '') {
         codeArray.push(newline.toUpperCase());
+        codeLineIndex++;
       }
     });
-  
+    
+  console.log("yourcode2",codeArray)
     if (labelTable) {
       labelTable.forEach((label) => {
         let pos = 0;
+         console.log("yournum",label.line)
         for (let i = 0; i < label.line; i++) {
-          console.log("your array",codeArray[i])
-          if(codeArray[i]){ pos += getInstLeng(codeArray[i].toUpperCase());}
+
+          
+             pos += getInstLeng(codeArray[i].toUpperCase());
    
         }
         label.line = pos;
       });
     }
+    console.log("codelabel",labelTable)
  // First, tokenize each line into code2.
  let code2 = [];
  codeArray.forEach(line => {
@@ -465,7 +467,7 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
  
  
     if (nb === 0) {
-      console.log("codeArray",labelTable);
+
       return codeArray;
     }
     if (nb === 1) {
@@ -511,10 +513,8 @@ code[index]=hexaArray[index]+"//"+codeArray[index]
   let [isRefreshed,setIsRefreshed]=useState(true);
 
   useEffect(()=>{
-      let storedArray = JSON.parse(localStorage.getItem('arr'));  
-      console.log(storedArray)         
+      let storedArray = JSON.parse(localStorage.getItem('arr'));          
       if(storedArray!=null){
-        console.log("stored_array",storedArray);
         storedArray=storedArray.join('\n');
         localStorage.removeItem('arr');
         setCode(storedArray);

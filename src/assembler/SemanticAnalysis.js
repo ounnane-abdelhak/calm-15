@@ -95,17 +95,19 @@ export class SemanticAnalysis {
                         //|        or one param and other special chars: they must be valid  also  .                 |
                         //|        That other special char is used for addressing modes mainly    .                  |
                         //|-----------------------------------------------------------------------------------------.
+                                                    // check if size of first list == size of second list and assign it to the size of the instruction
                         const functINST1 = ()=> {
                             var firstparam = lexicalList[i][1]
                             if (['NEG','NOT', 'SHL', 'SHR', 'READ', 'PUSH', 'POP', 'ROR', 'ROL'].includes( lexicalList[i][0].value )) {
                                 //read or write from or to register only..
                                 // Labels are not allowed
+                                if(firstparam){
                                 if (firstparam.type == 'REGISTER'  && lexicalList[i].length == 2) {
                                     this.Semanticlist.push([{  type:lexicalList[i][0].type, value: lexicalList[i][0].value, adrmode:0  },lexicalList[i][1]]);
                                 }
                                 else{
                                     Errorcalm.SemanticError.push(new Errorcalm("INST1 must have one register as operand",null,i))
-                                }
+                                }}else{  Errorcalm.SemanticError.push(new Errorcalm("INST1 must have a register as operand",null,i))}
                             }else if (lexicalList[i][0].value == "WRITE") {
                                 this.Semanticlist.push([{type:lexicalList[i][0].type, value: lexicalList[i][0].value, adrmode:0 }]);
                             }else{
