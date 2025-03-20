@@ -664,12 +664,7 @@ class Sequenceur{
     queue.fetchInstruction(animations,4,false,Contextarray,1);//----///here we have the fetch from the memory
     }
     decode(animations,Contextarray){
-  for (let i = 0;i < mess.length;i++) {
-    for (let j = 0;j < mess[i].length;j++){ 
-        memory.data[offset]=mess[i][j].charCodeAt(0).toString(16);offset++;
-      }
-console.log(Assembler.STRlist)
-  }
+
  
         let instruction=this.RI.getvalue();
         let key=instruction.substring(0,4);

@@ -91,8 +91,8 @@ const Ide = ({currentUser})=>{
   let [Speed,setspeed]=useState(getSpeed());
   let [rescode,setrescode]=useState("")
   let offset=0;
+  let offset2=0;
 useEffect(()=>{setSpeed(Speed)},[Speed])
-
   ///////////////////////////////executions function////////////////////////////////////////
 
   const traitement= (codeArray)=>{
@@ -119,6 +119,19 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
     console.log(queue.getinstwithoutshift())
     
     let instrobject={};
+       for (let i = 0;i < mess.length;i++) {
+            for (let j = 0;j < mess[i].length;j++){ 
+              memory.setRim(mess[i][j].charCodeAt(0).toString(16));
+              memory.setRam( TwosComplement(offset2,16));
+              memory.write();
+              offset2++;
+              memory.setRim("00");
+              memory.setRam( TwosComplement(offset2,16));
+              memory.write();
+              offset2++;
+              }
+        console.log("here",mess)
+          }
     while(instrobject.name!=="stop"){
       sequenceur.getinstrbyte(animations,true,Contextarray);
       instrobject={...sequenceur.decode(animations,Contextarray)};
@@ -365,7 +378,9 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
       labelTable.forEach((label) => {
         let pos = 0;
         for (let i = 0; i < label.line; i++) {
-          pos += getInstLeng(codeArray[i].toUpperCase());
+          console.log("your array",codeArray[i])
+          if(codeArray[i]){ pos += getInstLeng(codeArray[i].toUpperCase());}
+   
         }
         label.line = pos;
       });
@@ -446,13 +461,11 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
  codeArray.length = 0;
  newCodeArray.forEach(item => codeArray.push(item));
  
- console.log("coo", codeArray);
- console.log("coo2", Assembler.STRlist);
- console.log("Tokenized code2:", mess);
+
  
  
     if (nb === 0) {
-      console.log("codeArray",codeArray);
+      console.log("codeArray",labelTable);
       return codeArray;
     }
     if (nb === 1) {
