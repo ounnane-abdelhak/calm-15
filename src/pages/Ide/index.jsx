@@ -5,6 +5,7 @@ import UAParser from 'ua-parser-js';
 import "./style.css"
 import  {BR,IR,memory,mess,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from '../../Emulator/mess.js';
 
+
 ///// import components //////
 import { NavBar, HelpSection, SaveCodeButton } from "../../components"
 ////// import machine components //////
