@@ -24,6 +24,7 @@ import {HexaToCode} from "../../HexaToCode/HexaToCode"
 import { Errorcalm } from "../../assembler/Errorcalm";
 import { useLocation } from 'react-router-dom';
 import IOUnit from '../../Emulator/IO_Unit.js';
+import txt from "../../Emulator/Instruction.js";
 
 
 ////////////////animations declarations////////////////////////////////
@@ -77,6 +78,7 @@ function convertNum(num, from, to) {
 const Ide = ({currentUser})=>{
   ////////////////////hooks///////////////////////////////:
   let [result,setresult]=useState("");
+  let [txtColor,setTxtColor]=useState("green");
   let [done,setdone]=useState(false);
   let [simul,setsimul]=useState(false)
   let [memo,setmemo]=useState(false);
@@ -165,7 +167,6 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
   const [editMode, setEditMode] = useState({isEditMode: false, programName: null, programId: -1});
 
   const {state} = useLocation()
-  console.log("ide state:",state);
   useEffect(()=>{
     if(state){
       setEditMode(state.editMode);
@@ -450,6 +451,7 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
  
  
     if (nb === 0) {
+      console.log("codeArray",codeArray);
       return codeArray;
     }
     if (nb === 1) {
@@ -540,7 +542,8 @@ code[index]=hexaArray[index]+"//"+codeArray[index]
                       code+=HexaToCode(handleStoreCode(0)[m])+"\n";
                
                     } 
-                          console.log("hereeeee",handleStoreCode(0))
+                          console.log("hereeeee",handleStoreCode(0));
+                          console.log(code);
                     editor.setValue(code);
                     setChecktest(!checktest);
                     setIsCode(true);
@@ -601,18 +604,24 @@ code[index]=hexaArray[index]+"//"+codeArray[index]
                   }else{
                     inputouter=handleStoreCode(0);
                   }
+                  console.log("inputouter: ", inputouter);
                   let input=convertStrings(inputouter);
                   input.push("ff");
-                  
+                  console.log("input: ", input);
                   try {
     
                     if (Errorcalm.errorr === 0) {
                       traitement(input);
-                      
-                      
+                      let res = "";
+                      txt.map((item) => {
+                        res += item;
+                      });
+                      setresult(res);
+                      setTxtColor("green");
                     }else{
                       setresult(Errorcalm.printError());
                       seterr(true);
+                      setTxtColor("red");
                     }
                        
                     
@@ -764,7 +773,7 @@ console.log("the error",error)
                   </table>
                 }
                 {console.log(result)}
-                <pre style={{color:"red"}}>{`
+                <pre style={{color:txtColor}}>{`
 ${result}`}</pre>
               </div>
             }

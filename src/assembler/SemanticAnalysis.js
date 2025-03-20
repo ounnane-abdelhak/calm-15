@@ -97,7 +97,7 @@ export class SemanticAnalysis {
                         //|-----------------------------------------------------------------------------------------.
                         const functINST1 = ()=> {
                             var firstparam = lexicalList[i][1]
-                            if (['NEG','NOT', 'SHL', 'SHR', 'READ', 'WRITE', 'PUSH', 'POP', 'ROR', 'ROL'].includes( lexicalList[i][0].value )) {
+                            if (['NEG','NOT', 'SHL', 'SHR', 'READ', 'PUSH', 'POP', 'ROR', 'ROL'].includes( lexicalList[i][0].value )) {
                                 //read or write from or to register only..
                                 // Labels are not allowed
                                 if (firstparam.type == 'REGISTER'  && lexicalList[i].length == 2) {
@@ -106,7 +106,8 @@ export class SemanticAnalysis {
                                 else{
                                     Errorcalm.SemanticError.push(new Errorcalm("INST1 must have one register as operand",null,i))
                                 }
-
+                            }else if (lexicalList[i][0].value == "WRITE") {
+                                this.Semanticlist.push([{type:lexicalList[i][0].type, value: lexicalList[i][0].value, adrmode:0 }]);
                             }else{
                             // use it as function
                             // funcnum(lexicalList[i],i)
