@@ -1,13 +1,13 @@
 import { Register } from "./Register.js"
+import  {memory} from './mess.js';
 
 class MC {
     constructor(){
     this.rim=new Register()
     this.ram=new Register() 
-    this.stack = new Array(65536)//size à revoir
-    this.data = new Array (65536)
-    this.code = new Array(65536) 
-
+    this.stack =Array.from({ length: 50 }, () => "00000000");//size à revoir
+    this.data = Array.from({ length: 50 }, () => "00000000");
+    this.code = Array.from({ length: 50 }, () => "00000000");
     }
 
     setcode(code){
@@ -24,6 +24,7 @@ class MC {
     }
     getRim (){
     return this.rim
+
     }
     read(iscode){
     if(iscode==1){
@@ -47,6 +48,10 @@ class MC {
     }
     getData(){
         return this.data;
+    }
+    setData(off,val){
+        this.data[off]=val
+
     }
     getstack(){
         return this.stack;

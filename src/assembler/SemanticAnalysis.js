@@ -1,14 +1,19 @@
 import { Lexer } from './Lexer.js';
 import { Errorcalm } from './Errorcalm.js';
 import { Assembler,FuncInterface } from "./Assembler.js";
+import {  memory } from "../pages/Ide/index.jsx";
+import { TwosComplement } from '../Emulator/ALU.js';
 
 
+function convertNum(num, from, to) {
+    const todec = parseInt(num, from);
+    return todec.toString(to);
+  }
 export class SemanticAnalysis {
     Semanticlist = []
-    
     constructor(input,input2) { 
-      
-  
+      let offset=0;
+
         let lexicalList = input;
         for(let i = 0; i < lexicalList.length; i++){
             // here operation with each line of code
@@ -17,7 +22,6 @@ export class SemanticAnalysis {
             
               let firstword = lexicalList[i][0]
               let firstwordtype = firstword.type
-              
               
               switch (firstwordtype) {
                     
@@ -66,7 +70,6 @@ export class SemanticAnalysis {
                       
                       functLABEL();
                       break;
-                      
                       case 'INST0': 
                           // No params instructions: INST0 ::=    RET, PUSHA, POPA
                           // We must have no op after it 
@@ -198,8 +201,9 @@ export class SemanticAnalysis {
                             list2 = FuncInterface.addrmod(lexicalList[i].slice(1),i).list2 ;
          console.log("lists",list1,list2)
          if(list1.length>0 && list2.length>0){
-                            if( FuncInterface.defadrmod(list1,i).type=='NUMBER' && lexicalList[i][0].value == 'MOV' && FuncInterface.defadrmod(list1,i).adrmode==0 ) {
+                            if(( FuncInterface.defadrmod(list1,i).type=='NUMBER')&& lexicalList[i][0].value == 'MOV' && FuncInterface.defadrmod(list1,i).adrmode==0 ) {
                                 //console.log("here------------------------")
+
                                         Errorcalm.SemanticError.push(new Errorcalm("Number can't be first operand",null,i))
                             }else{
                             //console.log("\nlist1",list1,"\nlist2",list2)
@@ -235,9 +239,7 @@ export class SemanticAnalysis {
            
           
         }
-         
     }
-
 
 
 

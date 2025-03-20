@@ -14,8 +14,8 @@ import  CodeMirror from 'codemirror'
 })(function(CodeMirror) { 
 
   CodeMirror.defineMode("8086", function(config, parserConfig) {
-      var keywords = ["cmp","mov", "add", "sub", "mul", "div", "jmp", "call", "ret", "push", "pop", "label", "bri", "be", "bne", "bs", "bi", "bse", "bie", "ror", "rol", "shr", "shl","pusha","popa","read","write"];
-      var registers = ["r1", "r2", "r3", "r4", "idr", "br", "sr", "acc", "r1l", "r1h", "r2l", "r2h", "r3l", "r3h", "accl", "acch"];
+      var keywords = ["str","cmp","mov", "add", "sub", "mul", "div", "jmp", "call", "ret", "push", "pop", "label", "bri", "be", "bne", "bs", "bi", "bse", "bie", "ror", "rol", "shr", "shl","pusha","popa","read","write"];
+      var registers = ["r1", "r2", "r3", "r4", "idr", "br", "sr", "acc", "r1l", "r1r", "r2l", "r2r", "r3l", "r3r", "accl", "accr"];
       var macro=["macro","endm"];
       var number = /-?(?:0x[0-9a-f]+|\d+)/i;
       function tokenBase(stream, state) {
@@ -34,6 +34,14 @@ import  CodeMirror from 'codemirror'
           stream.skipToEnd();
           return "comment";
         }
+        if (ch === '"') {
+          stream.eatWhile(/[^"]/); 
+          if (stream.eat('"')) {
+              return "mess"; 
+          }
+      }
+  
+
         if (/[a-zA-Z_]/.test(ch)) {
           stream.eatWhile(/[\w.]/);
           var cur = stream.current().toLowerCase();
@@ -46,7 +54,8 @@ import  CodeMirror from 'codemirror'
               }
               if (macro.indexOf(cur) >= 0) {
                 return "mac";
-            }
+            }   
+ 
             
 
           }
