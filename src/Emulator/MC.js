@@ -1,60 +1,78 @@
-import { Register } from "./Register.js"
-import  {memory} from './mess.js';
-
+import { Register } from "./Register.js";
+import { memory } from "./mess.js";
+import Cache from "./Cache.js";
 class MC {
-    constructor(){
-    this.rim=new Register()
-    this.ram=new Register() 
-    this.stack =Array.from({ length: 50 }, () => "00000000");//size à revoir
+  constructor() {
+    this.rim = new Register();
+    this.ram = new Register();
+    this.stack = Array.from({ length: 50 }, () => "00000000"); //size à revoir
     this.data = Array.from({ length: 50 }, () => "00000000");
     this.code = Array.from({ length: 50 }, () => "00000000");
-    }
+    this.cache = new Cache(10);
+  }
 
-    setcode(code){
-        this.code=code;
-    }
-    setRim (val){//val in hexa
-    this.rim=val;
-    }
-    setRam (adr){//val in decimal
-    this.ram=adr;
-    }
-    getRam(){
+  setcode(code) {
+    this.code = code;
+  }
+  setRim(val) {
+    //val in hexa
+    this.rim = val;
+  }
+  setRam(adr) {
+    //val in decimal
+    this.ram = adr;
+  }
+  getRam() {
     return this.ram;
-    }
-    getRim (){
-    return this.rim
+  }
+  getRim() {
+    return this.rim;
+  }
+  read(isCode) {
+    let address = parseInt(this.ram, 2);
 
+    //Check if data exists in cache
+    let cachedData = this.cache.get(address);
+    if (cachedData !== undefined) {
+      this.rim = cachedData; // Cache Hit
+      return;
     }
-    read(iscode){
-    if(iscode==1){
-        this.rim=this.code[parseInt(this.ram,2)]
+
+    // Cache Miss then Load from Memory
+    if (isCode) {
+      this.rim = this.code[address];
+    } else {
+      this.rim = this.data[address];
     }
-    else{if(iscode==0){
-        this.rim=this.data[parseInt(this.ram,2)]}else{if(iscode==2
-        ){
-            this.rim=this.label[parseInt(this.ram,2)]   }
-        }
-    }
-    }
-    write(){
-        this.data[parseInt(this.ram,2)]=this.rim;
-    }
-    popval(){
-    this.rim=this.stack.pop();
-    }
-    pushval(){
+
+    //Store in Cache
+    this.cache.set(address, this.rim);
+  }
+
+  //Store in both main memory & cache
+  write() {
+    let address = parseInt(this.ram, 2);
+    this.data[address] = this.rim;
+
+    //Store in Cache
+    this.cache.set(address, this.rim);
+  }
+
+  popval() {
+    this.rim = this.stack.pop();
+  }
+
+  pushval() {
     this.stack.push(this.rim);
-    }
-    getData(){
-        return this.data;
-    }
-    setData(off,val){
-        this.data[off]=val
+  }
 
-    }
-    getstack(){
-        return this.stack;
-    }
+  getData() {
+    return this.data;
+  }
+
+  getstack() {
+    return this.stack;
+  }
 }
+
 export default MC;
