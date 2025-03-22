@@ -5,10 +5,10 @@ class MC {
   constructor() {
     this.rim = new Register();
     this.ram = new Register();
-    this.stack =new Array(100); //size à revoir
-    this.data =new Array(100);
-    this.code =new Array(100);
-    this.cache = new Cache(10);
+    this.stack =new Array(65535); //size à revoir
+    this.data =new Array(65535);
+    this.code =new Array(65535);
+    this.cache = new Cache(6553);
   }
 
   setcode(code) {
