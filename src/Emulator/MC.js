@@ -33,7 +33,7 @@ class MC {
 
     //Check if data exists in cache
     let cachedData = this.cache.get(address);
-    if (cachedData !== undefined) {
+    if (cachedData !== undefined && !isCode) {
       this.rim = cachedData; // Cache Hit
       return;
     }
