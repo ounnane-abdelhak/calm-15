@@ -207,7 +207,7 @@ export class SemanticAnalysis {
                             list1 = FuncInterface.addrmod(lexicalList[i].slice(1),i).list1 ;
                             //console.log("list1",list1[0].type)
                             list2 = FuncInterface.addrmod(lexicalList[i].slice(1),i).list2 ;
-         console.log("lists",list1,list2)
+
          if(list1.length>0 && list2.length>0){
                             if(( FuncInterface.defadrmod(list1,i).type=='NUMBER')&& lexicalList[i][0].value == 'MOV' && FuncInterface.defadrmod(list1,i).adrmode==0 ) {
                                 //console.log("here------------------------")

@@ -215,7 +215,6 @@ while (hexString.length < size) {
         if (labelobj === null)
         {
             //error
-            Errorcalm.SemanticError.push(new Errorcalm("Label not found",null,linenumber));
             return {type: 'ERROR', value: null};
         }else{
             //return the address
@@ -237,11 +236,11 @@ while (hexString.length < size) {
         if (labelobj === null)
         {
             //error
-            Errorcalm.SemanticError.push(new Errorcalm("Label not found3",null,linenumber));
+            Errorcalm.SemanticError.push(new Errorcalm("Label or str not found",null,linenumber));
             return {type: 'ERROR', value: null};
         }else{
             //return the address
-            return {type: 'NUMBER', value: labelobj.address}; 
+            return {type: 'NUMBER', value: labelobj.begin}; 
     }},
     
     Label_To_Num2 : (labelname,linenumber,labels)=>{
@@ -290,12 +289,17 @@ while (hexString.length < size) {
 
   addrmod : (listofpar,line) => {
 
-     
+    let err=0; 
     // go through the list of instructions if listofpar[index].value is different then , then add this element.value to the list 1
     // go throught an if there is an element.type='TEXT' you use Labeltonum to make it a number
     listofpar.forEach((element,index) => {
         if (element.type === 'TEXT') {
-            listofpar[index] = FuncInterface.Label_To_Num(element.value, line);
+    ;
+            if( FuncInterface.Label_To_Num(element.value, line).value=null){
+                if(FuncInterface.Label_To_Num3(element.value, line).value=null){
+
+                }else{listofpar[index] = FuncInterface.Label_To_Num3(element.value, line);}
+            }else{listofpar[index] = FuncInterface.Label_To_Num3(element.value, line);}
         }
     });
     

@@ -426,12 +426,11 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
                  }
                  let match = word.match(/"([^"]*)"/);
                  if (match) {
-                   console.log("Extracted string:", match[1]);
                    mess.push(match[1]);
                  } else {
                    Errorcalm.SemanticError.push(new Errorcalm("Could not extract string", null, i));
                  }
-                 Assembler.STRlist.push({ name: line[1], address: line[2], begin: offset });
+                 Assembler.STRlist.push({ name: line[1], address: line[2], begin: offset*2 });
                  offset += line[2].length - 2;
                }
              } else {
