@@ -5,9 +5,9 @@ class MC {
   constructor() {
     this.rim = new Register();
     this.ram = new Register();
-    this.stack = Array.from({ length: 50 }, () => "00000000"); //size à revoir
-    this.data = Array.from({ length: 50 }, () => "00000000");
-    this.code = Array.from({ length: 50 }, () => "00000000");
+    this.stack =new Array(100); //size à revoir
+    this.data =new Array(100);
+    this.code =new Array(100);
     this.cache = new Cache(10);
   }
 

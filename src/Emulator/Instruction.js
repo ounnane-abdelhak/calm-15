@@ -10,6 +10,15 @@ function Dec2bin(dec){
 function hex2bin(hex){
     return ("0".repeat(16-(parseInt(hex, 16)).toString(2).length) + (parseInt(hex, 16)).toString(2));
 }
+function hex2binlow(hex){
+    return ("0".repeat(8-(parseInt(hex, 16)).toString(2).length) + (parseInt(hex, 16)).toString(2));
+}
+function binaryToHexlow(binaryString) {
+    const decimalValue = parseInt(binaryString, 2);
+    let hexString = decimalValue.toString(16).toUpperCase();
+  if(hexString.length%2==1){hexString="0"+hexString;}
+    return hexString;
+  }
 /////////////////animations to test////////////////////
 let speed=3;
 export const setSpeed=(val)=>{speed=val;}
@@ -3138,8 +3147,14 @@ class InstructionPUSH{
         this.stepsNum=1;
         this.name="PUSH";
         this.steps=[()=>{
-            memory.setRim(this.value1);
+            if(this.taille==1){  
+            memory.setRim(binaryToHex(Registers[parseInt(this.register1,2)].getvalue()).slice(0,2));
             memory.pushval();
+            memory.setRim(binaryToHex(Registers[parseInt(this.register1,2)].getvalue()).slice(-2));
+            memory.pushval();}else{
+                memory.setRim(binaryToHexlow(this.value1));
+                memory.pushval();
+            }
         }
         ];
         this.buildanim=function(){
@@ -3518,8 +3533,44 @@ class InstructionPOP{
         this.stepsNum=1;
         this.name="POP";
         this.steps=[()=>{
-            memory.popval();
-            Registers[this.register1].setvalue(memory.getRim());//the operand of pop can only be a register
+            if(this.taille==1){
+                let reg;
+                memory.popval();
+                reg=memory.getRim();
+                memory.popval();
+                reg=memory.getRim()+reg;
+                Registers[parseInt(this.register1,2)].setvalue(hex2bin(reg));
+            }else{
+                memory.popval();
+                Registers[parseInt(this.register1,2)].setvalue(hex2bin(memory.getRim()));
+                switch (this.register1) {
+                    case "000":
+                        Registers[0].setright(hex2binlow(memory.getRim()));
+                        break;
+                    case "001":
+                        Registers[1].setright(hex2binlow(memory.getRim()));
+                        break;
+                    case "010":
+                        Registers[2].setright(hex2binlow(memory.getRim()));
+                        break;
+                    case "011":
+                        Registers[4].setright(hex2binlow(memory.getRim()));
+                        break;
+                    case "100":
+                        Registers[0].setleft(hex2binlow(memory.getRim()));
+                        break;
+                    case "101":
+                        Registers[1].setleft(hex2binlow(memory.getRim()));
+                        break;
+                    case "110":
+                        Registers[2].setleft(hex2binlow(memory.getRim()));
+                        break;
+                    case "111":
+                        Registers[4].setleft(hex2binlow(memory.getRim()));
+                        break;
+
+                }
+            }
         }
         ];
         this.buildanim=function(){
@@ -4468,7 +4519,318 @@ class InstructionPUSHA{
         }
         ];
         this.buildanim=function(){
-            return[];
+
+                return[
+                    {
+                        value:"PUSHA",
+                        target:MCanim.target,
+                        time:MCanim.time,
+                        anim:MCanim.anim,
+                    },
+                    {
+                    value:this.value1,
+                    target:fitToR1.target,
+                    time:fitToR1.time,
+                    anim:fitToR1.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToR1.target,
+                    time:infitToR1.time,
+                    anim:infitToR1.anim,
+                },
+                {
+                    value:this.value1,
+                    target:RegToMdr.target,
+                    time:RegToMdr.time,
+                    anim:RegToMdr.anim,
+                },
+                {
+                    value:"",
+                    target:BusToMdr.target,
+                    time:BusToMdr.time,
+                    anim:BusToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+
+,{
+                    value:this.value1,
+                    target:fitToR2.target,
+                    time:fitToR2.time,
+                    anim:fitToR2.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToR2.target,
+                    time:infitToR2.time,
+                    anim:infitToR2.anim,
+                },
+                {
+                    value:this.value1,
+                    target:RegToMdr.target,
+                    time:RegToMdr.time,
+                    anim:RegToMdr.anim,
+                },
+                {
+                    value:"",
+                    target:BusToMdr.target,
+                    time:BusToMdr.time,
+                    anim:BusToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+
+,{
+                    value:this.value1,
+                    target:fitToR3.target,
+                    time:fitToR3.time,
+                    anim:fitToR3.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToR3.target,
+                    time:infitToR3.time,
+                    anim:infitToR3.anim,
+                },
+                {
+                    value:this.value1,
+                    target:RegToMdr.target,
+                    time:RegToMdr.time,
+                    anim:RegToMdr.anim,
+                },
+                {
+                    value:"",
+                    target:BusToMdr.target,
+                    time:BusToMdr.time,
+                    anim:BusToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+
+,{
+                    value:this.value1,
+                    target:fitToR4.target,
+                    time:fitToR4.time,
+                    anim:fitToR4.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToR4.target,
+                    time:infitToR4.time,
+                    anim:infitToR4.anim,
+                },
+                {
+                    value:this.value1,
+                    target:RegToMdr.target,
+                    time:RegToMdr.time,
+                    anim:RegToMdr.anim,
+                },
+                {
+                    value:"",
+                    target:BusToMdr.target,
+                    time:BusToMdr.time,
+                    anim:BusToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+
+,{
+                    value:this.value1,
+                    target:fitToAcc.target,
+                    time:fitToAcc.time,
+                    anim:fitToAcc.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToAcc.target,
+                    time:infitToAcc.time,
+                    anim:infitToAcc.anim,
+                },
+                {
+                    value:this.value1,
+                    target:AccToBus.target,
+                    time:AccToBus.time,
+                    anim:AccToBus.anim,
+                },
+                {
+                    value:this.value1,
+                    target:AccToMDR.target,
+                    time:AccToMDR.time,
+                    anim:AccToMDR.anim,
+                },
+                {
+                    value:"",
+                    target:BusToMdr.target,
+                    time:BusToMdr.time,
+                    anim:BusToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+
+,{
+                    value:this.value1,
+                    target:fitToBr.target,
+                    time:fitToBr.time,
+                    anim:fitToBr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToBr.target,
+                    time:infitToBr.time,
+                    anim:infitToBr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:RegToMdr.target,
+                    time:RegToMdr.time,
+                    anim:RegToMdr.anim,
+                },
+                {
+                    value:"",
+                    target:BusToMdr.target,
+                    time:BusToMdr.time,
+                    anim:BusToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+
+,{
+                    value:this.value1,
+                    target:fitToIdr.target,
+                    time:fitToIdr.time,
+                    anim:fitToIdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToIdr.target,
+                    time:infitToIdr.time,
+                    anim:infitToIdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:RegToMdr.target,
+                    time:RegToMdr.time,
+                    anim:RegToMdr.anim,
+                },
+                {
+                    value:"",
+                    target:BusToMdr.target,
+                    time:BusToMdr.time,
+                    anim:BusToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+
+{
+                    value:this.value1,
+                    target:fitToSr.target,
+                    time:fitToSr.time,
+                    anim:fitToSr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToSR.target,
+                    time:infitToSR.time,
+                    anim:infitToSR.anim,
+                },
+                {
+                    value:this.value1,
+                    target:RegToMdr.target,
+                    time:RegToMdr.time,
+                    anim:RegToMdr.anim,
+                },
+                {
+                    value:"",
+                    target:BusToMdr.target,
+                    time:BusToMdr.time,
+                    anim:BusToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+
+            ];
+            
         }
     }
 }
@@ -4529,7 +4891,319 @@ class InstructionPOPA{
         }
         ];
         this.buildanim=function(){
-            return[];
+
+                return[{
+                    value:"POPA",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:MdrToBus.target,
+                    time:MdrToBus.time,
+                    anim:MdrToBus.anim,
+                },
+                {
+                    value:"",
+                    target:MdrToReg.target,
+                    time:MdrToReg.time,
+                    anim:MdrToReg.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToR1.target,
+                    time:fitToR1.time,
+                    anim:fitToR1.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToR1.target,
+                    time:infitToR1.time,
+                    anim:infitToR1.anim,
+                },
+
+                {//////animation pf pop in MC
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:MdrToBus.target,
+                    time:MdrToBus.time,
+                    anim:MdrToBus.anim,
+                },
+                {
+                    value:"",
+                    target:MdrToReg.target,
+                    time:MdrToReg.time,
+                    anim:MdrToReg.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToR2.target,
+                    time:fitToR2.time,
+                    anim:fitToR2.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToR2.target,
+                    time:infitToR2.time,
+                    anim:infitToR2.anim,
+                },
+
+                {//////animation pf pop in MC
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:MdrToBus.target,
+                    time:MdrToBus.time,
+                    anim:MdrToBus.anim,
+                },
+                {
+                    value:"",
+                    target:MdrToReg.target,
+                    time:MdrToReg.time,
+                    anim:MdrToReg.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToR3.target,
+                    time:fitToR3.time,
+                    anim:fitToR3.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToR3.target,
+                    time:infitToR3.time,
+                    anim:infitToR3.anim,
+                },
+
+                {//////animation pf pop in MC
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:MdrToBus.target,
+                    time:MdrToBus.time,
+                    anim:MdrToBus.anim,
+                },
+                {
+                    value:"",
+                    target:MdrToReg.target,
+                    time:MdrToReg.time,
+                    anim:MdrToReg.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToR4.target,
+                    time:fitToR4.time,
+                    anim:fitToR4.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToR4.target,
+                    time:infitToR4.time,
+                    anim:infitToR4.anim,
+                },
+                //push animation
+
+                {//////animation pf pop in MC
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:MdrToBus.target,
+                    time:MdrToBus.time,
+                    anim:MdrToBus.anim,
+                },
+                {
+                    value:"",
+                    target:MDRToAcc.target,
+                    time:MDRToAcc.time,
+                    anim:MDRToAcc.anim,
+                },
+                {
+                    value:"",
+                    target:BusToAcc.target,
+                    time:BusToAcc.time,
+                    anim:BusToAcc.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToAcc.target,
+                    time:fitToAcc.time,
+                    anim:fitToAcc.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToAcc.target,
+                    time:infitToAcc.time,
+                    anim:infitToAcc.anim,
+                },
+                //push animation
+
+                {//////animation pf pop in MC
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:MdrToBus.target,
+                    time:MdrToBus.time,
+                    anim:MdrToBus.anim,
+                },
+                {
+                    value:"",
+                    target:MdrToReg.target,
+                    time:MdrToReg.time,
+                    anim:MdrToReg.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToBr.target,
+                    time:fitToBr.time,
+                    anim:fitToBr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToBr.target,
+                    time:infitToBr.time,
+                    anim:infitToBr.anim,
+                },
+                //push animation
+
+                {//////animation of pop in MC
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:MdrToBus.target,
+                    time:MdrToBus.time,
+                    anim:MdrToBus.anim,
+                },
+                {
+                    value:"",
+                    target:MdrToReg.target,
+                    time:MdrToReg.time,
+                    anim:MdrToReg.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToIdr.target,
+                    time:fitToIdr.time,
+                    anim:fitToIdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToIdr.target,
+                    time:infitToIdr.time,
+                    anim:infitToIdr.anim,
+                },
+                {//////animation pf pop in MC
+                    value:this.value1,
+                    target:fitToMdr.target,
+                    time:fitToMdr.time,
+                    anim:fitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToMdr.target,
+                    time:infitToMdr.time,
+                    anim:infitToMdr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:MdrToBus.target,
+                    time:MdrToBus.time,
+                    anim:MdrToBus.anim,
+                },
+                {
+                    value:"",
+                    target:MdrToReg.target,
+                    time:MdrToReg.time,
+                    anim:MdrToReg.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToSr.target,
+                    time:fitToSr.time,
+                    anim:fitToSr.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToSR.target,
+                    time:infitToSR.time,
+                    anim:infitToSR.anim,
+                },
+
+            ];
+            
         }
     }
 }
