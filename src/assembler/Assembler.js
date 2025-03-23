@@ -295,8 +295,8 @@ while (hexString.length < size) {
     listofpar.forEach((element,index) => {
         if (element.type === 'TEXT') {
     ;
-            if( FuncInterface.Label_To_Num(element.value, line).value=null){
-                if(FuncInterface.Label_To_Num3(element.value, line).value=null){
+            if( FuncInterface.Label_To_Num(element.value, line).value==null){
+                if(FuncInterface.Label_To_Num3(element.value, line).value==null){
 
                 }else{listofpar[index] = FuncInterface.Label_To_Num3(element.value, line);}
             }else{listofpar[index] = FuncInterface.Label_To_Num(element.value, line);}
