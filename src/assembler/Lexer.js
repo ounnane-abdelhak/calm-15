@@ -83,7 +83,9 @@ export class Lexer {
             t === 'BI' ||
             t === 'BIE' ||
             t === 'BSE' ||
-            t === 'BRI'
+            t === 'BRI' ||
+            t === 'READS' ||
+            t === 'WRITES'
           ) {
             return {
               type: 'INST1',

@@ -18,7 +18,223 @@ function binaryToHexlow(binaryString) {
     let hexString = decimalValue.toString(16).toUpperCase();
   if(hexString.length%2==1){hexString="0"+hexString;}
     return hexString;
-  }
+}
+const Bin16ToHexa = (bin) => {
+    const a = bin.substring(0,4);
+    const b = bin.substring(4,8);
+    const c = bin.substring(8,12);
+    const d = bin.substring(12,16);
+    let hexStr = "";
+    switch (a) {
+      case '0000':
+        hexStr += "0"
+        break;
+      case '0001':
+        hexStr += "1"
+        break;
+      case '0010':
+        hexStr += "2"
+        break;
+      case '0011':
+        hexStr += "3"
+        break;
+      case '0100':
+        hexStr += "4"
+        break;
+      case '0101':
+        hexStr += "5"
+        break;
+      case '0110':
+        hexStr += "6"
+        break;
+      case '0111':
+        hexStr += "7"
+        break;
+      case '1000':
+        hexStr += "8"
+        break;
+      case '1001':
+        hexStr += "9"
+        break;
+      case '1010':
+        hexStr += "a"
+        break;
+      case '1011':
+        hexStr += "b"
+        break;
+      case '1100':
+        hexStr += "c"
+        break;
+      case '1101':
+        hexStr += "d"
+        break;
+      case '1110':
+        hexStr += "e"
+        break;
+      case '1111':
+        hexStr += "f"
+        break;
+      default:
+        break;
+    }
+    switch (b) {
+      case '0000':
+        hexStr += "0"
+        break;
+      case '0001':
+        hexStr += "1"
+        break;
+      case '0010':
+        hexStr += "2"
+        break;
+      case '0011':
+        hexStr += "3"
+        break;
+      case '0100':
+        hexStr += "4"
+        break;
+      case '0101':
+        hexStr += "5"
+        break;
+      case '0110':
+        hexStr += "6"
+        break;
+      case '0111':
+        hexStr += "7"
+        break;
+      case '1000':
+        hexStr += "8"
+        break;
+      case '1001':
+        hexStr += "9"
+        break;
+      case '1010':
+        hexStr += "a"
+        break;
+      case '1011':
+        hexStr += "b"
+        break;
+      case '1100':
+        hexStr += "c"
+        break;
+      case '1101':
+        hexStr += "d"
+        break;
+      case '1110':
+        hexStr += "e"
+        break;
+      case '1111':
+        hexStr += "f"
+        break;
+      default:
+        break;
+    }
+    switch (c) {
+      case '0000':
+        hexStr += "0"
+        break;
+      case '0001':
+        hexStr += "1"
+        break;
+      case '0010':
+        hexStr += "2"
+        break;
+      case '0011':
+        hexStr += "3"
+        break;
+      case '0100':
+        hexStr += "4"
+        break;
+      case '0101':
+        hexStr += "5"
+        break;
+      case '0110':
+        hexStr += "6"
+        break;
+      case '0111':
+        hexStr += "7"
+        break;
+      case '1000':
+        hexStr += "8"
+        break;
+      case '1001':
+        hexStr += "9"
+        break;
+      case '1010':
+        hexStr += "a"
+        break;
+      case '1011':
+        hexStr += "b"
+        break;
+      case '1100':
+        hexStr += "c"
+        break;
+      case '1101':
+        hexStr += "d"
+        break;
+      case '1110':
+        hexStr += "e"
+        break;
+      case '1111':
+        hexStr += "f"
+        break;
+      default:
+        break;
+    }
+    switch (d) {
+      case '0000':
+        hexStr += "0"
+        break;
+      case '0001':
+        hexStr += "1"
+        break;
+      case '0010':
+        hexStr += "2"
+        break;
+      case '0011':
+        hexStr += "3"
+        break;
+      case '0100':
+        hexStr += "4"
+        break;
+      case '0101':
+        hexStr += "5"
+        break;
+      case '0110':
+        hexStr += "6"
+        break;
+      case '0111':
+        hexStr += "7"
+        break;
+      case '1000':
+        hexStr += "8"
+        break;
+      case '1001':
+        hexStr += "9"
+        break;
+      case '1010':
+        hexStr += "a"
+        break;
+      case '1011':
+        hexStr += "b"
+        break;
+      case '1100':
+        hexStr += "c"
+        break;
+      case '1101':
+        hexStr += "d"
+        break;
+      case '1110':
+        hexStr += "e"
+        break;
+      case '1111':
+        hexStr += "f"
+        break;
+      default:
+        break;
+    }
+    return hexStr;
+}
 /////////////////animations to test////////////////////
 let speed=3;
 export const setSpeed=(val)=>{speed=val;}
@@ -5333,7 +5549,121 @@ class InstructionWRITE{
     }
 }
 
+class InstructionREADS {
+    constructor(){
+        this.value1=0;
+        this.value2=0;
+        this.addresse1=0;
+        this.register1=0;
+        this.addresse2=0;
+        this.register2=0;
+        this.taille=0;
+        this.stepsNum=1;
+        this.name="READS";
+        this.steps=[()=>{
+            let string = this.value1;
+            let address = this.addresse1;
+            let i = 0;
+            while (string[i]) {
+                ioUnit.buffer.setvalue('0'.repeat(8) + Dec2bin(string[i].charCodeAt(0)));
+                memory.setRim(ioUnit.buffer.getvalue().substring(8));
+                memory.setRam(Dec2bin(address));
+                memory.write();
+                i++;
+                address++;
+            }
+        }
+        ];
+        this.buildanim=function(){
+            let animationSteps = [];
+            let animationSubSteps = [];
+            let string = this.value1;
+            let address = this.addresse1;
+            let i = 0;
+            while (string[i]) {
+                const char = string[i];
+                const ascii = char.charCodeAt(0);
+                animationSubSteps = [
+                    {
+                        value:char,
+                        target:fitToIO.target,
+                        time:fitToIO.time,
+                        anim:fitToIO.anim,
+                    },
+                    {
+                        value:char,
+                        target:infitToIO.target,
+                        time:infitToIO.time,
+                        anim:infitToIO.anim,
+                    },
+                    {
+                        value:char,
+                        target:BufferToBus.target,
+                        time:BufferToBus.time,
+                        anim:BufferToBus.anim,
+                    },
+                    {
+                        value:ascii,
+                        target:IOToMdr.target,
+                        time:IOToMdr.time,
+                        anim:IOToMdr.anim,
+                    },
+                    {
+                        value:ascii,
+                        target:BusToMdr.target,
+                        time:BusToMdr.time,
+                        anim:BusToMdr.anim,
+                    },
+                    {
+                        value:ascii,
+                        target:fitToMdr.target,
+                        time:fitToMdr.time,
+                        anim:fitToMdr.anim,
+                    },
+                    {
+                        value:ascii,
+                        target:infitToMdr.target,
+                        time:infitToMdr.time,
+                        anim:infitToMdr.anim,
+                    },
+                ];
+                animationSteps.push.apply(animationSteps, animationSubSteps);
+                //address++;
+                i++;
+            }
+            return animationSteps;
+     }
+    }
+}
 
+class InstructionWRITES {
+    constructor(){
+        this.value1=0;
+        this.value2=0;
+        this.addresse1=0;
+        this.register1=0;
+        this.addresse2=0;
+        this.register2=0;
+        this.taille=0;
+        this.stepsNum=1;
+        this.name="WRITES";
+        this.steps=[()=>{
+            let adr = this.addresse1 ;
+            memory.setRam(adr);
+            memory.read(false);
+            ioUnit.buffer.setvalue(  memory.getRim());
+            let chr = ioUnit.buffer.getvalue();
+            const result = String.fromCharCode(parseInt(chr,2));    
+            txt.push(result);
+        }
+        ];
+        this.buildanim=function(){
+            return[
 
-export {InstructionCMP,InstructionREAD,InstructionWRITE,InstructionADD,InstructionMOV00,InstructionMOV01,InstructionMOV10,InstructionMOV11,InstructionSUB,InstructionMUL,InstructionDIV,InstructionBSE,InstructionBIE,InstructionBI,InstructionBS,InstructionBNE,InstructionBE,InstructionBR,InstructionPOP,InstructionPUSH,InstructionAND,InstructionOR,InstructionNAND,InstructionNOR,InstructionXOR,InstructionNEG,InstructionNOT,InstructionROL,InstructionROR,InstructionSHL,InstructionSHR,InstructionPOPA,InstructionPUSHA}
+            ];
+     }
+    }
+}
+
+export {InstructionREADS,InstructionWRITES,InstructionCMP,InstructionREAD,InstructionWRITE,InstructionADD,InstructionMOV00,InstructionMOV01,InstructionMOV10,InstructionMOV11,InstructionSUB,InstructionMUL,InstructionDIV,InstructionBSE,InstructionBIE,InstructionBI,InstructionBS,InstructionBNE,InstructionBE,InstructionBR,InstructionPOP,InstructionPUSH,InstructionAND,InstructionOR,InstructionNAND,InstructionNOR,InstructionXOR,InstructionNEG,InstructionNOT,InstructionROL,InstructionROR,InstructionSHL,InstructionSHR,InstructionPOPA,InstructionPUSHA}
 export default txt  ;

@@ -222,6 +222,12 @@ function hexToBin(hexString) {
           case "0011000":
             newstr = "BRI";
             break;
+          case "0011100":
+            newstr = "READS";
+            break;
+          case "0011101":
+            newstr = "WRITES";
+            break;
           default:
             newstr = "error";
         }

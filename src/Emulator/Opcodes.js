@@ -1,4 +1,4 @@
-import { InstructionCMP,InstructionREAD,InstructionWRITE,InstructionADD,InstructionMOV00,InstructionMOV01,InstructionMOV10,InstructionMOV11,InstructionSUB,InstructionMUL,InstructionDIV, InstructionPUSH, InstructionBR, InstructionNOR, InstructionNEG, InstructionROR, InstructionROL, InstructionSHL, InstructionSHR, InstructionBE, InstructionBS, InstructionBSE, InstructionBI, InstructionBIE, InstructionBNE, InstructionNOT, InstructionOR, InstructionAND, InstructionNAND, InstructionXOR,InstructionPUSHA,InstructionPOPA, InstructionPOP } from "./Instruction.js";
+import { InstructionCMP,InstructionREAD,InstructionWRITE,InstructionADD,InstructionMOV00,InstructionMOV01,InstructionMOV10,InstructionMOV11,InstructionSUB,InstructionMUL,InstructionDIV, InstructionPUSH, InstructionBR, InstructionNOR, InstructionNEG, InstructionROR, InstructionROL, InstructionSHL, InstructionSHR, InstructionBE, InstructionBS, InstructionBSE, InstructionBI, InstructionBIE, InstructionBNE, InstructionNOT, InstructionOR, InstructionAND, InstructionNAND, InstructionXOR,InstructionPUSHA,InstructionPOPA, InstructionPOP, InstructionREADS, InstructionWRITES } from "./Instruction.js";
 
 function hash(key){
     if(key=="0000000"){
@@ -67,6 +67,10 @@ function hash(key){
         return 31;
     }else if(key=="1011"){//POP
         return 32;
+    }else if(key=="0011100"){//READS
+        return 33;
+    }else if(key=="0011101"){//WRITES
+        return 34;
     }
 
 }
@@ -103,6 +107,8 @@ let pushaInst=new InstructionPUSHA();
 let popaInst=new InstructionPOPA();
 let READinst=new InstructionREAD();
 let WRITEinst=new InstructionWRITE();
+let READSinst=new InstructionREADS();
+let WRITESinst=new InstructionWRITES();
 
 let hashmap=[
 {
@@ -236,6 +242,14 @@ let hashmap=[
 {
     key:"b",
     instrObject:POPinst,
+},
+{
+    key:"39",
+    instrObject:READSinst
+},
+{
+    key:"3b",
+    instrObject:WRITESinst
 }
 ];
 export {hash,hashmap};

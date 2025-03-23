@@ -1018,6 +1018,13 @@ class Sequenceur{
                 instrObject=hashmap[index].instrObject;
                 animateDecoderSequencer(animations,instrObject.name);
                 if(!(key=='0011010'| key =='0010000' | key =='0010001')){
+                    if (key == '0011100') { //READS Instruction
+                        let str = prompt('String Input:');
+                        if (!str) {
+                            str = "$";
+                        }
+                        instrObject.value1 = str;
+                    }
                     this.getinstrbyte(animations,false,Contextarray);
                     let adresse=this.RI.getvalue()
                     this.getinstrbyte(animations,false,Contextarray);

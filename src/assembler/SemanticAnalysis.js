@@ -89,7 +89,7 @@ export class SemanticAnalysis {
 
 
                       case 'INST1':
-                        // ONE params instructions: INST1 ::=  NEG, NOT, SHL, SHR, READ, WRITE, PUSH, POP, ROR, ROL, CALL, BE, BNE, BS, BI, BIE, BSE, BR
+                        // ONE params instructions: INST1 ::=  NEG, NOT, SHL, SHR, READ, WRITE, READS, WRITES, PUSH, POP, ROR, ROL, CALL, BE, BNE, BS, BI, BIE, BSE, BR
                         //|                                                                          .               |
                         //|        Must have only one other param: it must be valid                  .               |
                         //|        or one param and other special chars: they must be valid  also  .                 |
@@ -108,6 +108,8 @@ export class SemanticAnalysis {
                                     else{
                                         Errorcalm.SemanticError.push(new Errorcalm("INST1 must have one register as operand",null,i))
                                     }
+                                } else {
+                                    Errorcalm.SemanticError.push(new Errorcalm("INST1 must have an operand",null,i))
                                 }
                             }else if (lexicalList[i][0].value == "WRITE" || lexicalList[i][0].value == "READ") {
                                 if (lexicalList[i].length !== 1) {
@@ -120,61 +122,64 @@ export class SemanticAnalysis {
                             // funcnum(lexicalList[i],i)
                             // add in the body firstparam definition
                             // var firstparam = lexicalList[i][1]
-
-                            switch(firstparam.type){
-                            case 'NUMBER' :
-                                    //check addressing
-                                    if (firstparam.value < Assembler.MAXNUM) {
-                                    
-                                    switch (lexicalList[i].length) {
-                                        case 2:
-                                            this.Semanticlist.push([{type:lexicalList[i][0].type, value: lexicalList[i][0].value, adrmode:0 },lexicalList[i][1]]);
-                                            break;
-                                       
-                                        default:
-                                            Errorcalm.SemanticError.push(new Errorcalm("Wrong number or type of operands",null,i))
-                                            break;
-                                    }    }else{
-                                        Errorcalm.SemanticError.push(new Errorcalm("Number size is bigger then MAXNUM",null,i))
-                                    }                               
-                                
-                            break;
-                            
-                            case 'REGISTER' :
-                                    Errorcalm.SemanticError.push(new Errorcalm("Instruction cannot have register as operand",null,i))
-                               break;
-                            
-                            case 'TEXT' :
-                                    //+ ajouter opp avec labels,  I guess DONE
-                                    // Do the needed operations after transformations and ADD TESTs it's not safe here !
-                                    // add addressing modes direct and indirect for labels
-
-                                    //check if it's present in label list
-                                    
-                                    switch (lexicalList[i].length) {
-
-                                        case 2:
-                                            this.Semanticlist.push([{type:lexicalList[i][0].type, value:lexicalList[i][0].value, adrmode:0 },{type:FuncInterface.Label_To_Num2(firstparam.value,i,input2).type, value:FuncInterface.Label_To_Num2(firstparam.value,i,input2).value}]);
-                                            
-                                        break;
-                                          
-                                        case 5:
-                                            // indirect
-                                            if (lexicalList[i][2].value == '*' && lexicalList[i][3].value == '+' && lexicalList[i][4].type == 'NUMBER' && (0 < lexicalList[i][4].value) && ( Assembler.MAXNUM > lexicalList[i][4].value) ) {
-                                                this.Semanticlist.push([{type:lexicalList[i][0].type, value:lexicalList[i][0].value, adrmode:3 },{type:FuncInterface.Label_To_Num2(firstparam.value,i,input2).type, value:FuncInterface.Label_To_Num2(firstparam.value,i,input2).value},{type:lexicalList[i][4].type, value:lexicalList[i][4].value}]);
-                                            }else{
-                                                Errorcalm.SemanticError.push(new Errorcalm("Wrong expression or wrong size of number",null,i))
-                                            }
+                            if (firstparam) {
+                                switch(firstparam.type){
+                                case 'NUMBER' :
+                                        //check addressing
+                                        if (firstparam.value < Assembler.MAXNUM) {
                                         
-                                        break;
+                                        switch (lexicalList[i].length) {
+                                            case 2:
+                                                this.Semanticlist.push([{type:lexicalList[i][0].type, value: lexicalList[i][0].value, adrmode:0 },lexicalList[i][1]]);
+                                                break;
+                                        
+                                            default:
+                                                Errorcalm.SemanticError.push(new Errorcalm("Wrong number or type of operands",null,i))
+                                                break;
+                                        }    }else{
+                                            Errorcalm.SemanticError.push(new Errorcalm("Number size is bigger then MAXNUM",null,i))
+                                        }                               
                                     
-                                        default:
-                                            Errorcalm.SemanticError.push(new Errorcalm("Wrong number or type of operands",null,i))
-                                            break;
-                                    }
-
-                                    
+                                break;
                                 
+                                case 'REGISTER' :
+                                        Errorcalm.SemanticError.push(new Errorcalm("Instruction cannot have register as operand",null,i))
+                                break;
+                                
+                                case 'TEXT' :
+                                        //+ ajouter opp avec labels,  I guess DONE
+                                        // Do the needed operations after transformations and ADD TESTs it's not safe here !
+                                        // add addressing modes direct and indirect for labels
+
+                                        //check if it's present in label list
+                                        
+                                        switch (lexicalList[i].length) {
+
+                                            case 2:
+                                                this.Semanticlist.push([{type:lexicalList[i][0].type, value:lexicalList[i][0].value, adrmode:0 },{type:FuncInterface.Label_To_Num2(firstparam.value,i,input2).type, value:FuncInterface.Label_To_Num2(firstparam.value,i,input2).value}]);
+                                                
+                                            break;
+                                            
+                                            case 5:
+                                                // indirect
+                                                if (lexicalList[i][2].value == '*' && lexicalList[i][3].value == '+' && lexicalList[i][4].type == 'NUMBER' && (0 < lexicalList[i][4].value) && ( Assembler.MAXNUM > lexicalList[i][4].value) ) {
+                                                    this.Semanticlist.push([{type:lexicalList[i][0].type, value:lexicalList[i][0].value, adrmode:3 },{type:FuncInterface.Label_To_Num2(firstparam.value,i,input2).type, value:FuncInterface.Label_To_Num2(firstparam.value,i,input2).value},{type:lexicalList[i][4].type, value:lexicalList[i][4].value}]);
+                                                }else{
+                                                    Errorcalm.SemanticError.push(new Errorcalm("Wrong expression or wrong size of number",null,i))
+                                                }
+                                            
+                                            break;
+                                        
+                                            default:
+                                                Errorcalm.SemanticError.push(new Errorcalm("Wrong number or type of operands",null,i))
+                                                break;
+                                        }
+
+                                        
+                                    
+                                }
+                            } else {
+                                Errorcalm.SemanticError.push(new Errorcalm("INST1 must have an operand",null,i))
                             }
                         
                         }
