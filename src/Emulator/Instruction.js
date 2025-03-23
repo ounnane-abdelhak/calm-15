@@ -690,7 +690,7 @@ const ADRToMAR={
 
         const IOToBus={
             value:"",
-            target:".ball",
+            target:".box-data",
             time:3000,
             anim:(val,h,w)=>{
             ///depart: ( 51.8% , 43.2% )
@@ -700,7 +700,7 @@ const ADRToMAR={
           },}
           const BusToIO={
             value:"",
-            target:".ball",
+            target:".box-data",
             time:3000,
             anim:(val,h,w)=>{
             ///depart: ( 51.8% , 43.2% )
@@ -5305,7 +5305,7 @@ class InstructionWRITE{
                     anim: infitToR4.anim,
                 },
                 {
-                    value:this.value1,
+                    value:this.value2,
                     target:BusToIO.target,
                     time:BusToIO.time,
                     anim:BusToIO.anim,

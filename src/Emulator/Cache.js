@@ -1,5 +1,5 @@
 class Cache {
-  constructor(size = 20) {
+  constructor(size) {
     this.size = size;
     this.cache = new Map();
   }

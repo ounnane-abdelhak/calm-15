@@ -31,22 +31,23 @@ class MC {
   read(isCode) {
     let address = parseInt(this.ram, 2);
 
-    //Check if data exists in cache
-    let cachedData = this.cache.get(address);
-    if (cachedData !== undefined) {
-      this.rim = cachedData; // Cache Hit
-      return;
-    }
-
-    // Cache Miss then Load from Memory
     if (isCode) {
       this.rim = this.code[address];
     } else {
-      this.rim = this.data[address];
-    }
+      let cachedData = this.cache.get(address);
 
-    //Store in Cache
-    this.cache.set(address, this.rim);
+      //Check if data exists in cache
+      if (cachedData !== undefined && cachedData !== "00000000") {
+        this.rim = cachedData; // Cache Hit
+        return;
+      }
+
+      // Cache Miss then Load from Memory
+      this.rim = this.data[address];
+
+      //Store in Cache
+      this.cache.set(address, this.rim);
+    }
   }
 
   //Store in both main memory & cache
