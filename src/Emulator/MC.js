@@ -31,6 +31,14 @@ class MC {
   read(isCode) {
     let address = parseInt(this.ram, 2);
 
+    //Check if data exists in cache
+    let cachedData = this.cache.get(address);
+    if (cachedData !== undefined && !isCode) {
+      this.rim = cachedData; // Cache Hit
+      return;
+    }
+
+    // Cache Miss then Load from Memory
     if (isCode) {
       this.rim = this.code[address];
     } else {
