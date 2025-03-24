@@ -1037,9 +1037,11 @@ class Sequenceur{
                     instrObject.taille=taille;
                     if (key == '0011101') { //WRITES Instruction
                         let str = "";
-                        while(memory.data[adresse] !== '24') {
+                        let count = 0;
+                        while(memory.data[adresse] !== '24' && count < 256) {
                             str += String.fromCharCode(parseInt(memory.data[adresse+1] + memory.data[adresse],16));
                             adresse++;
+                            count++;
                         }
                         instrObject.value1 = str;
                     }

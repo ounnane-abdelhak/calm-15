@@ -5824,7 +5824,8 @@ class InstructionWRITES {
             let result = "";
             let char = "";
             let ascii = "";
-            while (char !== "$") {
+            let count = 0;
+            while (char !== "$" && count < 256) {
                 console.log("adr", Dec2bin(adr));
                 memory.setRam(Dec2bin(adr));
                 memory.read(false);
@@ -5839,6 +5840,7 @@ class InstructionWRITES {
                     result += char;
                 }
                 adr++;
+                count++;
             }
             txt.push(result);
         }
