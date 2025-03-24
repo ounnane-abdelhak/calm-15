@@ -226,6 +226,10 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
       if (tokens.length < 3) return 0;
       return isImmediate(tokens[2]) ? 4 : 2;
     }
+    if (inst === 'READS' || inst === 'WRITES') {
+      if (tokens.length < 2) return 0;
+      return 3;
+    }
     const twoOpInst = new Set(['ADD', 'SUB', 'MUL', 'DIV', 'AND', 'OR', 'XOR', 'NOR', 'NAND', 'CMP']);
     if (twoOpInst.has(inst)) {
       if (tokens.length < 3) return 0;
