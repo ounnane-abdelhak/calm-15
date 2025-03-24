@@ -1,4 +1,4 @@
-import  {memory,Registers,queue,Alu1,IP,ioUnit} from "../pages/Ide";
+import  {BR,IR,memory,mess,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from "../pages/Ide";
 
 import { TwosComplement } from "./ALU.js";
 import { gsap } from "gsap";
@@ -19,7 +19,7 @@ function binaryToHexlow(binaryString) {
   if(hexString.length%2==1){hexString="0"+hexString;}
     return hexString;
 }
-const Bin16To2Hexa = (bin) => {
+const Bin16ToHexaLow = (bin) => {
     const c = bin.substring(8,12);
     const d = bin.substring(12,16);
     let hexStr = "";
@@ -76,6 +76,116 @@ const Bin16To2Hexa = (bin) => {
         break;
     }
     switch (d) {
+      case '0000':
+        hexStr += "0"
+        break;
+      case '0001':
+        hexStr += "1"
+        break;
+      case '0010':
+        hexStr += "2"
+        break;
+      case '0011':
+        hexStr += "3"
+        break;
+      case '0100':
+        hexStr += "4"
+        break;
+      case '0101':
+        hexStr += "5"
+        break;
+      case '0110':
+        hexStr += "6"
+        break;
+      case '0111':
+        hexStr += "7"
+        break;
+      case '1000':
+        hexStr += "8"
+        break;
+      case '1001':
+        hexStr += "9"
+        break;
+      case '1010':
+        hexStr += "a"
+        break;
+      case '1011':
+        hexStr += "b"
+        break;
+      case '1100':
+        hexStr += "c"
+        break;
+      case '1101':
+        hexStr += "d"
+        break;
+      case '1110':
+        hexStr += "e"
+        break;
+      case '1111':
+        hexStr += "f"
+        break;
+      default:
+        break;
+    }
+    return hexStr;
+}
+const Bin16ToHexaHigh = (bin) => {
+    const a = bin.substring(0,4);
+    const b = bin.substring(4,8);
+    let hexStr = "";
+    switch (a) {
+      case '0000':
+        hexStr += "0"
+        break;
+      case '0001':
+        hexStr += "1"
+        break;
+      case '0010':
+        hexStr += "2"
+        break;
+      case '0011':
+        hexStr += "3"
+        break;
+      case '0100':
+        hexStr += "4"
+        break;
+      case '0101':
+        hexStr += "5"
+        break;
+      case '0110':
+        hexStr += "6"
+        break;
+      case '0111':
+        hexStr += "7"
+        break;
+      case '1000':
+        hexStr += "8"
+        break;
+      case '1001':
+        hexStr += "9"
+        break;
+      case '1010':
+        hexStr += "a"
+        break;
+      case '1011':
+        hexStr += "b"
+        break;
+      case '1100':
+        hexStr += "c"
+        break;
+      case '1101':
+        hexStr += "d"
+        break;
+      case '1110':
+        hexStr += "e"
+        break;
+      case '1111':
+        hexStr += "f"
+        break;
+      default:
+        break;
+    }
+    switch (b) {
       case '0000':
         hexStr += "0"
         break;
@@ -5529,7 +5639,11 @@ class InstructionREADS {
             let i = 0;
             while (string[i]) {
                 ioUnit.buffer.setvalue('0'.repeat(8) + Dec2bin(string[i].charCodeAt(0)));
-                memory.setRim(Bin16To2Hexa(ioUnit.buffer.getvalue()));
+                memory.setRim(Bin16ToHexaLow(ioUnit.buffer.getvalue()));
+                memory.setRam(Dec2bin(address));
+                memory.write();
+                address++;
+                memory.setRim(Bin16ToHexaHigh(ioUnit.buffer.getvalue()));
                 memory.setRam(Dec2bin(address));
                 memory.write();
                 i++;
@@ -5605,7 +5719,7 @@ class InstructionREADS {
                         anim:BufferToBus.anim,
                     },
                     {
-                        value:ascii,
+                        value:"00"+ascii,
                         target:IOToMdr.target,
                         time:IOToMdr.time,
                         anim:IOToMdr.anim,
@@ -5617,13 +5731,13 @@ class InstructionREADS {
                         anim:BusToMdr.anim,
                     },
                     {
-                        value:ascii,
+                        value:"00"+ascii,
                         target:fitToMdr.target,
                         time:fitToMdr.time,
                         anim:fitToMdr.anim,
                     },
                     {
-                        value:ascii,
+                        value:"00"+ascii,
                         target:infitToMdr.target,
                         time:infitToMdr.time,
                         anim:infitToMdr.anim,
@@ -5685,6 +5799,8 @@ class InstructionREADS {
                 ];
                 animationSteps.push.apply(animationSteps, animationSubSteps);
                 address++;
+                address++;
+                i++;
                 i++;
             }
             return animationSteps;
@@ -5707,12 +5823,19 @@ class InstructionWRITES {
             let adr = this.addresse1 ;
             let result = "";
             let char = "";
+            let ascii = "";
             while (char !== "$") {
+                console.log("adr", Dec2bin(adr));
                 memory.setRam(Dec2bin(adr));
                 memory.read(false);
-                ioUnit.buffer.setvalue(hex2bin(memory.getRim()));
+                ascii = memory.getRim();
+                adr++;
+                memory.setRam(Dec2bin(adr));
+                memory.read(false);
+                ascii = memory.getRim() + ascii;
+                ioUnit.buffer.setvalue(hex2bin(ascii));
                 char = String.fromCharCode(parseInt(ioUnit.buffer.getvalue(),2));
-                if (char !== '$' && char !== String.fromCharCode('0')) {
+                if (char !== '$') {
                     result += char;
                 }
                 adr++;
@@ -5824,13 +5947,13 @@ class InstructionWRITES {
                         anim:MCanim.anim,
                     },
                     {
-                        value:ascii,
+                        value:"00"+ascii,
                         target:fitToMdr.target,
                         time:fitToMdr.time,
                         anim:fitToMdr.anim,
                     },
                     {
-                        value:ascii,
+                        value:"00"+ascii,
                         target:infitToMdr.target,
                         time:infitToMdr.time,
                         anim:infitToMdr.anim,
@@ -5842,7 +5965,7 @@ class InstructionWRITES {
                         anim:MdrToBus.anim,
                     },
                     {
-                        value:ascii,
+                        value:"00"+ascii,
                         target:MdrToIO.target,
                         time:MdrToIO.time,
                         anim:MdrToIO.anim,
@@ -5868,6 +5991,8 @@ class InstructionWRITES {
                 ];
                 animationSteps.push.apply(animationSteps, animationSubSteps);
                 address++;
+                address++;
+                i++;
                 i++;
             }
             return animationSteps;

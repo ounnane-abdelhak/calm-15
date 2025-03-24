@@ -1038,7 +1038,7 @@ class Sequenceur{
                     if (key == '0011101') { //WRITES Instruction
                         let str = "";
                         while(memory.data[adresse] !== '24') {
-                            str += String.fromCharCode(parseInt(memory.data[adresse],16));
+                            str += String.fromCharCode(parseInt(memory.data[adresse+1] + memory.data[adresse],16));
                             adresse++;
                         }
                         instrObject.value1 = str;
