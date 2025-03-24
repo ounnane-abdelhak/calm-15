@@ -1,5 +1,5 @@
 import { Register } from "./Register.js";
-import  {BR,IR,memory,mess,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from './mess.js';
+import  {BR,IR,memory,mess,Registers,queue,addressingModes} from "../pages/Ide";
 import { hash, hashmap } from "./Opcodes.js";
 import { gsap } from "gsap";
 import { getSpeed } from "./Instruction";
@@ -501,6 +501,9 @@ const IpToAdr={
 
 function hex2bin(hex){
     return ("00000000" + (parseInt(hex, 16)).toString(2)).substr(-8);
+}
+function hex2bin2(hex){
+    return ("0".repeat(16-(parseInt(hex, 16)).toString(2).length) + (parseInt(hex, 16)).toString(2));
 }
 function Dec2bin(dec){
     return ("00000000" + (parseInt(dec, 10)).toString(2)).substr(-8);
@@ -1032,6 +1035,16 @@ class Sequenceur{
                     adresse=parseInt(adresse,2);//hexa to decimal
                     instrObject.addresse1=adresse;
                     instrObject.taille=taille;
+                    if (key == '0011101') { //WRITES Instruction
+                        let str = "";
+                        let count = 0;
+                        while(memory.data[adresse] !== '24' && count < 256) {
+                            str += String.fromCharCode(parseInt(memory.data[adresse+1] + memory.data[adresse],16));
+                            adresse++;
+                            count++;
+                        }
+                        instrObject.value1 = str;
+                    }
                 }
             }else{
                 key=instruction.substring(0,7);

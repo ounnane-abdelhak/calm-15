@@ -913,10 +913,10 @@ export class  Assembler{
                         case 'BRI':
                             oppcode = '31';
                             break;
-                        case 'READS':
+                            case 'READS':
                             oppcode = '39'
                             break;
-                        case 'WRITES':
+                            case 'WRITES':
                             oppcode = '3B'
                             break;
                         default:

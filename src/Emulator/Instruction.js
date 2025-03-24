@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
   BR,
   IR,
@@ -11,6 +12,9 @@ import {
   ioUnit,
   sequenceur,
 } from "./mess.js";
+=======
+import  {BR,IR,memory,mess,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from "../pages/Ide";
+>>>>>>> d0de0feb57890144d03de668cf7b6c6ccca21c59
 
 import { TwosComplement } from "./ALU.js";
 import { gsap } from "gsap";
@@ -39,6 +43,7 @@ function binaryToHexlow(binaryString) {
   }
   return hexString;
 }
+<<<<<<< HEAD
 const Bin16ToHexa = (bin) => {
   const a = bin.substring(0, 4);
   const b = bin.substring(4, 8);
@@ -255,6 +260,228 @@ const Bin16ToHexa = (bin) => {
   }
   return hexStr;
 };
+=======
+const Bin16ToHexaLow = (bin) => {
+    const c = bin.substring(8,12);
+    const d = bin.substring(12,16);
+    let hexStr = "";
+    switch (c) {
+      case '0000':
+        hexStr += "0"
+        break;
+      case '0001':
+        hexStr += "1"
+        break;
+      case '0010':
+        hexStr += "2"
+        break;
+      case '0011':
+        hexStr += "3"
+        break;
+      case '0100':
+        hexStr += "4"
+        break;
+      case '0101':
+        hexStr += "5"
+        break;
+      case '0110':
+        hexStr += "6"
+        break;
+      case '0111':
+        hexStr += "7"
+        break;
+      case '1000':
+        hexStr += "8"
+        break;
+      case '1001':
+        hexStr += "9"
+        break;
+      case '1010':
+        hexStr += "a"
+        break;
+      case '1011':
+        hexStr += "b"
+        break;
+      case '1100':
+        hexStr += "c"
+        break;
+      case '1101':
+        hexStr += "d"
+        break;
+      case '1110':
+        hexStr += "e"
+        break;
+      case '1111':
+        hexStr += "f"
+        break;
+      default:
+        break;
+    }
+    switch (d) {
+      case '0000':
+        hexStr += "0"
+        break;
+      case '0001':
+        hexStr += "1"
+        break;
+      case '0010':
+        hexStr += "2"
+        break;
+      case '0011':
+        hexStr += "3"
+        break;
+      case '0100':
+        hexStr += "4"
+        break;
+      case '0101':
+        hexStr += "5"
+        break;
+      case '0110':
+        hexStr += "6"
+        break;
+      case '0111':
+        hexStr += "7"
+        break;
+      case '1000':
+        hexStr += "8"
+        break;
+      case '1001':
+        hexStr += "9"
+        break;
+      case '1010':
+        hexStr += "a"
+        break;
+      case '1011':
+        hexStr += "b"
+        break;
+      case '1100':
+        hexStr += "c"
+        break;
+      case '1101':
+        hexStr += "d"
+        break;
+      case '1110':
+        hexStr += "e"
+        break;
+      case '1111':
+        hexStr += "f"
+        break;
+      default:
+        break;
+    }
+    return hexStr;
+}
+const Bin16ToHexaHigh = (bin) => {
+    const a = bin.substring(0,4);
+    const b = bin.substring(4,8);
+    let hexStr = "";
+    switch (a) {
+      case '0000':
+        hexStr += "0"
+        break;
+      case '0001':
+        hexStr += "1"
+        break;
+      case '0010':
+        hexStr += "2"
+        break;
+      case '0011':
+        hexStr += "3"
+        break;
+      case '0100':
+        hexStr += "4"
+        break;
+      case '0101':
+        hexStr += "5"
+        break;
+      case '0110':
+        hexStr += "6"
+        break;
+      case '0111':
+        hexStr += "7"
+        break;
+      case '1000':
+        hexStr += "8"
+        break;
+      case '1001':
+        hexStr += "9"
+        break;
+      case '1010':
+        hexStr += "a"
+        break;
+      case '1011':
+        hexStr += "b"
+        break;
+      case '1100':
+        hexStr += "c"
+        break;
+      case '1101':
+        hexStr += "d"
+        break;
+      case '1110':
+        hexStr += "e"
+        break;
+      case '1111':
+        hexStr += "f"
+        break;
+      default:
+        break;
+    }
+    switch (b) {
+      case '0000':
+        hexStr += "0"
+        break;
+      case '0001':
+        hexStr += "1"
+        break;
+      case '0010':
+        hexStr += "2"
+        break;
+      case '0011':
+        hexStr += "3"
+        break;
+      case '0100':
+        hexStr += "4"
+        break;
+      case '0101':
+        hexStr += "5"
+        break;
+      case '0110':
+        hexStr += "6"
+        break;
+      case '0111':
+        hexStr += "7"
+        break;
+      case '1000':
+        hexStr += "8"
+        break;
+      case '1001':
+        hexStr += "9"
+        break;
+      case '1010':
+        hexStr += "a"
+        break;
+      case '1011':
+        hexStr += "b"
+        break;
+      case '1100':
+        hexStr += "c"
+        break;
+      case '1101':
+        hexStr += "d"
+        break;
+      case '1110':
+        hexStr += "e"
+        break;
+      case '1111':
+        hexStr += "f"
+        break;
+      default:
+        break;
+    }
+    return hexStr;
+}
+>>>>>>> d0de0feb57890144d03de668cf7b6c6ccca21c59
 /////////////////animations to test////////////////////
 let speed = 3;
 export const setSpeed = (val) => {
@@ -499,6 +726,7 @@ const QueueToIr = {
   time: 3000,
   anim: (val, h, w) => {
     ///depart: ( 64.9% , 64.2% )  W:1.4% ,H:2.812
+<<<<<<< HEAD
     gsap.fromTo(
       ".ball",
       {
@@ -525,6 +753,40 @@ const BusToQueue = {
   target: ".ball",
   time: 4000,
   anim: (val, h, w) => {
+=======
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.726,y:h*0.6638,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.726,y:h*0.6638},{x:w*0.711 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
+  },}
+
+  const queueExitToBus={
+    value:"",
+    target:".ball",
+    time:4000,
+    anim:(val,h,w)=>{
+        gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.726,y:h*0.6638,opacity:"0"},{opacity:"1" ,duration:1});
+        gsap.fromTo(".ball",{x:w*0.726,y:h*0.6638},{x:w*0.715 ,duration:1,delay:1});
+        gsap.to(".ball",{y:h*0.555 ,duration:1,delay:2});
+        gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
+    }
+  }
+  
+  const queueExitToBus2={
+    value:"",
+    target:".ball",
+    time:500,
+    anim:(val,h,w)=>{
+        gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.726,y:h*0.6638,opacity:"0"},{opacity:"1" ,duration:1});
+        gsap.fromTo(".ball",{x:w*0.726,y:h*0.6638},{x:w*0.715 ,duration:1,delay:1});
+    }
+  }
+  
+  const BusToQueue={
+    value:"",
+    target:".ball",
+    time:4000,
+    anim:(val,h,w)=>{
+>>>>>>> d0de0feb57890144d03de668cf7b6c6ccca21c59
     ///depart: ( 79.1% , 53.6% )  W:1.4% ,H:2.812
     gsap.fromTo(
       ".ball",
@@ -787,7 +1049,84 @@ const IpToAdr = {
   },
 };
 
+<<<<<<< HEAD
 /////////////data bus animations/////////////////:
+=======
+  const RegToMdr={
+    value:"",
+    target:".box-data",
+    time:3000,
+    anim:(val,h,w)=>{
+    gsap.fromTo(".box-data",{x:w*0.44,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.44},{x:w*0.497,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+  },}
+  let queueExitToReg={
+    value:"",
+    target:".box-data",
+    time:3000,
+    anim:(val,h,w)=>{
+        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1})
+        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.44,duration:1,delay:1})
+        gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+    }
+}
+  const MdrToIO={
+    value:"",
+    target:".box-data",
+    time:3000,
+    anim:(val,h,w)=>{
+    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.182,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+  },}
+  const IOToMdr={
+    value:"",
+    target:".box-data",
+    time:3000,
+    anim:(val,h,w)=>{
+    gsap.fromTo(".box-data",{x:w*0.182,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.182},{x:w*0.497,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+  },}
+  const IOToUnderIP={
+    value:"",
+    target:".box-data",
+    time:3000,
+    anim:(val,h,w)=>{
+    gsap.fromTo(".box-data",{x:w*0.182,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.182},{x:w*0.708,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+  },}
+  const UnderIPToMar={
+    value:"",
+    target:".box-ADR",
+    time:3000,
+    anim:(val,h,w)=>{
+    gsap.fromTo(".box-ADR",{x:w*0.712,opacity:"0"},{opacity:"1",duration:1})
+    gsap.fromTo(".box-ADR",{x:w*0.712},{x:w*0.648,duration:1,delay:1})
+    gsap.to(".box-ADR",{opacity:"0" ,duration:1,delay:2});
+  },}
+  const UnderIpToAddBus={
+    value:"",
+    target:".ball",
+    time:3000,
+    anim:(val,h,w)=>{
+    ///depart: ( 51.8% , 43.2% )
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.745,y:h*0.465,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{x:w*0.745,y:h*0.465},{y:h*0.26 ,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
+  },}
+  const MdrToRual1={
+    value:"",
+    target:".box-data",
+    time:3000,
+    anim:(val,h,w)=>{
+    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1})
+  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.262,duration:1,delay:1})
+  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+  },}
+>>>>>>> d0de0feb57890144d03de668cf7b6c6ccca21c59
 
 const MdrTOQue = {
   value: "",
@@ -1827,8 +2166,21 @@ const fitToMar = {
     );
     // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.032,height:h*0.14,duration:1,delay:1});
     // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
+<<<<<<< HEAD
   },
 };
+=======
+  },}
+  const infitToMar={
+    value:"",
+    target:".ball",
+    time:1000,
+    anim:(val,h,w)=>{
+    // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.032,height:h*0.14,x:w*0.623,y:h*0.165,opacity:"0"},{opacity:"1" ,duration:1});
+    // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.032,height:h*0.14,duration:1,delay:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1});
+  },}
+>>>>>>> d0de0feb57890144d03de668cf7b6c6ccca21c59
 
 const addanim = {
   value: "",
@@ -1858,6 +2210,7 @@ const MCanim = {
   },
 };
 
+<<<<<<< HEAD
 const IOToBus = {
   value: "",
   target: ".box-data",
@@ -1896,6 +2249,61 @@ const BusToIO = {
     gsap.to(".box-data", { opacity: "0", duration: 1, delay: 2 });
   },
 };
+=======
+        const IOToBus={
+            value:"",
+            target:".box-data",
+            time:3000,
+            anim:(val,h,w)=>{
+            ///depart: ( 51.8% , 43.2% )
+            gsap.fromTo(".box-data",{x:w*0.182,opacity:"0"},{opacity:"1",duration:1})
+          gsap.fromTo(".box-data",{x:w*0.182},{x:w*0.442,duration:1,delay:1})
+          gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+          },}
+          const BusToIO={
+            value:"",
+            target:".box-data",
+            time:3000,
+            anim:(val,h,w)=>{
+            ///depart: ( 51.8% , 43.2% )
+            gsap.fromTo(".box-data",{x:w*0.442,opacity:"0"},{opacity:"1",duration:1})
+          gsap.fromTo(".box-data",{x:w*0.442},{x:w*0.182,duration:1,delay:1})
+          gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+          },}
+          const QueueToIO={
+            value:"",
+            target:".box-data",
+            time:3000,
+            anim:(val,h,w)=>{
+            ///depart: ( 51.8% , 43.2% )
+            gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1})
+          gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.182,duration:1,delay:1})
+          gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+          },}
+        
+          const BufferToBus={
+            value:"",
+            target:".ball",
+            time:3000,
+            anim:(val,h,w)=>{
+            ///depart: ( 51.8% , 43.2% )
+            gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.221,y:h*0.39,opacity:"0"},{opacity:"1" ,duration:1});
+            gsap.fromTo(".ball",{x:w*0.221,y:h*0.39},{y:h*0.465 ,duration:1,delay:1});
+            gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
+          },}
+        
+        
+          const BusToBuffer={
+            value:"",
+            target:".ball",
+            time:3000,
+            anim:(val,h,w)=>{
+            ///depart: ( 51.8% , 43.2% )
+            gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.221,y:h*0.465,opacity:"0"},{opacity:"1" ,duration:1});
+            gsap.fromTo(".ball",{x:w*0.221,y:h*0.465},{y:h*0.39 ,duration:1,delay:1});
+            gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
+          },}
+>>>>>>> d0de0feb57890144d03de668cf7b6c6ccca21c59
 
 const BufferToBus = {
   value: "",
@@ -6390,6 +6798,7 @@ class InstructionPOPA {
           anim: infitToR1.anim,
         },
 
+<<<<<<< HEAD
         {
           //////animation pf pop in MC
           value: this.value1,
@@ -6819,6 +7228,146 @@ class InstructionREADS {
           memory.write();
           i++;
           address++;
+=======
+            ioUnit.buffer.setvalue('0'.repeat(8)+Dec2bin(chr));
+           
+            Registers[3].setvalue(ioUnit.getBuffer());
+        }
+        ];
+        
+         this.buildanim=function(){
+                return[
+                    {
+                        value:this.value1,
+                        target:fitToIO.target,
+                        time:fitToIO.time,
+                        anim:fitToIO.anim,
+                    },
+                    {
+                        value:this.value1,
+                        target:infitToIO.target,
+                        time:infitToIO.time,
+                        anim:infitToIO.anim,
+                    },
+                    {
+                        value:"",
+                        target:BufferToBus.target,
+                        time:BufferToBus.time,
+                        anim:BufferToBus.anim,
+                    },
+                    {
+                        value:this.value2,
+                        target:IOToBus.target,
+                        time:IOToBus.time,
+                        anim:IOToBus.anim,
+                    },
+                    {
+                        value:this.value2,
+                        target:fitToR4.target,
+                        time: fitToR4.time,
+                        anim: fitToR4.anim,
+                    },
+                    {
+                        value:this.value2,
+                        target:infitToR4.target,
+                        time:infitToR4.time,
+                        anim:infitToR4.anim,
+                    },
+                ];
+            }
+    }
+}
+let txt = [];
+class InstructionWRITE{
+    constructor(){
+        this.value1=0;
+        this.value2=0;
+        this.addresse1=0;
+        this.register1=0;
+        this.addresse2=0;
+        this.register2=0;
+        this.taille=0;
+        this.stepsNum=1;
+        this.name="WRITE";
+        this.steps=[()=>{
+     
+            ioUnit.buffer.setvalue(  Registers[3].getvalue());
+            let chr = ioUnit.buffer.getvalue();
+            const result = String.fromCharCode(parseInt(chr,2));    
+            txt.push(result);
+        }
+        ];
+        this.buildanim=function(){
+            return[ 
+                {
+                    value:this.value2,
+                    target:fitToR4.target,
+                    time:fitToR4.time,
+                    anim:fitToR4.anim,
+                },
+                {
+                    value:this.value2,
+                    target:infitToR4.target,
+                    time: infitToR4.time,
+                    anim: infitToR4.anim,
+                },
+                {
+                    value:this.value2,
+                    target:BusToIO.target,
+                    time:BusToIO.time,
+                    anim:BusToIO.anim,
+                },
+                {
+                    value:"",
+                    target:BusToBuffer.target,
+                    time:BusToBuffer.time,
+                    anim:BusToBuffer.anim,
+                },
+                {
+                    value:this.value1,
+                    target:fitToIO.target,
+                    time:fitToIO.time,
+                    anim:fitToIO.anim,
+                },
+                {
+                    value:this.value1,
+                    target:infitToIO.target,
+                    time:infitToIO.time,
+                    anim:infitToIO.anim,
+                },
+        ];
+     }
+    }
+}
+
+class InstructionREADS {
+    constructor(){
+        this.value1=0;
+        this.value2=0;
+        this.addresse1=0;
+        this.register1=0;
+        this.addresse2=0;
+        this.register2=0;
+        this.taille=0;
+        this.stepsNum=1;
+        this.name="READS";
+        this.steps=[()=>{
+            let string = this.value1;
+            let address = this.addresse1;
+            let i = 0;
+            while (string[i]) {
+                ioUnit.buffer.setvalue('0'.repeat(8) + Dec2bin(string[i].charCodeAt(0)));
+                memory.setRim(Bin16ToHexaLow(ioUnit.buffer.getvalue()));
+                memory.setRam(Dec2bin(address));
+                memory.write();
+                address++;
+                memory.setRim(Bin16ToHexaHigh(ioUnit.buffer.getvalue()));
+                memory.setRam(Dec2bin(address));
+                memory.write();
+                i++;
+                address++;
+            }
+>>>>>>> d0de0feb57890144d03de668cf7b6c6ccca21c59
         }
       },
     ];
@@ -6875,6 +7424,7 @@ class InstructionREADS {
             anim: infitToMdr.anim,
           },
         ];
+<<<<<<< HEAD
         animationSteps.push.apply(animationSteps, animationSubSteps);
         //address++;
         i++;
@@ -6910,6 +7460,357 @@ class InstructionWRITES {
       return [];
     };
   }
+=======
+        this.buildanim=function(){
+            let animationSteps = [
+                {
+                    value:"",
+                    nom:"QueueToIr",
+                    target:queueExitToBus2.target,
+                    time:queueExitToBus2.time,
+                    anim:() => {},
+                },
+                {
+                    value:"",
+                    nom:"queueExitToBus",
+                    target:queueExitToBus.target,
+                    time:queueExitToBus.time,
+                    anim:queueExitToBus.anim,
+                },
+                {
+                    value:this.addresse1,
+                    target:QueueToIO.target,
+                    time:QueueToIO.time,
+                    anim:QueueToIO.anim,
+                },
+                {
+                    value:"",
+                    target:BusToBuffer.target,
+                    time:BusToBuffer.time,
+                    anim:BusToBuffer.anim,
+                },
+                {
+                    value:this.addresse1,
+                    target:fitToIO.target,
+                    time:fitToIO.time,
+                    anim:fitToIO.anim,
+                },
+                {
+                    value:this.addresse1,
+                    target:infitToIO.target,
+                    time:infitToIO.time,
+                    anim:infitToIO.anim,
+                },
+            ];
+            let animationSubSteps = [];
+            let string = this.value1;
+            let address = this.addresse1;
+            let i = 0;
+            while (string[i]) {
+                const char = string[i];
+                const ascii = char.charCodeAt(0);
+                animationSubSteps = [
+                    {
+                        value:char,
+                        target:fitToIO.target,
+                        time:fitToIO.time,
+                        anim:fitToIO.anim,
+                    },
+                    {
+                        value:char,
+                        target:infitToIO.target,
+                        time:infitToIO.time,
+                        anim:infitToIO.anim,
+                    },
+                    {
+                        value:"",
+                        target:BufferToBus.target,
+                        time:BufferToBus.time,
+                        anim:BufferToBus.anim,
+                    },
+                    {
+                        value:"00"+ascii,
+                        target:IOToMdr.target,
+                        time:IOToMdr.time,
+                        anim:IOToMdr.anim,
+                    },
+                    {
+                        value:"",
+                        target:BusToMdr.target,
+                        time:BusToMdr.time,
+                        anim:BusToMdr.anim,
+                    },
+                    {
+                        value:"00"+ascii,
+                        target:fitToMdr.target,
+                        time:fitToMdr.time,
+                        anim:fitToMdr.anim,
+                    },
+                    {
+                        value:"00"+ascii,
+                        target:infitToMdr.target,
+                        time:infitToMdr.time,
+                        anim:infitToMdr.anim,
+                    },
+                    {
+                        value:address,
+                        target:fitToIO.target,
+                        time:fitToIO.time,
+                        anim:fitToIO.anim,
+                    },
+                    {
+                        value:address,
+                        target:infitToIO.target,
+                        time:infitToIO.time,
+                        anim:infitToIO.anim,
+                    },
+                    {
+                        value:"",
+                        target:BufferToBus.target,
+                        time:BufferToBus.time,
+                        anim:BufferToBus.anim,
+                    },
+                    {
+                        value:address,
+                        target:IOToUnderIP.target,
+                        time:IOToUnderIP.time,
+                        anim:IOToUnderIP.anim,
+                    },
+                    {
+                        value:"",
+                        target:UnderIpToAddBus.target,
+                        time:UnderIpToAddBus.time,
+                        anim:UnderIpToAddBus.anim,
+                    },
+                    {
+                        value:address,
+                        target:UnderIPToMar.target,
+                        time:UnderIPToMar.time,
+                        anim:UnderIPToMar.anim,
+                    },
+                    {
+                        value:address,
+                        target:fitToMar.target,
+                        time:fitToMar.time,
+                        anim:fitToMar.anim,
+                    },
+                    {
+                        value:address,
+                        target:infitToMar.target,
+                        time:infitToMar.time,
+                        anim:infitToMar.anim,
+                    },
+                    {
+                        value:"WRITE",
+                        target:MCanim.target,
+                        time:MCanim.time,
+                        anim:MCanim.anim,
+                    },
+                ];
+                animationSteps.push.apply(animationSteps, animationSubSteps);
+                address++;
+                address++;
+                i++;
+                i++;
+            }
+            return animationSteps;
+     }
+    }
+}
+
+class InstructionWRITES {
+    constructor(){
+        this.value1="";
+        this.value2=0;
+        this.addresse1=0;
+        this.register1=0;
+        this.addresse2=0;
+        this.register2=0;
+        this.taille=0;
+        this.stepsNum=1;
+        this.name="WRITES";
+        this.steps=[()=>{
+            let adr = this.addresse1 ;
+            let result = "";
+            let char = "";
+            let ascii = "";
+            let count = 0;
+            while (char !== "$" && count < 256) {
+                console.log("adr", Dec2bin(adr));
+                memory.setRam(Dec2bin(adr));
+                memory.read(false);
+                ascii = memory.getRim();
+                adr++;
+                memory.setRam(Dec2bin(adr));
+                memory.read(false);
+                ascii = memory.getRim() + ascii;
+                ioUnit.buffer.setvalue(hex2bin(ascii));
+                char = String.fromCharCode(parseInt(ioUnit.buffer.getvalue(),2));
+                if (char !== '$') {
+                    result += char;
+                }
+                adr++;
+                count++;
+            }
+            txt.push(result);
+        }
+        ];
+        this.buildanim=function(){
+            let animationSteps = [
+                {
+                    value:"",
+                    nom:"QueueToIr",
+                    target:queueExitToBus2.target,
+                    time:queueExitToBus2.time,
+                    anim:() => {},
+                },
+                {
+                    value:"",
+                    nom:"queueExitToBus",
+                    target:queueExitToBus.target,
+                    time:queueExitToBus.time,
+                    anim:queueExitToBus.anim,
+                },
+                {
+                    value:this.addresse1,
+                    target:QueueToIO.target,
+                    time:QueueToIO.time,
+                    anim:QueueToIO.anim,
+                },
+                {
+                    value:"",
+                    target:BusToBuffer.target,
+                    time:BusToBuffer.time,
+                    anim:BusToBuffer.anim,
+                },
+                {
+                    value:this.addresse1,
+                    target:fitToIO.target,
+                    time:fitToIO.time,
+                    anim:fitToIO.anim,
+                },
+                {
+                    value:this.addresse1,
+                    target:infitToIO.target,
+                    time:infitToIO.time,
+                    anim:infitToIO.anim,
+                },
+            ];
+            let animationSubSteps = [];
+            let string = this.value1;
+            let address = this.addresse1;
+            let i = 0;
+            while (string[i]) {
+                const char = string[i];
+                const ascii = char.charCodeAt(0);
+                animationSubSteps = [
+                    {
+                        value:address,
+                        target:fitToIO.target,
+                        time:fitToIO.time,
+                        anim:fitToIO.anim,
+                    },
+                    {
+                        value:address,
+                        target:infitToIO.target,
+                        time:infitToIO.time,
+                        anim:infitToIO.anim,
+                    },
+                    {
+                        value:"",
+                        target:BufferToBus.target,
+                        time:BufferToBus.time,
+                        anim:BufferToBus.anim,
+                    },
+                    {
+                        value:address,
+                        target:IOToUnderIP.target,
+                        time:IOToUnderIP.time,
+                        anim:IOToUnderIP.anim,
+                    },
+                    {
+                        value:"",
+                        target:UnderIpToAddBus.target,
+                        time:UnderIpToAddBus.time,
+                        anim:UnderIpToAddBus.anim,
+                    },
+                    {
+                        value:address,
+                        target:UnderIPToMar.target,
+                        time:UnderIPToMar.time,
+                        anim:UnderIPToMar.anim,
+                    },
+                    {
+                        value:address,
+                        target:fitToMar.target,
+                        time:fitToMar.time,
+                        anim:fitToMar.anim,
+                    },
+                    {
+                        value:address,
+                        target:infitToMar.target,
+                        time:infitToMar.time,
+                        anim:infitToMar.anim,
+                    },
+                    {
+                        value:"READ",
+                        target:MCanim.target,
+                        time:MCanim.time,
+                        anim:MCanim.anim,
+                    },
+                    {
+                        value:"00"+ascii,
+                        target:fitToMdr.target,
+                        time:fitToMdr.time,
+                        anim:fitToMdr.anim,
+                    },
+                    {
+                        value:"00"+ascii,
+                        target:infitToMdr.target,
+                        time:infitToMdr.time,
+                        anim:infitToMdr.anim,
+                    },
+                    {
+                        value:"",
+                        target:MdrToBus.target,
+                        time:MdrToBus.time,
+                        anim:MdrToBus.anim,
+                    },
+                    {
+                        value:"00"+ascii,
+                        target:MdrToIO.target,
+                        time:MdrToIO.time,
+                        anim:MdrToIO.anim,
+                    },
+                    {
+                        value:"",
+                        target:BusToBuffer.target,
+                        time:BusToBuffer.time,
+                        anim:BusToBuffer.anim,
+                    },
+                    {
+                        value:char,
+                        target:fitToIO.target,
+                        time:fitToIO.time,
+                        anim:fitToIO.anim,
+                    },
+                    {
+                        value:char,
+                        target:infitToIO.target,
+                        time:infitToIO.time,
+                        anim:infitToIO.anim,
+                    },
+                ];
+                animationSteps.push.apply(animationSteps, animationSubSteps);
+                address++;
+                address++;
+                i++;
+                i++;
+            }
+            return animationSteps;
+     }
+    }
+>>>>>>> d0de0feb57890144d03de668cf7b6c6ccca21c59
 }
 
 export {

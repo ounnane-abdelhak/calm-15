@@ -1,4 +1,4 @@
-import  {BR,IR,memory,mess,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from './mess.js';
+import  {memory,IP} from "../pages/Ide";
 import { TwosComplement } from "./ALU.js";
 import { gsap } from "gsap";
 import { getSpeed } from "./Instruction";
