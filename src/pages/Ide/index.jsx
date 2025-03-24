@@ -214,7 +214,12 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
     const tokens = instruction.trim().split(/[\s,]+/).filter(token => token.length > 0);
     if (tokens.length === 0) return 0;
     const inst = tokens[0].toUpperCase();
-    const isImmediate = token => /^(\d+|0x[0-9a-fA-F]+)$/.test(token);
+    const registers = new Set(["R1", "R2", "R3", "R4", "ACC", "BR", "IDR", "IR", "SR", "MAR", "MDR", "IP"]);
+    function isImmediate(token) {
+      if (/^(\d+|0x[0-9a-fA-F]+)$/.test(token)) return true;
+      if (token.startsWith('[') && token.endsWith(']')) return false;
+      return !registers.has(token.toUpperCase());
+    }
     const branchInst = new Set(['BNE', 'BE', 'BS', 'BI', 'BIE', 'BSE', 'BRI']);
     if (branchInst.has(inst)) return 3;
     if (inst === 'MOV') {
