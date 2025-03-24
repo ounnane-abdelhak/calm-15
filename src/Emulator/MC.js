@@ -1,5 +1,4 @@
 import { Register } from "./Register.js";
-import { memory } from "./mess.js";
 import Cache from "./Cache.js";
 class MC {
   constructor() {

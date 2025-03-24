@@ -160,46 +160,52 @@ class Alu{
             }
         }
        
-        subBinary(size){
-        //get the two's complement of the content of the RUAL2:
-    
-         
-         //than the one's complement of the result :
-         let i=this.Rual2.value.length-1;
-         let b="0".repeat(size);
-         while (i >= 0) {
-            if (this.Rual2.value[i]=='0') {
-             b=replaceAt(b,i,'1');
-            }else{b=replaceAt(b,i,'0');}
-           i--;       
-         } 
-         this.Rual2.setvalue(b);
+        subBinary(size) {
+            if (this.Rual1.value.length !== size || this.Rual2.value.length !== size) {
+              throw new Error("Binary string length does not match the expected size.");
+            }
+          
+            let onesComplement = "";
+            for (let i = 0; i < size; i++) {
+              onesComplement += (this.Rual2.value[i] === '0') ? '1' : '0';
+            }
+          
   
-         
-         //first we add (RAL2)+1
-         let x=1;
-         let res1=parseInt(this.Rual2.getvalue(),2);
-         res1=res1+x;
-         this.Rual2.setvalue(fullzero(size,res1.toString(2)));
-         b=this.Rual2.getvalue()//very important on overflow detection
+            let onesComplementInt = parseInt(onesComplement, 2);
+            let twoComplementInt = onesComplementInt + 1;
+            let twoComplementStr = twoComplementInt.toString(2);
+          
 
-         //then the simple binary addition between RUAL1 and RUAL2:
-         this.addBinary(size)
+            twoComplementStr = fullzero(size, twoComplementStr);
+          
+            // Update Rual2 with its two's complement.
+            this.Rual2.setvalue(twoComplementStr);
+          
+            this.addBinary(size);
+            let result = this.Acc.getvalue();
+          
 
-         
-         //overflow detection:
-         if (this.Rual1.getvalue()[0]!=b[0]) {
-           if (b[0]==this.Acc.getvalue()[0]) {
-               this.Flags[5]='1';
-           }
-         } 
-         if (parseInt(this.Acc.getvalue())==0) {this.Flags[0]='1'}//zero
-         this.Flags[1]=this.Acc.getvalue()[0];//signe
-         this.Flags[2]='0';//carry
-         let figure="1"
-         this.Flags[3] = ((this.Acc.value.match(new RegExp(figure, "g")) || []).length %2).toString();//parity
-         this.Flags[4]=this.Acc.getvalue()[size-1];//p/imp
-       }
+            if (this.Rual1.getvalue()[0] === twoComplementStr[0] && result[0] !== this.Rual1.getvalue()[0]) {
+              this.Flags[5] = '1';
+            } else {
+              this.Flags[5] = '0';
+            }
+
+            this.Flags[0] = (parseInt(result, 2) === 0) ? '1' : '0';
+
+            this.Flags[1] = result[0];
+
+            const rual1Int = parseInt(this.Rual1.getvalue(), 2);
+            const sumInt = rual1Int + parseInt(twoComplementStr, 2);
+            const maxVal = 1 << size; 
+            this.Flags[2] = (sumInt >= maxVal) ? '1' : '0';
+
+            const onesCount = (result.match(/1/g) || []).length;
+            this.Flags[3] = (onesCount % 2 === 0) ? '1' : '0';
+
+            this.Flags[4] = result[size - 1];
+          }
+          
        
  
        binaryMultiply(size) {
