@@ -1,4 +1,4 @@
-import  {memory,BR,IR,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from '../pages/Ide/index.jsx';
+import  {BR,IR,memory,mess,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from "../pages/Ide";
 
 import { TwosComplement } from "./ALU.js";
 import { gsap } from "gsap";

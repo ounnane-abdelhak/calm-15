@@ -226,6 +226,10 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
       if (tokens.length < 3) return 0;
       return isImmediate(tokens[2]) ? 4 : 2;
     }
+    if (inst === 'READS' || inst === 'WRITES') {
+      if (tokens.length < 2) return 0;
+      return 3;
+    }
     const twoOpInst = new Set(['ADD', 'SUB', 'MUL', 'DIV', 'AND', 'OR', 'XOR', 'NOR', 'NAND', 'CMP']);
     if (twoOpInst.has(inst)) {
       if (tokens.length < 3) return 0;
@@ -251,20 +255,20 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
     const code = editor.getValue();
     const commentArray = [];
     let lines = code.split('\n').filter(line => line.trim() !== '');
-  
+    let lines2=lines;
     lines.forEach((line, lineIndex) => {
       const singleLineComment = line.match(/(\/\/.*$|;.*$)/);
       if (singleLineComment) {
         commentArray.push(singleLineComment[0].trim());
       }
       lines[lineIndex] = line.replace(/(\/\/.*$|;.*$)/, '').trim().toUpperCase();
+      lines2[lineIndex] = line.replace(/(\/\/.*$|;.*$)/, '').trim();
     });
   
 
     lines = lines.join('\n');
-  
-    const macrosBlockRegex = /^(?:\s*(?:(?:(?:\/\/|;)[^\n]*\n)|MACRO\s*(?:\s+[A-Za-z_]\w*(?:\s+(?:[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*))?)?\s*\r?\n[\s\S]*?\r?\nENDM\s*))*\s*/i;
-    const macroRegex = /(^MACRO\s*(?:\s+([A-Za-z_]\w*)(?:[ \t]+((?:[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*)))?)?[ \t]*\r?\n([\s\S]*?)\r?\nENDM\s*$)/img;
+    lines2=lines2.join('\n').split(':').join(':\n').split('\n');
+    const macroRegex = /(^MACRO\s*(?:\s+([A-Za-z_]\w*)(?:[ \t]+((?:[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*)))?)?[ \t]*\r?\n(([\s\S]*?)\r?)?\nENDM\s*$)/img;
   
     const macros = [];
     let match;
@@ -302,11 +306,11 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
     if (nb === 2) {
       return exist;
     }
-    // Remove macros from the code.
+   
     let codeWithoutMacros = lines.replace(macroRegex, '');
+    console.log("your lines",lines2)
     codeWithoutMacros = codeWithoutMacros.split('\n').filter(line => line.trim() !== '');
-  
-    // Use codeWithoutMacros.length here instead of lines.length
+
     for (let lineIndex = 0; lineIndex < codeWithoutMacros.length; lineIndex++) {
       let line = codeWithoutMacros[lineIndex];
       for (const macro of macros) {
@@ -377,12 +381,38 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
       });
     }
     console.log("codelabel",labelTable)
- // First, tokenize each line into code2.
  let code2 = [];
- codeArray.forEach(line => {
-   const tokens = line.match(/"[^"]*"|\S+/g);
-   code2.push(tokens);
- });
+ lines2.forEach(line => {
+  let inQuotes = false;
+  let cleanLine = "";
+  for (let i = 0; i < line.length; i++) {
+    let char = line[i];
+    if (char === '"') {
+      inQuotes = !inQuotes;
+      cleanLine += char;
+      continue;
+    }
+    if (!inQuotes) {
+      if (char === '#' || char === ';') break;
+      if (char === '/' && i + 1 < line.length && line[i + 1] === '/') break;
+    }
+    cleanLine += char;
+  }
+
+  const tokens = cleanLine.match(/"[^"]*"|\S+/g);
+  if (tokens) {
+    const processedTokens = tokens.map(token => {
+      if (token.startsWith('"') && token.endsWith('"')) {
+        return token;
+      }
+      return token.toUpperCase();
+    });
+    code2.push(processedTokens);
+  }
+});
+
+
+console.log("rwbf",code2)
  
  let newCodeArray = [];
  for (let i = 0; i < code2.length; i++) {
@@ -444,17 +474,16 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
        }
      }
   
-   } else {
-     newCodeArray.push(codeArray[i]);
-   }
+   } 
  }
- 
-
- codeArray.length = 0;
- newCodeArray.forEach(item => codeArray.push(item));
- 
-
- 
+let codearray2=[]
+codeArray.forEach((line)=>{
+  const reg=/^\s*STR\s+/
+  if(!reg.test(line)){codearray2.push(line)}
+}) 
+console.log("touvfwrb",codearray2)
+codeArray.length=0;
+ codearray2.forEach((line)=>{codeArray.push(line)})
  
     if (nb === 0) {
 
