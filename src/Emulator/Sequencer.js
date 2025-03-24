@@ -1,5 +1,5 @@
 import { Register } from "./Register.js";
-import  {BR,IR,memory,mess,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from './mess.js';
+import  {BR,IR,memory,mess,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from "../pages/Ide";
 import { hash, hashmap } from "./Opcodes.js";
 import { gsap } from "gsap";
 import { getSpeed } from "./Instruction";

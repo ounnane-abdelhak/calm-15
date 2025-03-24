@@ -3,14 +3,18 @@ import Toggle from 'react-styled-toggle';
 import { Controlled as CodeMirror } from "react-codemirror2";
 import UAParser from 'ua-parser-js';
 import "./style.css"
-import  {BR,IR,memory,mess,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur} from '../../Emulator/mess.js';
 
 
 ///// import components //////
 import { NavBar, HelpSection, SaveCodeButton } from "../../components"
 ////// import machine components //////
-
-import Alu, { TwosComplement } from "../../Emulator/ALU.js";
+import Alu from "../../Emulator/ALU.js";
+import MC from "../../Emulator/MC.js";
+import Sequenceur from "../../Emulator/Sequencer.js";
+import Queue from "../../Emulator/Queue.js";
+import AddressingModes from "../../Emulator/Adressing.js";
+import { generalPurposeRegister,Register } from "../../Emulator/Register.js";
+import { TwosComplement } from "../../Emulator/ALU.js";
 import Arch from '../Arch/index.jsx';
 import { getSpeed, setSpeed } from '../../Emulator/Instruction.js';
 ///// import editor styles//////
@@ -32,7 +36,7 @@ import txt from "../../Emulator/Instruction.js";
 let animations=[];
 ////////////////context declarations///////////////////////////////////
 let Contextarray=[];
-
+let mess=[]; 
 ////////////////machine declarations////////////////////////////////
 
 const handleRefresh = () => {
@@ -70,11 +74,22 @@ function isValidString(str) {
 }}
 }   
 
-
-function convertNum(num, from, to) {
-  const todec = parseInt(num, from);
-  return todec.toString(to);
-}
+let memory=new MC();
+let sequenceur=new Sequenceur();
+let queue = new Queue();
+let ioUnit = new IOUnit();
+let addressingModes=new AddressingModes();
+let IP=new Register();
+let R1= new generalPurposeRegister();
+let R2=new generalPurposeRegister();
+let R3=new generalPurposeRegister();
+let R4=new Register();
+let BR=new Register();
+let IR=new Register();
+let SR=new Register();
+let Alu1=new Alu();
+let Registers=[R1,R2,R3,R4,Alu1.Acc,BR,IR,SR];
+export {memory,BR,IR,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur};
 ///////////////////////////////////the component/////////////////////////
 const Ide = ({currentUser})=>{
   ////////////////////hooks///////////////////////////////:
@@ -194,65 +209,41 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
   
   
   
-    // For other instructions, default to a base length of 2 bytes.
-    function getInstLeng(instruction) {
-      // Tokenizer: expects format: mnemonic operand1, operand2 (if any)
-      let tokens = instruction.split(/[\s,]+/).filter(t => t.length > 0);
-      if (tokens.length === 0) return 0;
-      
-      // Use uppercase for consistency.
-      let inst = tokens[0];
-    
-      // Helper: Check if a token is an immediate constant (decimal or hex).
-      function isImmediate(token) {
-        return /^(\d+|0x[0-9a-fA-F]+)$/.test(token);
-      }
-    
 
-      const branchInst = ['BNE', 'BE', 'BS', 'BI', 'BIE', 'BSE', 'BRI'];
-      if (branchInst.includes(inst)) {
-
-        return 3;
-      }
-      
-      if (inst === 'MOV') {
-        if (tokens.length < 3) return 0;
-        return isImmediate(tokens[2]) ? 4 : 2;
-      }
- 
-      const twoOpInst = ['ADD', 'SUB', 'MUL', 'DIV', 'AND', 'OR', 'XOR', 'NOR', 'NAND', 'CMP'];
-      if (twoOpInst.includes(inst)) {
-        if (tokens.length < 3) return 0;
-
-        return isImmediate(tokens[2]) ? 4 : 2;
-      }
-
-      if (inst === 'CALL') {
-        return 3;
-      }
-
-      const noOpInst = ['RET', 'PUSHA', 'POPA'];
-      if (noOpInst.includes(inst)) {
-        return 1;
-      }
- 
-      const reducedInst = ['NOT', 'NEG', 'SHL', 'SHR', 'READ', 'WRITE', 'PUSH', 'POP', 'ROR', 'ROL'];
-      if (reducedInst.includes(inst)) {
-
-        if (tokens.length < 2) {
-          return 1;
-        }
-        let operand = tokens[1];
- 
-        if (isImmediate(operand) || (operand.startsWith('[') && operand.endsWith(']'))) {
-          return 2;
-        } else {
-          return 1;
-        }
-      }
-      return 0;
+  function getInstLeng(instruction) {
+    const tokens = instruction.trim().split(/[\s,]+/).filter(token => token.length > 0);
+    if (tokens.length === 0) return 0;
+    const inst = tokens[0].toUpperCase();
+    const registers = new Set(["R1", "R2", "R3", "R4", "ACC", "BR", "IDR", "IR", "SR", "MAR", "MDR", "IP"]);
+    function isImmediate(token) {
+      if (/^(\d+|0x[0-9a-fA-F]+)$/.test(token)) return true;
+      if (token.startsWith('[') && token.endsWith(']')) return false;
+      return !registers.has(token.toUpperCase());
     }
-    
+    const branchInst = new Set(['BNE', 'BE', 'BS', 'BI', 'BIE', 'BSE', 'BRI']);
+    if (branchInst.has(inst)) return 3;
+    if (inst === 'MOV') {
+      if (tokens.length < 3) return 0;
+      return isImmediate(tokens[2]) ? 4 : 2;
+    }
+    const twoOpInst = new Set(['ADD', 'SUB', 'MUL', 'DIV', 'AND', 'OR', 'XOR', 'NOR', 'NAND', 'CMP']);
+    if (twoOpInst.has(inst)) {
+      if (tokens.length < 3) return 0;
+      return isImmediate(tokens[2]) ? 4 : 2;
+    }
+    if (inst === 'CALL') return 3;
+    const noOpInst = new Set(['RET', 'PUSHA', 'POPA']);
+    if (noOpInst.has(inst)) return 1;
+    const reducedInst = new Set(['NOT', 'NEG', 'SHL', 'SHR', 'READ', 'WRITE', 'PUSH', 'POP', 'ROR', 'ROL']);
+    if (reducedInst.has(inst)) {
+      if (inst === 'READ' || inst === 'WRITE') return 1;
+      if (tokens.length < 2) return 1;
+      const operand = tokens[1];
+      return (isImmediate(operand) || (operand.startsWith('[') && operand.endsWith(']'))) ? 2 : 1;
+    }
+    return 0;
+  }
+  
 
   
   const handleStoreCode = (nb) => {
@@ -269,11 +260,10 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
       lines[lineIndex] = line.replace(/(\/\/.*$|;.*$)/, '').trim().toUpperCase();
     });
   
-    // Join lines into a string
+
     lines = lines.join('\n');
   
     const macrosBlockRegex = /^(?:\s*(?:(?:(?:\/\/|;)[^\n]*\n)|MACRO\s*(?:\s+[A-Za-z_]\w*(?:\s+(?:[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*))?)?\s*\r?\n[\s\S]*?\r?\nENDM\s*))*\s*/i;
-    const macroBlockMatch = code.match(macrosBlockRegex);
     const macroRegex = /(^MACRO\s*(?:\s+([A-Za-z_]\w*)(?:[ \t]+((?:[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*)))?)?[ \t]*\r?\n([\s\S]*?)\r?\nENDM\s*$)/img;
   
     const macros = [];
@@ -430,8 +420,9 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
                  } else {
                    Errorcalm.SemanticError.push(new Errorcalm("Could not extract string", null, i));
                  }
-                 Assembler.STRlist.push({ name: line[1], address: line[2], begin: offset*2 });
-                 offset += line[2].length - 2;
+                 Assembler.STRlist.push({ name: line[1], begin: offset*2});
+                 offset += line[2].length-2;
+                 console.log("yourstr",Assembler.STRlist);
                }
              } else {
                Errorcalm.SemanticError.push(new Errorcalm("STR name is not valid", null, i));
