@@ -5475,7 +5475,7 @@ class InstructionPOPA{
                     anim:infitToBr.anim,
                 },
  {
-                    value:"POPA",
+                    value:"POP",
                     target:MCanim.target,
                     time:MCanim.time,
                     anim:MCanim.anim,
@@ -5517,7 +5517,7 @@ class InstructionPOPA{
                     anim:infitToIdr.anim,
                 },
 {
-                    value:"POPA",
+                    value:"POP",
                     target:MCanim.target,
                     time:MCanim.time,
                     anim:MCanim.anim,

@@ -1,0 +1,55 @@
+[33m1a451c0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m Removed merge conflict markers from all files
+[33md61417f[m pusha popa changes
+[33m9808a72[m[33m ([m[1;31morigin/master[m[33m)[m adding cache transfer variables in instructions.js
+[33m6d1c60b[m update instructions.js
+[33md0de0fe[m Merge branch 'master' of https://github.com/ounnane-abdelhak/calm-15
+[33m4b01b3b[m Adding some features to READS & WRITES
+[33m16bb2a0[m str changes
+[33m672f089[m Resolved merge conflicts
+[33mba70188[m  str changes
+[33m1828661[m Fixing READS & WRITES
+[33m9731be8[m Merge branch 'master' of https://github.com/ounnane-abdelhak/calm-15
+[33m98d25fc[m Adding READS & WRITES with their animations
+[33m6fcfad6[m  str changes
+[33m75a5b2d[m  machine changes
+[33mfb8d643[m  changes str
+[33m683c8e1[m !Syncing code with merge with 'master'
+[33m760cd2d[m Adding reads & writes instructions
+[33m45719b8[m Update Assembler.js
+[33mccb85dd[m Update MC.js
+[33m3d43b26[m Merge branch 'master' of https://github.com/ounnane-abdelhak/calm-15
+[33mee9019d[m Fixing Some Cache Issues
+[33mb8983e5[m  changes str
+[33ma01e6b2[m  changes str
+[33mddeff08[m  changes str
+[33m7c157c7[m  changes push w pop
+[33mb5542c5[m Add Cache.js and update MC.js
+[33m95c6f0b[m Merge branch 'master' of https://github.com/ounnane-abdelhak/calm-15
+[33m9bfc456[m Merge branch 'master' of https://github.com/ounnane-abdelhak/calm-15
+[33m7fbea89[m  changes str
+[33m9529ace[m Fixing some problems concerning read & write
+[33md040ced[m  changes str
+[33maa23034[m  changes str
+[33m1a63aea[m Resolved all conflicts by keeping local changes
+[33m34c9e35[m My changes before pulling updates
+[33m43eb20f[m fixing write inst animation
+[33madb6a2a[m solving merge conflicts
+[33ma871511[m Your commit message here
+[33mf7168cc[m Your commit message here
+[33m88db20f[m some changes
+[33m49edc75[m Update index.jsx
+[33m176b773[m Update index.jsx
+[33m3024f1e[m some changes
+[33m9673495[m Update index.jsx
+[33mf29a7fd[m Your commit message describing the changes
+[33m99d3c90[m some changes
+[33m151a6d9[m Update index.jsx
+[33md6d62b4[m some changes
+[33m8b21cf1[m some changes
+[33m9214f85[m some changes
+[33m9bcc201[m Updated Opcodes.js
+[33m99c247d[m Update Instruction.js
+[33m650be98[m Update index.jsx
+[33m9c89f5d[m Update IO_Unit.js
+[33m66543ec[m some changes
+[33mfbf35b4[m first commit
