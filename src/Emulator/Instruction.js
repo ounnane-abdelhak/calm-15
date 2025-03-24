@@ -4809,14 +4809,8 @@ class InstructionPUSHA{
         ];
         this.buildanim=function(){
 
-                return[
-                    {
-                        value:"PUSHA",
-                        target:MCanim.target,
-                        time:MCanim.time,
-                        anim:MCanim.anim,
-                    },
-                    {
+
+                return[{
                     value:this.value1,
                     target:fitToR1.target,
                     time:fitToR1.time,
@@ -4852,8 +4846,13 @@ class InstructionPUSHA{
                     time:infitToMdr.time,
                     anim:infitToMdr.anim,
                 },
-
-,{
+                {
+                    value:"PUSH",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                }
+ ,{
                     value:this.value1,
                     target:fitToR2.target,
                     time:fitToR2.time,
@@ -4889,8 +4888,13 @@ class InstructionPUSHA{
                     time:infitToMdr.time,
                     anim:infitToMdr.anim,
                 },
-
-,{
+                {
+                    value:"PUSH",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                }
+  ,{
                     value:this.value1,
                     target:fitToR3.target,
                     time:fitToR3.time,
@@ -4926,8 +4930,13 @@ class InstructionPUSHA{
                     time:infitToMdr.time,
                     anim:infitToMdr.anim,
                 },
-
-,{
+                {
+                    value:"PUSH",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                }
+ ,{
                     value:this.value1,
                     target:fitToR4.target,
                     time:fitToR4.time,
@@ -4963,8 +4972,13 @@ class InstructionPUSHA{
                     time:infitToMdr.time,
                     anim:infitToMdr.anim,
                 },
-
-,{
+                {
+                    value:"PUSH",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                }
+ ,{
                     value:this.value1,
                     target:fitToAcc.target,
                     time:fitToAcc.time,
@@ -5006,7 +5020,12 @@ class InstructionPUSHA{
                     time:infitToMdr.time,
                     anim:infitToMdr.anim,
                 },
-
+                {
+                    value:"PUSH",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                }
 ,{
                     value:this.value1,
                     target:fitToBr.target,
@@ -5043,7 +5062,12 @@ class InstructionPUSHA{
                     time:infitToMdr.time,
                     anim:infitToMdr.anim,
                 },
-
+                {
+                    value:"PUSH",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                }
 ,{
                     value:this.value1,
                     target:fitToIdr.target,
@@ -5080,8 +5104,13 @@ class InstructionPUSHA{
                     time:infitToMdr.time,
                     anim:infitToMdr.anim,
                 },
-
-{
+                {
+                    value:"PUSH",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                }
+,{
                     value:this.value1,
                     target:fitToSr.target,
                     time:fitToSr.time,
@@ -5117,12 +5146,18 @@ class InstructionPUSHA{
                     time:infitToMdr.time,
                     anim:infitToMdr.anim,
                 },
-
+                {
+                    value:"PUSH",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                }
             ];
+            }
             
         }
     }
-}
+
 
 class InstructionPOPA{
     constructor(){
@@ -5182,7 +5217,7 @@ class InstructionPOPA{
         this.buildanim=function(){
 
                 return[{
-                    value:"POPA",
+                    value:"POP",
                     target:MCanim.target,
                     time:MCanim.time,
                     anim:MCanim.anim,
@@ -5223,7 +5258,12 @@ class InstructionPOPA{
                     time:infitToR1.time,
                     anim:infitToR1.anim,
                 },
-
+{
+                    value:"POP",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                },
                 {//////animation pf pop in MC
                     value:this.value1,
                     target:fitToMdr.target,
@@ -5260,7 +5300,12 @@ class InstructionPOPA{
                     time:infitToR2.time,
                     anim:infitToR2.anim,
                 },
-
+{
+                    value:"POP",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                },
                 {//////animation pf pop in MC
                     value:this.value1,
                     target:fitToMdr.target,
@@ -5297,7 +5342,12 @@ class InstructionPOPA{
                     time:infitToR3.time,
                     anim:infitToR3.anim,
                 },
-
+{
+                    value:"POP",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                },
                 {//////animation pf pop in MC
                     value:this.value1,
                     target:fitToMdr.target,
@@ -5334,8 +5384,12 @@ class InstructionPOPA{
                     time:infitToR4.time,
                     anim:infitToR4.anim,
                 },
-                //push animation
-
+ {
+                    value:"POP",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                },
                 {//////animation pf pop in MC
                     value:this.value1,
                     target:fitToMdr.target,
@@ -5378,8 +5432,12 @@ class InstructionPOPA{
                     time:infitToAcc.time,
                     anim:infitToAcc.anim,
                 },
-                //push animation
-
+ {
+                    value:"POP",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                },
                 {//////animation pf pop in MC
                     value:this.value1,
                     target:fitToMdr.target,
@@ -5416,8 +5474,12 @@ class InstructionPOPA{
                     time:infitToBr.time,
                     anim:infitToBr.anim,
                 },
-                //push animation
-
+ {
+                    value:"POPA",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
+                },
                 {//////animation of pop in MC
                     value:this.value1,
                     target:fitToMdr.target,
@@ -5453,6 +5515,12 @@ class InstructionPOPA{
                     target:infitToIdr.target,
                     time:infitToIdr.time,
                     anim:infitToIdr.anim,
+                },
+{
+                    value:"POPA",
+                    target:MCanim.target,
+                    time:MCanim.time,
+                    anim:MCanim.anim,
                 },
                 {//////animation pf pop in MC
                     value:this.value1,
@@ -5490,8 +5558,9 @@ class InstructionPOPA{
                     time:infitToSR.time,
                     anim:infitToSR.anim,
                 },
-
+              
             ];
+            
             
         }
     }
