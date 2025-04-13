@@ -1075,6 +1075,143 @@ const infitToIO = {
         gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
     },
 }
+
+const fitToCache = {
+  value: "",
+  target: ".ball",
+  time: 1000 * nsp,
+  anim: (val, h, w) => {
+    // console.log("Fitting data into Cache");
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.07,
+        height: h * 0.05,
+        x: w * 0.325,
+        y: h * 0.31,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 0.4 * nsp }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 0.4 * nsp, delay: 0.4 * nsp });
+  },
+};
+
+const infitToCache = {
+  value: "",
+  target: ".ball",
+  time: 1000 * nsp,
+  anim: (val, h, w) => {
+    // gsap.fromTo(".ball",{x:w*0.442,y:h*0.7735,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
+    // gsap.fromTo(".ball",{x:w*0.442,y:h*0.7735,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
+    // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
+  },
+};
+
+const CacheToBus = {
+  value: "",
+  target: ".ball",
+  time: 3000 * nsp,
+  anim: (val, h, w) => {
+    console.log("Cache to Bus transfer on Cache Hit");
+    // Coordinates specific to cache location
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.7%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.35,
+        y: h * 0.4,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp }
+    );
+    gsap.to(".ball", { y: h * 0.465, duration: 1 * nsp, delay: 1 * nsp }); // Example path to Bus
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
+  },
+};
+
+const BusToCache = {
+  value: "",
+  target: ".ball",
+  time: 3000 * nsp,
+  anim: (val, h, w) => {
+    // Start from the Bus location and move to Cache coordinates
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.7%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.35, // Example bus location X
+        y: h * 0.465, // Example bus location Y
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp }
+    );
+    gsap.to(
+      ".ball",
+
+      { y: h * 0.4, duration: 1 * nsp, delay: 1 * nsp }
+    ); // Move up to Cache location
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
+  },
+};
+
+const Cacheanim = {
+  value: "",
+  target: ".Cache",
+  time: 2000 * nsp,
+  anim: (val, h, w) => {
+    gsap.fromTo(".Cache", { opacity: "0" }, { opacity: "1", duration: 1 * nsp });
+    gsap.fromTo(
+      ".Cache",
+      { opacity: "1" },
+      { opacity: "0", duration: 1 * nsp, delay: 1 * nsp }
+    );
+  },
+};
+
+const IOToCache = {
+  value: "",
+  target: ".box-data",
+  time: 3000 * nsp,
+  anim: (val, h, w) => {
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.182, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.182 },
+      { x: w * 0.325, duration: 1 * nsp, delay: 1 * nsp }
+    );
+    gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
+  },
+};
+
+const BusCacheToIO = {
+  value: "",
+  target: ".box-data",
+  time: 3000 * nsp,
+  anim: (val, h, w) => {
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.325, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.325 },
+      { x: w * 0.182, duration: 1 * nsp, delay: 1 * nsp }
+    );
+    gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
+  },
+};
 ////////////////////////////////////////////////
 
 
