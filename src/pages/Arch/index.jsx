@@ -588,8 +588,6 @@ console.log("anim",props.anim);
                 window.location.reload(false);
         }}>return</button>
         <br /><br />
-        <label htmlFor="speed">Speed:{ props.Spe}</label>
-            <input type="range" min="1" max="100" id="speed" value={props.Spe}  onChange={(e) => props.setspe(Number(e.target.value))} />
             <div>
                 <button className="control" onClick={previous} id="previous">previous</button>
                 <button className="control" onClick={next} id="next" >next</button>
