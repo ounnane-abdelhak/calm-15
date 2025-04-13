@@ -4,9 +4,9 @@ class MC {
   constructor() {
     this.rim = new Register();
     this.ram = new Register();
-    this.stack =new Array(65535); //size à revoir
-    this.data =new Array(65535);
-    this.code =new Array(65535);
+    this.stack = new Array(65535); //size à revoir
+    this.data = new Array(65535);
+    this.code = new Array(65535);
     this.cache = new Cache(6553);
   }
 
@@ -29,7 +29,7 @@ class MC {
   }
   read(isCode) {
     let address = parseInt(this.ram, 2);
-    
+
     if (isCode) {
       this.rim = this.code[address];
     } else {
@@ -45,7 +45,7 @@ class MC {
       this.rim = this.data[address];
 
       //Store in Cache
-      this.cache.set(address, this.rim);
+      // this.cache.set(address, this.rim);
     }
   }
 
