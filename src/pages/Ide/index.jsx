@@ -16,7 +16,7 @@ import AddressingModes from "../../Emulator/Adressing.js";
 import { generalPurposeRegister,Register } from "../../Emulator/Register.js";
 import { TwosComplement } from "../../Emulator/ALU.js";
 import Arch from '../Arch/index.jsx';
-import { getSpeed, setSpeed } from '../../Emulator/Instruction.js';
+import { getSpeed, setSpeed} from '../../Emulator/Instruction.js';
 ///// import editor styles//////
 import "../../codemirror/lib/codemirror.css"
 import "../../codemirror/theme/material.css";
@@ -104,10 +104,30 @@ const Ide = ({currentUser})=>{
   let [iscode,setIsCode]=useState(true);
   let [iserr,seterr]=useState(false);
   let [Speed,setspeed]=useState(getSpeed());
-  let [rescode,setrescode]=useState("")
+  let [spmess,setspmess]=useState("normal speed")
   let offset=0;
   let offset2=0;
-useEffect(()=>{setSpeed(Speed)},[Speed])
+
+
+useEffect(()=>{setSpeed(Speed)
+switch (Speed) {
+  case 1:
+    setspmess("slow speed");
+    break;
+    case 2:
+      setspmess("normal speed");
+      break;
+      case 3:
+        setspmess("fast speed");
+        break;
+        case 4:
+          setspmess("very fast speed");
+          break;
+  default:
+    break;
+}
+
+},[Speed])
   ///////////////////////////////executions function////////////////////////////////////////
 
   const traitement= (codeArray)=>{
@@ -829,6 +849,11 @@ ${result}`}</pre>
       {simul && 
         <Arch anim={animations} mem={memory} Spe={Speed} setspe={setspeed} flags={Alu1.getAllFlags()} reg={Registers} theCTX={Contextarray}/>
       }
+      <div className='speed'> 
+        <label htmlFor="speed">{spmess}</label>
+        <input type="range" min="1" max="4" id="speed" value={Speed}  onChange={(e) => setspeed(Number(e.target.value))} />
+        </div>
+
     </>
   )
 }

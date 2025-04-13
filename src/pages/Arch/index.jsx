@@ -798,40 +798,17 @@ const Arch = (props) => {
             </table>
           </div>
         </div>
-        <button
-          className="returnBtn"
-          onClick={() => {
-            window.location.reload(false);
-          }}
-        >
-          return
-        </button>
-        <br />
-        <br />
-        <label htmlFor="speed">Speed:{props.Spe}</label>
-        <input
-          type="range"
-          min="1"
-          max="100"
-          id="speed"
-          value={props.Spe}
-          onChange={(e) => props.setspe(Number(e.target.value))}
-        />
-        <div>
-          <button className="control" onClick={previous} id="previous">
-            previous
-          </button>
-          <button className="control" onClick={next} id="next">
-            next
-          </button>
-          <button className="control" onClick={continu} id="continue">
-            continue
-          </button>
-          <button className="control" onClick={stop} id="stop">
-            stop
-          </button>
-        </div>
-      </div>
+        <button className="returnBtn" onClick={()=>{
+                window.location.reload(false);
+        }}>return</button>
+        <br /><br />
+            <div>
+                <button className="control" onClick={previous} id="previous">previous</button>
+                <button className="control" onClick={next} id="next" >next</button>
+                <button className="control" onClick={continu} id="continue">continue</button>
+                <button className="control" onClick={stop} id="stop" >stop</button>
+            </div>
+    </div>
     </>
   );
 };

@@ -1,10 +1,10 @@
 import  {BR,IR,memory} from "../pages/Ide";
 import { gsap } from "gsap";
-import { getSpeed } from "./Instruction";
+import { getSpeed,speed } from "./Instruction";
 
-let speed = getSpeed();
-
-
+let sp = getSpeed();
+let sp2=sp/1.5;
+let nsp=1/(sp2*1.1);
 
 function hex2bin(hex){
     return ("00000000" + (parseInt(hex, 16)).toString(2)).substr(-8);
@@ -46,513 +46,504 @@ function TwosComplement(num,size) { //a is a string
 const addanim={
     value:"",
     target:".ALU",
-    time:2000,
+    time:2000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".ALU",{opacity:"0"},{opacity:"1" ,duration:1});
-        gsap.fromTo(".ALU",{opacity:"1"},{opacity:"0" ,duration:1,delay:1});
+        gsap.fromTo(".ALU",{opacity:"0"},{opacity:"1" ,duration:1 * nsp});
+        gsap.fromTo(".ALU",{opacity:"1"},{opacity:"0" ,duration:1 * nsp,delay:1 * nsp});
     },}
 const AccToADR={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1})
-  gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.705,duration:1,delay:1})
-  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1 * nsp})
+  gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.705,duration:1 * nsp,delay:1 * nsp})
+  gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
 const AccToBus={
     value:"",
     target:".ball",
-    time:4000,
+    time:4000 * nsp,
     anim:(val,h,w)=>{
-    ///depart: ( 39.7% , 54% )  W:1.4% ,H:2.812
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.282,y:h*0.923,opacity:"0"},{opacity:"1" ,duration:1});
-    gsap.fromTo(".ball",{x:w*0.282,y:h*0.923},{x:w*0.361 ,duration:1,delay:1});
-    gsap.to(".ball",{y:h*0.56 ,duration:1,delay:2});
-    gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.282,y:h*0.923,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
+    gsap.fromTo(".ball",{x:w*0.282,y:h*0.923},{x:w*0.361 ,duration:1 * nsp,delay:1 * nsp});
+    gsap.to(".ball",{y:h*0.56 ,duration:1 * nsp,delay:2 * nsp});
+    gsap.to(".ball",{opacity:"0" ,duration:1 * nsp,delay:3 * nsp});
   },}
   const AccToRUAL2={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1})
-  gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.262,duration:1,delay:1})
-  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1 * nsp})
+  gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.262,duration:1 * nsp,delay:1 * nsp})
+  gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
 
   const AccToRUAL1={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1})
-  gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.106,duration:1,delay:1})
-  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1 * nsp})
+  gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.106,duration:1 * nsp,delay:1 * nsp})
+  gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
 const RegToRual2={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.44,opacity:"0"},{opacity:"1",duration:1})
-  gsap.fromTo(".box-data",{x:w*0.44},{x:w*0.106,duration:1,delay:1})
-  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".box-data",{x:w*0.44,opacity:"0"},{opacity:"1",duration:1 * nsp})
+  gsap.fromTo(".box-data",{x:w*0.44},{x:w*0.106,duration:1 * nsp,delay:1 * nsp})
+  gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
   const AccToMDR={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1})
-  gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.497,duration:1,delay:1})
-  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".box-data",{x:w*0.321,opacity:"0"},{opacity:"1",duration:1 * nsp})
+  gsap.fromTo(".box-data",{x:w*0.321},{x:w*0.497,duration:1 * nsp,delay:1 * nsp})
+  gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
   const fitToBr={
     value:"",
     target:".ball",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.8815,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.8815,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
     // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
     // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
   const infitToBr={
     value:"",
     target:".ball",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
         // gsap.fromTo(".ball",{x:w*0.442,y:h*0.8815,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
         // gsap.fromTo(".ball",{x:w*0.442,y:h*0.8815,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
         // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
-        gsap.to(".ball",{opacity:"0" ,duration:1});
+        gsap.to(".ball",{opacity:"0" ,duration:1 * nsp});
     },}
     const infitToIr={
         value:"",
         target:".ball",
-        time:1000,
+        time:1000 * nsp,
         anim:(val,h,w)=>{
             // gsap.fromTo(".ball",{x:w*0.442,y:h*0.8815,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
             // gsap.fromTo(".ball",{x:w*0.442,y:h*0.8815,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
             // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
-            gsap.to(".ball",{opacity:"0" ,duration:1});
+            gsap.to(".ball",{opacity:"0" ,duration:1 * nsp});
         },}
     const fitToIr={
         value:"",
         target:".ball",
-        time:1000,
+        time:1000 * nsp,
         anim:(val,h,w)=>{
-        gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.055,x:w*0.6,y:h*0.6495,opacity:"0"},{opacity:"1" ,duration:1});
+        gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.055,x:w*0.6,y:h*0.6495,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
         // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.055,duration:1,delay:1});
         // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
       },}
 const AluToAcc={
     value:"",
     target:".ball",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    ///depart: ( 30.3% , 83.5% )  W:1.4% ,H:2.812
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.226,y:h*0.863,opacity:"0"},{opacity:"1" ,duration:1});
-    gsap.fromTo(".ball",{x:w*0.226,y:h*0.863},{y:h*0.877 ,duration:1,delay:1});
-    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.226,y:h*0.863,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
+    gsap.fromTo(".ball",{x:w*0.226,y:h*0.863},{y:h*0.877 ,duration:1 * nsp,delay:1 * nsp});
+    gsap.to(".ball",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
 const infitToMar={
     value:"",
     target:".ball",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
     // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.032,height:h*0.14,x:w*0.623,y:h*0.165,opacity:"0"},{opacity:"1" ,duration:1});
     // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.032,height:h*0.14,duration:1,delay:1});
-    gsap.to(".ball",{opacity:"0" ,duration:1});
+    gsap.to(".ball",{opacity:"0" ,duration:1 * nsp});
   },}
 let queueExitToBus={
     value:"",
     target:".ball",
-    time:4000,
+    time:4000 * nsp,
     anim:(val,h,w)=>{
-            gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.726,y:h*0.6638,opacity:"0"},{opacity:"1" ,duration:1});
-            gsap.fromTo(".ball",{x:w*0.726,y:h*0.6638},{x:w*0.715 ,duration:1,delay:1});
-            gsap.to(".ball",{y:h*0.555 ,duration:1,delay:2});
-            gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
+            gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.726,y:h*0.6638,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
+            gsap.fromTo(".ball",{x:w*0.726,y:h*0.6638},{x:w*0.715 ,duration:1 * nsp,delay:1 * nsp});
+            gsap.to(".ball",{y:h*0.555 ,duration:1 * nsp,delay:2 * nsp});
+            gsap.to(".ball",{opacity:"0" ,duration:1 * nsp,delay:3 * nsp});
     }
 }
 const BusToMdr={
     value:"",
     target:".ball",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    ///depart: ( 51.8% , 43.2% )
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.539,y:h*0.465,opacity:"0"},{opacity:"1" ,duration:1});
-    gsap.fromTo(".ball",{x:w*0.539,y:h*0.465},{y:h*0.445 ,duration:1,delay:1});
-    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.539,y:h*0.465,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
+    gsap.fromTo(".ball",{x:w*0.539,y:h*0.465},{y:h*0.445 ,duration:1 * nsp,delay:1 * nsp});
+    gsap.to(".ball",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
 },}
 
 let queueExitToMdr={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1})
-        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.497,duration:1,delay:1})
-        gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1 * nsp})
+        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.497,duration:1 * nsp,delay:1 * nsp})
+        gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
     }
 }
 let queueExitToAcc={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1})
-        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.321,duration:1,delay:1})
-        gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1 * nsp})
+        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.321,duration:1 * nsp,delay:1 * nsp})
+        gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
     }
 }
 let queueExitToRual1={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1})
-        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.106,duration:1,delay:1})
-        gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1 * nsp})
+        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.106,duration:1 * nsp,delay:1 * nsp})
+        gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
     }
 }
 
 let queueExitToRual2={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1})
-        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.262,duration:1,delay:1})
-        gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1 * nsp})
+        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.262,duration:1 * nsp,delay:1 * nsp})
+        gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
     }
 }
 const ADRbusToDATABus={
     value:"",
     target:".ball",
-    time:1800,
+    time:1800 * nsp,
     anim:(val,h,w)=>{
-    ///depart: ( 69% , 13.7% )
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.746,y:h*0.46,opacity:"0"},{opacity:"1" ,duration:0.5});
-    gsap.fromTo(".ball",{x:w*0.746,y:h*0.46},{y:h*0.26 ,duration:0.8,delay:0.5});
-    gsap.to(".ball",{opacity:"0" ,duration:0.5,delay:1.3});
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.746,y:h*0.46,opacity:"0"},{opacity:"1" ,duration:0.5 * nsp});
+    gsap.fromTo(".ball",{x:w*0.746,y:h*0.46},{y:h*0.26 ,duration:0.8 * nsp,delay:0.5 * nsp});
+    gsap.to(".ball",{opacity:"0" ,duration:0.5 * nsp,delay:1.3 * nsp});
   },}
 let queueExitToAdr={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1})
-        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.71,duration:1,delay:1})
-        gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1 * nsp})
+        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.71,duration:1 * nsp,delay:1 * nsp})
+        gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
     }
 }
 let queueExitToReg={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1})
-        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.44,duration:1,delay:1})
-        gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+        gsap.fromTo(".box-data",{x:w*0.68,opacity:"0"},{opacity:"1",duration:1 * nsp})
+        gsap.fromTo(".box-data",{x:w*0.68},{x:w*0.44,duration:1 * nsp,delay:1 * nsp})
+        gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
     }
 }
 
 const ADRToMAR={
     value:"",
     target:".box-ADR",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-ADR",{x:w*0.712,opacity:"0"},{opacity:"1",duration:1})
-    gsap.fromTo(".box-ADR",{x:w*0.712},{x:w*0.648,duration:1,delay:1})
-    gsap.to(".box-ADR",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".box-ADR",{x:w*0.712,opacity:"0"},{opacity:"1",duration:1 * nsp})
+    gsap.fromTo(".box-ADR",{x:w*0.712},{x:w*0.648,duration:1 * nsp,delay:1 * nsp})
+    gsap.to(".box-ADR",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
   const fitToMdr={
     value:"",
     target:".ball",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.11,height:h*0.06,x:w*0.49,y:h*0.38,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.11,height:h*0.06,x:w*0.49,y:h*0.38,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
     //gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.11,height:h*0.06,duration:1,delay:1});
     //gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
   const infitToMdr={
     value:"",
     target:".ball",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
         // gsap.fromTo(".ball",{x:w*0.49,y:h*0.38,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
         // gsap.fromTo(".ball",{x:w*0.49,y:h*0.38,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
         // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
-        gsap.to(".ball",{opacity:"0" ,duration:1});
+        gsap.to(".ball",{opacity:"0" ,duration:1 * nsp});
     },}
   const fitToMar={
     value:"",
     target:".ball",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.032,height:h*0.14,x:w*0.623,y:h*0.165,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.032,height:h*0.14,x:w*0.623,y:h*0.165,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
     // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.032,height:h*0.14,duration:1,delay:1});
     // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
   const MdrToBus={
     value:"",
     target:".ball",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    ///depart: ( 51.8% , 43.2% )
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.539,y:h*0.445,opacity:"0"},{opacity:"1" ,duration:1});
-    gsap.fromTo(".ball",{x:w*0.539,y:h*0.445},{y:h*0.465 ,duration:1,delay:1});
-    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.539,y:h*0.445,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
+    gsap.fromTo(".ball",{x:w*0.539,y:h*0.445},{y:h*0.465 ,duration:1 * nsp,delay:1 * nsp});
+    gsap.to(".ball",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
   const MdrToRual2={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1})
-  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.262,duration:1,delay:1})
-  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1 * nsp})
+  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.262,duration:1 * nsp,delay:1 * nsp})
+  gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
   const MdrToRual1={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1})
-  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.106,duration:1,delay:1})
-  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1 * nsp})
+  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.106,duration:1 * nsp,delay:1 * nsp})
+  gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
   const fitToRual1={
     value:"",
     target:".ball",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"20px",width:w*0.067,height:h*0.05,x:w*0.12,y:h*0.658,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{borderRadius:"20px",width:w*0.067,height:h*0.05,x:w*0.12,y:h*0.658,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
     // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"20px",width:w*0.067,height:h*0.05,duration:1,delay:1});
     // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
   const fitToRual2={
     value:"",
     target:".ball",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"20px",width:w*0.067,height:h*0.05,x:w*0.275,y:h*0.658,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{borderRadius:"20px",width:w*0.067,height:h*0.05,x:w*0.275,y:h*0.658,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
     // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"20px",width:w*0.067,height:h*0.05,duration:1,delay:1});
     // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
   const BusToRual1={
     value:"",
     target:".ball",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    ///depart: ( 54% , 24,45% )
-    gsap.fromTo(".ball",{x:w*0.143,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1});
-    gsap.fromTo(".ball",{x:w*0.143,y:h*0.56},{y:h*0.625 ,duration:1,delay:1});
-    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".ball",{x:w*0.143,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
+    gsap.fromTo(".ball",{x:w*0.143,y:h*0.56},{y:h*0.625 ,duration:1 * nsp,delay:1 * nsp});
+    gsap.to(".ball",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
   const BusToRual2={
     value:"",
     target:".ball",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    ///depart: ( 54% , 35,2% )
-    gsap.fromTo(".ball",{x:w*0.299,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1});
-    gsap.fromTo(".ball",{x:w*0.299,y:h*0.56},{y:h*0.625 ,duration:1,delay:1});
-    gsap.to(".ball",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".ball",{x:w*0.299,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
+    gsap.fromTo(".ball",{x:w*0.299,y:h*0.56},{y:h*0.625 ,duration:1 * nsp,delay:1 * nsp});
+    gsap.to(".ball",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
   const MdrToADR={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1})
-  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.705,duration:1,delay:1})
-  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1 * nsp})
+  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.705,duration:1 * nsp,delay:1 * nsp})
+  gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
   const BusToAcc={
     value:"",
     target:".ball",
-    time:4000,
+    time:4000 * nsp,
     anim:(val,h,w)=>{
-    ///depart: ( 39.7% , 54% )  W:1.4% ,H:2.812
-    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.361,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1});
-    gsap.fromTo(".ball",{x:w*0.361,y:h*0.56},{y:h*0.923 ,duration:1,delay:1});
-    gsap.to(".ball",{x:w*0.282 ,duration:1,delay:2});
-    gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
+    gsap.fromTo(".ball",{height:"2.812%",width:"1.4%",borderRadius:"50%",x:w*0.361,y:h*0.56,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
+    gsap.fromTo(".ball",{x:w*0.361,y:h*0.56},{y:h*0.923 ,duration:1 * nsp,delay:1 * nsp});
+    gsap.to(".ball",{x:w*0.282 ,duration:1 * nsp,delay:2 * nsp});
+    gsap.to(".ball",{opacity:"0" ,duration:1 * nsp,delay:3 * nsp});
   },}
   const fitToAcc={
     value:"",
     target:".ball",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.07,height:h*0.055,x:w*0.1995,y:h*0.91,opacity:"0"},{opacity:"1" ,duration:1});
+    gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.07,height:h*0.055,x:w*0.1995,y:h*0.91,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
     // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.07,height:h*0.055,duration:1,delay:1});
     // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
   },}
   const MDRToAcc={
     value:"",
     target:".box-data",
-    time:3000,
+    time:3000 * nsp,
     anim:(val,h,w)=>{
-    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1})
-  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.321,duration:1,delay:1})
-  gsap.to(".box-data",{opacity:"0" ,duration:1,delay:2});
+    gsap.fromTo(".box-data",{x:w*0.497,opacity:"0"},{opacity:"1",duration:1 * nsp})
+  gsap.fromTo(".box-data",{x:w*0.497},{x:w*0.321,duration:1 * nsp,delay:1 * nsp})
+  gsap.to(".box-data",{opacity:"0" ,duration:1 * nsp,delay:2 * nsp});
   },}
   const fitqueue6={
     value:"",
     target:".queue1",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue1",{opacity:"0"},{opacity:"1",duration:1});
+        gsap.fromTo(".queue1",{opacity:"0"},{opacity:"1",duration:1 * nsp});
   },}
   const fitqueue5={
     value:"",
     target:".queue2",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue2",{opacity:"0"},{opacity:"1",duration:1});
+        gsap.fromTo(".queue2",{opacity:"0"},{opacity:"1",duration:1 * nsp});
   },}
   const fitqueue4={
     value:"",
     target:".queue3",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue3",{opacity:"0"},{opacity:"1",duration:1});
+        gsap.fromTo(".queue3",{opacity:"0"},{opacity:"1",duration:1 * nsp});
   },}
   const fitqueue3={
     value:"",
     target:".queue4",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue4",{opacity:"0"},{opacity:"1",duration:1});
+        gsap.fromTo(".queue4",{opacity:"0"},{opacity:"1",duration:1 * nsp});
   },}
   const fitqueue2={
     value:"",
     target:".queue5",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue5",{opacity:"0"},{opacity:"1",duration:1});
+        gsap.fromTo(".queue5",{opacity:"0"},{opacity:"1",duration:1 * nsp});
   },}
   const fitqueue1={
     value:"",
     target:".queue6",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue6",{opacity:"0"},{opacity:"1",duration:1});
+        gsap.fromTo(".queue6",{opacity:"0"},{opacity:"1",duration:1 * nsp});
   },}
   
   const infitqueue6={
     value:"",
     target:".queue1",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue1",{opacity:"1"},{opacity:"0",duration:1});
+        gsap.fromTo(".queue1",{opacity:"1"},{opacity:"0",duration:1 * nsp});
   },}
   const infitqueue5={
     value:"",
     target:".queue2",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue2",{opacity:"1"},{opacity:"0",duration:1});
+        gsap.fromTo(".queue2",{opacity:"1"},{opacity:"0",duration:1 * nsp});
   },}
   const infitqueue4={
     value:"",
     target:".queue3",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue3",{opacity:"1"},{opacity:"0",duration:1});
+        gsap.fromTo(".queue3",{opacity:"1"},{opacity:"0",duration:1 * nsp});
   },}
   const infitqueue3={
     value:"",
     target:".queue4",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue4",{opacity:"1"},{opacity:"0",duration:1});
+        gsap.fromTo(".queue4",{opacity:"1"},{opacity:"0",duration:1 * nsp});
   },}
   const infitqueue2={
     value:"",
     target:".queue5",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue5",{opacity:"1"},{opacity:"0",duration:1});
+        gsap.fromTo(".queue5",{opacity:"1"},{opacity:"0",duration:1 * nsp});
   },}
   const infitqueue1={
     value:"",
     target:".queue6",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue6",{opacity:"1"},{opacity:"0",duration:1});
+        gsap.fromTo(".queue6",{opacity:"1"},{opacity:"0",duration:1 * nsp});
   },}
   const infitqueue2_1={
     value:"",
     target:".queue6",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue6",{opacity:"1"},{opacity:"0",duration:1});
-        gsap.fromTo(".queue5",{opacity:"1"},{opacity:"0",duration:1});
+        gsap.fromTo(".queue6",{opacity:"1"},{opacity:"0",duration:1 * nsp});
+        gsap.fromTo(".queue5",{opacity:"1"},{opacity:"0",duration:1 * nsp});
   },}
   const infitqueue4_3={
     value:"",
     target:".queue6",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue4",{opacity:"1"},{opacity:"0",duration:1});
-        gsap.fromTo(".queue3",{opacity:"1"},{opacity:"0",duration:1});
+        gsap.fromTo(".queue4",{opacity:"1"},{opacity:"0",duration:1 * nsp});
+        gsap.fromTo(".queue3",{opacity:"1"},{opacity:"0",duration:1 * nsp});
   },}
   const infitqueue6_5={
     value:"",
     target:".queue6",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue2",{opacity:"1"},{opacity:"0",duration:1});
-        gsap.fromTo(".queue1",{opacity:"1"},{opacity:"0",duration:1});
+        gsap.fromTo(".queue2",{opacity:"1"},{opacity:"0",duration:1 * nsp});
+        gsap.fromTo(".queue1",{opacity:"1"},{opacity:"0",duration:1 * nsp});
   },}
   const fitqueue4_3={
     value:"",
     target:".queue6",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue4",{opacity:"0"},{opacity:"1",duration:1});
-        gsap.fromTo(".queue3",{opacity:"0"},{opacity:"1",duration:1});
+        gsap.fromTo(".queue4",{opacity:"0"},{opacity:"1",duration:1 * nsp});
+        gsap.fromTo(".queue3",{opacity:"0"},{opacity:"1",duration:1 * nsp});
   },}
   const fitqueue6_5={
     value:"",
     target:".queue6",
-    time:1000,
+    time:1000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".queue2",{opacity:"0"},{opacity:"1",duration:1});
-        gsap.fromTo(".queue1",{opacity:"0"},{opacity:"1",duration:1});
+        gsap.fromTo(".queue2",{opacity:"0"},{opacity:"1",duration:1 * nsp});
+        gsap.fromTo(".queue1",{opacity:"0"},{opacity:"1",duration:1 * nsp});
   },}
   const MCanim={
     value:"",
     target:".MC",
-    time:2000,
+    time:2000 * nsp,
     anim:(val,h,w)=>{
-        gsap.fromTo(".MC",{opacity:"0"},{opacity:"1" ,duration:1});
-        gsap.fromTo(".MC",{opacity:"1"},{opacity:"0" ,duration:1,delay:1});
+        gsap.fromTo(".MC",{opacity:"0"},{opacity:"1" ,duration:1 * nsp});
+        gsap.fromTo(".MC",{opacity:"1"},{opacity:"0" ,duration:1 * nsp,delay:1 * nsp});
     },}
     const fitToIdr={
         value:"",
         target:".ball",
-        time:1000,
+        time:1000 * nsp,
         anim:(val,h,w)=>{
-        gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.8277,opacity:"0"},{opacity:"1" ,duration:1});
+        gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,x:w*0.442,y:h*0.8277,opacity:"0"},{opacity:"1" ,duration:1 * nsp});
         // gsap.fromTo(".ball",{height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
         // gsap.to(".ball",{opacity:"0" ,duration:1,delay:3});
       },}
       const infitToIdr={
         value:"",
         target:".ball",
-        time:1000,
+        time:1000 * nsp,
         anim:(val,h,w)=>{
             // gsap.fromTo(".ball",{x:w*0.442,y:h*0.8277,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
             // gsap.fromTo(".ball",{x:w*0.442,y:h*0.8277,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
             // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
-            gsap.to(".ball",{opacity:"0" ,duration:1});
+            gsap.to(".ball",{opacity:"0" ,duration:1 * nsp});
         },}
-
 class AddressingModes{
     constructor(){
         this.modesVal=[
