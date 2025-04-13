@@ -70,8 +70,8 @@ export class Lexer {
             t === 'NOT' ||
             t === 'SHL' ||
             t === 'SHR' ||
-            t === 'READ' ||
-            t === 'WRITE' ||
+            t === 'RD' ||
+            t === 'WRT' ||
             t === 'PUSH' ||
             t === 'POP' ||
             t === 'ROR' ||
@@ -84,8 +84,8 @@ export class Lexer {
             t === 'BIE' ||
             t === 'BSE' ||
             t === 'BRI' ||
-            t === 'READS' ||
-            t === 'WRITES'
+            t === 'RDS' ||
+            t === 'WRTS'
           ) {
             return {
               type: 'INST1',

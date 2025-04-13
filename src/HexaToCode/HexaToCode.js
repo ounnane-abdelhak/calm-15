@@ -95,10 +95,10 @@ function hexToBin(hexString) {
             newstr = "SHR";
             break;
           case "1000":
-            newstr = "READ";
+            newstr = "RD";
             break;
           case "1001":
-            newstr = "WRITE";
+            newstr = "WRT";
             break;
           case "1010":
             newstr = "PUSH";
@@ -117,7 +117,7 @@ function hexToBin(hexString) {
         }
   
      if(newstr!="error"){ 
-        if (newstr == 'READ' || newstr == 'WRITE') {
+        if (newstr == 'RD' || newstr == 'WRT') {
           return newstr;
         } else {
           if (str3==='1') {
@@ -223,10 +223,10 @@ function hexToBin(hexString) {
             newstr = "BRI";
             break;
           case "0011100":
-            newstr = "READS";
+            newstr = "RDS";
             break;
           case "0011101":
-            newstr = "WRITES";
+            newstr = "WRTS";
             break;
           default:
             newstr = "error";

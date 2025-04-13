@@ -1000,10 +1000,10 @@ class Sequenceur{
                     anim:fitToRual1.anim,
                 })
             }} else {
-                if (instrObject.name === "WRITE") {                    
+                if (instrObject.name === "WRT") {                    
                     instrObject.value1 = String.fromCharCode(parseInt(Registers[3].getvalue(),2));
                     instrObject.value2 = parseInt(Registers[3].getvalue(),2);
-                } else if (instrObject.name === 'READ') {
+                } else if (instrObject.name === 'RD') {
                     let readChar = prompt("Input:");
                     if (!readChar) {
                         readChar = "0";
@@ -1021,7 +1021,7 @@ class Sequenceur{
                 instrObject=hashmap[index].instrObject;
                 animateDecoderSequencer(animations,instrObject.name);
                 if(!(key=='0011010'| key =='0010000' | key =='0010001')){
-                    if (key == '0011100') { //READS Instruction
+                    if (key == '0011100') { //RDS Instruction
                         let str = prompt('String Input:');
                         if (!str) {
                             str = "$";
@@ -1035,7 +1035,7 @@ class Sequenceur{
                     adresse=parseInt(adresse,2);//hexa to decimal
                     instrObject.addresse1=adresse;
                     instrObject.taille=taille;
-                    if (key == '0011101') { //WRITES Instruction
+                    if (key == '0011101') { //WRTS Instruction
                         let str = "";
                         let count = 0;
                         while(memory.data[adresse] !== '24' && count < 256) {

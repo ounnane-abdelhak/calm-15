@@ -89,7 +89,7 @@ export class SemanticAnalysis {
 
 
                       case 'INST1':
-                        // ONE params instructions: INST1 ::=  NEG, NOT, SHL, SHR, READ, WRITE, READS, WRITES, PUSH, POP, ROR, ROL, CALL, BE, BNE, BS, BI, BIE, BSE, BR
+                        // ONE params instructions: INST1 ::=  NEG, NOT, SHL, SHR, RD, WRT, RDS, WRTS, PUSH, POP, ROR, ROL, CALL, BE, BNE, BS, BI, BIE, BSE, BR
                         //|                                                                          .               |
                         //|        Must have only one other param: it must be valid                  .               |
                         //|        or one param and other special chars: they must be valid  also  .                 |
@@ -99,7 +99,7 @@ export class SemanticAnalysis {
                         const functINST1 = ()=> {
                             var firstparam = lexicalList[i][1]
                             if (['NEG','NOT', 'SHL', 'SHR', 'PUSH', 'POP', 'ROR', 'ROL'].includes( lexicalList[i][0].value )) {
-                                //read or write from or to register only..
+                                //rd or write from or to register only..
                                 // Labels are not allowed
                                 if(firstparam){
                                     if (firstparam.type == 'REGISTER'  && lexicalList[i].length == 2) {
@@ -111,9 +111,9 @@ export class SemanticAnalysis {
                                 } else {
                                     Errorcalm.SemanticError.push(new Errorcalm("INST1 must have an operand",null,i))
                                 }
-                            }else if (lexicalList[i][0].value == "WRITE" || lexicalList[i][0].value == "READ") {
+                            }else if (lexicalList[i][0].value == "WRT" || lexicalList[i][0].value == "RD") {
                                 if (lexicalList[i].length !== 1) {
-                                    Errorcalm.LexicalError.push(new Errorcalm("Read and Write Instructions can't have operands",null,i));
+                                    Errorcalm.LexicalError.push(new Errorcalm("RD and WRT Instructions can't have operands",null,i));
                                 } else {
                                     this.Semanticlist.push([{type:lexicalList[i][0].type, value: lexicalList[i][0].value, adrmode:0 }]);
                                 }
@@ -153,7 +153,7 @@ export class SemanticAnalysis {
                                         // add addressing modes direct and indirect for labels
 
                                         //check if it's present in label list
-                                        if (lexicalList[i][0].value === 'READS' || lexicalList[i][0].value === 'WRITES') {
+                                        if (lexicalList[i][0].value === 'RDS' || lexicalList[i][0].value === 'WRTS') {
                                             if (lexicalList[i].length === 2) {
                                                 const isInLabel = Assembler.Labellist.some(obj => obj.name === lexicalList[i][1].value);
                                                 const isInStr = Assembler.STRlist.some(obj => obj.name === lexicalList[i][1].value);
@@ -287,7 +287,7 @@ export class SemanticAnalysis {
     
 
 
-    // ONE params instructions: INST1 ::=  NEG, NOT, SHL, SHR, READ, WRITE, PUSH, POP, ROR, ROL, CALL, BE, BNE, BS, BI, BIE, BSE, BR
+    // ONE params instructions: INST1 ::=  NEG, NOT, SHL, SHR, RD, WRT, PUSH, POP, ROR, ROL, CALL, BE, BNE, BS, BI, BIE, BSE, BR
     //|                                                                                         |
     //|        Must have only one other param: it must be valid                                 |
     //|        or one param and other special chars: they must be valid  also                   |

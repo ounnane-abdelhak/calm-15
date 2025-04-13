@@ -19,6 +19,9 @@ import { gsap } from "gsap";
 function Dec2bin(dec) {
   return ("00000000" + parseInt(dec, 10).toString(2)).substr(-8);
 }
+function Dec2bin2(dec) {
+  return ("00000000" + parseInt(dec, 10).toString(2));
+}
 function hex2bin(hex) {
   return (
     "0".repeat(16 - parseInt(hex, 16).toString(2).length) +
@@ -6748,7 +6751,7 @@ class InstructionREAD {
     this.register2 = 0;
     this.taille = 0;
     this.stepsNum = 1;
-    this.name = "READ";
+    this.name = "RD";
     this.steps = [
       () => {
         let chr = this.value1.charCodeAt(0);
@@ -6812,7 +6815,7 @@ class InstructionWRITE {
     this.register2 = 0;
     this.taille = 0;
     this.stepsNum = 1;
-    this.name = "WRITE";
+    this.name = "WRT";
     this.steps = [
       () => {
         ioUnit.buffer.setvalue(Registers[3].getvalue());
@@ -6874,7 +6877,7 @@ class InstructionREADS {
     this.register2 = 0;
     this.taille = 0;
     this.stepsNum = 1;
-    this.name = "READS";
+    this.name = "RDS";
     this.steps = [
       () => {
         let string = this.value1;
@@ -7094,7 +7097,7 @@ class InstructionWRITES {
     this.register2 = 0;
     this.taille = 0;
     this.stepsNum = 1;
-    this.name = "WRITES";
+    this.name = "WRTS";
 
     // Core steps remain unchanged, animation logic adapts dynamically
     this.steps = [

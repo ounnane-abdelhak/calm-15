@@ -226,7 +226,7 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
       if (tokens.length < 3) return 0;
       return isImmediate(tokens[2]) ? 4 : 2;
     }
-    if (inst === 'READS' || inst === 'WRITES') {
+    if (inst === 'RDS' || inst === 'WRTS') {
       if (tokens.length < 2) return 0;
       return 3;
     }
@@ -238,9 +238,9 @@ useEffect(()=>{setSpeed(Speed)},[Speed])
     if (inst === 'CALL') return 3;
     const noOpInst = new Set(['RET', 'PUSHA', 'POPA']);
     if (noOpInst.has(inst)) return 1;
-    const reducedInst = new Set(['NOT', 'NEG', 'SHL', 'SHR', 'READ', 'WRITE', 'PUSH', 'POP', 'ROR', 'ROL']);
+    const reducedInst = new Set(['NOT', 'NEG', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL']);
     if (reducedInst.has(inst)) {
-      if (inst === 'READ' || inst === 'WRITE') return 1;
+      if (inst === 'RD' || inst === 'WRT') return 1;
       if (tokens.length < 2) return 1;
       const operand = tokens[1];
       return (isImmediate(operand) || (operand.startsWith('[') && operand.endsWith(']'))) ? 2 : 1;

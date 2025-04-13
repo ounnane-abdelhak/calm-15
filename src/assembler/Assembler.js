@@ -487,7 +487,7 @@ export class  Assembler{
     static reg1=['R1', 'R2', 'R3', 'R4', 'ACC', 'BR', 'IDR', 'SR']
     static reg2=['R1R', 'R2R', 'R3R', 'ACCR', 'R1L', 'R2L', 'R3L', 'ACCL']
 
-    static excludedStrings = ['!', '"','\,', '#', '$', '%', '&', "'", '(', ')', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~','RET', 'PUSHA', 'POPA', 'NEG', 'NOT', 'SHL', 'SHR', 'READ', 'WRITE', 'PUSH', 'POP', 'ROR', 'ROL', 'CALL', 'BE', 'BNE', 'BS', 'BI', 'BIE', 'BSE', 'BR', 'NAND', 'CMP', 'MOV', 'ADD', 'SUB', 'MUL', 'DIV', 'AND', 'OR', 'XOR', 'NOR', 'R1', 'R2', 'R3', 'R4', 'ACC', 'BR', 'IDR', 'SR', 'R1R', 'R2R', 'R3R', 'ACCR', 'R1L', 'R2L', 'R3L', 'ACCL'];
+    static excludedStrings = ['!', '"','\,', '#', '$', '%', '&', "'", '(', ')', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~','RET', 'PUSHA', 'POPA', 'NEG', 'NOT', 'SHL', 'SHR', 'RD', 'WRT', 'RDS', 'WRTS', 'PUSH', 'POP', 'ROR', 'ROL', 'CALL', 'BE', 'BNE', 'BS', 'BI', 'BIE', 'BSE', 'BR', 'NAND', 'CMP', 'MOV', 'ADD', 'SUB', 'MUL', 'DIV', 'AND', 'OR', 'XOR', 'NOR', 'R1', 'R2', 'R3', 'R4', 'ACC', 'BR', 'IDR', 'SR', 'R1R', 'R2R', 'R3R', 'ACCR', 'R1L', 'R2L', 'R3L', 'ACCL'];
                       
 
     constructor(input,input2){
@@ -765,7 +765,7 @@ export class  Assembler{
                             
                     }
                 case 'INST1':
-                    if (['NEG', 'NOT', 'SHL', 'SHR', 'READ', 'WRITE', 'PUSH', 'POP', 'ROR', 'ROL'].includes(element.value)) {
+                    if (['NEG', 'NOT', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL'].includes(element.value)) {
                         var reg ;
                         var size  ;
                         var oppcode;
@@ -783,10 +783,10 @@ export class  Assembler{
                             case 'SHR':
                                 oppcode = '0111';
                                 break;
-                            case 'READ':
+                            case 'RD':
                                 oppcode = '1000';
                                 break;
-                            case 'WRITE':
+                            case 'WRT':
                                 oppcode = '1001';
                                 break;
                             case 'PUSH':
@@ -913,10 +913,10 @@ export class  Assembler{
                         case 'BRI':
                             oppcode = '31';
                             break;
-                            case 'READS':
+                            case 'RDS':
                             oppcode = '39'
                             break;
-                            case 'WRITES':
+                            case 'WRTS':
                             oppcode = '3B'
                             break;
                         default:
