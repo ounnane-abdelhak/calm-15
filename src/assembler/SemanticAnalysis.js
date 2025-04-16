@@ -113,7 +113,7 @@ export class SemanticAnalysis {
                                 }
                             }else if (lexicalList[i][0].value == "WRT" || lexicalList[i][0].value == "RD") {
                                 if (lexicalList[i].length !== 1) {
-                                    Errorcalm.LexicalError.push(new Errorcalm("RD and WRT Instructions can't have operands",null,i));
+                                    Errorcalm.LexicalError.push(new Errorcalm(`${lexicalList[i][0].value} Instruction can't have operands`,null,i));
                                 } else {
                                     this.Semanticlist.push([{type:lexicalList[i][0].type, value: lexicalList[i][0].value, adrmode:0 }]);
                                 }

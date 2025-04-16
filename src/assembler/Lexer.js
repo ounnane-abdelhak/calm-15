@@ -131,6 +131,10 @@ export class Lexer {
             } else {
               Lexer.Errors.push(new Errorcalm("Invalid string", "LEXER", line));
               Errorcalm.set_LexicalError(new Errorcalm("Invalid string", "LEXER", line));
+              return {
+                type: 'ERROR',
+                value: t
+              }
             }
           }
           

@@ -67,9 +67,9 @@ function hash(key){
         return 31;
     }else if(key=="1011"){//POP
         return 32;
-    }else if(key=="0011100"){//READS
+    }else if(key=="0011100"){//RDS
         return 33;
-    }else if(key=="0011101"){//WRITES
+    }else if(key=="0011101"){//WRTS
         return 34;
     }
 

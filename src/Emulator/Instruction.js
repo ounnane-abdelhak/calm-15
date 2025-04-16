@@ -6213,7 +6213,6 @@ class InstructionREADS {
         address++;
         address++;
         i++;
-        i++;
       }
       return animationSteps;
     };

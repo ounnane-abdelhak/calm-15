@@ -47,8 +47,10 @@ const handleRefresh = () => {
 function convertStrings(arr) {
   const result = [] ;
   for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr[i].length; j += 2) {
-      result.push(arr[i][j] + arr[i][j+1]);
+    if (arr[i]) {
+      for (let j = 0; j < arr[i].length; j += 2) {
+        result.push(arr[i][j] + arr[i][j+1]);
+      }
     }
   }
   return result;
@@ -165,7 +167,6 @@ switch (Speed) {
               memory.write();
               offset2++;
               }
-        console.log("here",mess)
           }
     while(instrobject.name!=="stop"){
       sequenceur.getinstrbyte(animations,true,Contextarray);
@@ -298,7 +299,7 @@ switch (Speed) {
       if (name) {
         name = name.toUpperCase();
       }
-      const params = match[3] ? match[3].split(/\s*,\s*/) : [];
+      const params = match[3] ? match[3].toUpperCase().split(/\s*,\s*/) : [];
       const body = (match[4] || '').split('\n');
   
       if (body) {
@@ -328,7 +329,6 @@ switch (Speed) {
     }
    
     let codeWithoutMacros = lines.replace(macroRegex, '');
-    console.log("your lines",lines2)
     codeWithoutMacros = codeWithoutMacros.split('\n').filter(line => line.trim() !== '');
 
     for (let lineIndex = 0; lineIndex < codeWithoutMacros.length; lineIndex++) {
@@ -386,11 +386,9 @@ switch (Speed) {
       }
     });
     
-  console.log("yourcode2",codeArray)
     if (labelTable) {
       labelTable.forEach((label) => {
         let pos = 0;
-         console.log("yournum",label.line)
         for (let i = 0; i < label.line; i++) {
 
           
@@ -400,7 +398,6 @@ switch (Speed) {
         label.line = pos;
       });
     }
-    console.log("codelabel",labelTable)
  let code2 = [];
  lines2.forEach(line => {
   let inQuotes = false;
@@ -432,7 +429,6 @@ switch (Speed) {
 });
 
 
-console.log("rwbf",code2)
  
  let newCodeArray = [];
  for (let i = 0; i < code2.length; i++) {
@@ -595,8 +591,6 @@ code[index]=hexaArray[index]+"//"+codeArray[index]
                       code+=HexaToCode(handleStoreCode(0)[m])+"\n";
                
                     } 
-                          console.log("hereeeee",handleStoreCode(0));
-                          console.log(code);
                     editor.setValue(code);
                     setChecktest(!checktest);
                     setIsCode(true);
@@ -668,10 +662,8 @@ code[index]=hexaArray[index]+"//"+codeArray[index]
                   }else{
                     inputouter=handleStoreCode(0);
                   }
-                  console.log("inputouter: ", inputouter);
                   let input=convertStrings(inputouter);
                   input.push("ff");
-                  console.log("input: ", input);
                   try {
                     Errorcalm.errorr = Errorcalm.LexicalError.length + Errorcalm.SemanticError.length;
                     if (Errorcalm.errorr === 0) {
@@ -716,8 +708,6 @@ console.log("the error",error)
                     // const editor = codeMirrorRef.current.editor;
                     // const code = editor.getValue(); // Get the current content of the editor
                     arr=handleStoreCode2();
-                    console.log(arr);
-                    console.log("old arr=",arr);
                     localStorage.setItem('arr', JSON.stringify(arr));
                     console.log("current local storage : ",localStorage.getItem('arr'))
                     window.location.reload();
