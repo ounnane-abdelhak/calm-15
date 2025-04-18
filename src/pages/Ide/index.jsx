@@ -757,8 +757,14 @@ console.log("the error",error)
                         setmemo(false)
                         setstk(false)
                         setCache(false)
+                        if (!localStorage.getItem('result')) {
+                          localStorage.setItem('result', JSON.stringify(result));
+                          setresult("")
+                        }
                       } else {
                         setreg(false)
+                        setresult(JSON.parse(localStorage.getItem('result')));
+                        localStorage.removeItem('result');
                       }
                     }}
                   >
@@ -773,8 +779,14 @@ console.log("the error",error)
                       setstk(false)
                       setreg(false)
                       setCache(false)
+                      if (!localStorage.getItem('result')) {
+                        localStorage.setItem('result', JSON.stringify(result));
+                        setresult("")
+                      }
                     } else {
                       setmemo(false)
+                      setresult(JSON.parse(localStorage.getItem('result')));
+                      localStorage.removeItem('result');
                     }
                   }}
                   >
@@ -789,8 +801,14 @@ console.log("the error",error)
                       setreg(false)
                       setmemo(false)
                       setCache(false)
+                      if (!localStorage.getItem('result')) {
+                        localStorage.setItem('result', JSON.stringify(result));
+                        setresult("")
+                      }
                     } else {
                       setstk(false)
+                      setresult(JSON.parse(localStorage.getItem('result')));
+                      localStorage.removeItem('result');
                     }
                     
                   }}>
@@ -805,8 +823,14 @@ console.log("the error",error)
                       setreg(false)
                       setmemo(false)
                       setCache(true)
+                      if (!localStorage.getItem('result')) {
+                        localStorage.setItem('result', JSON.stringify(result));
+                        setresult("")
+                      }
                     } else {
                       setCache(false)
+                      setresult(JSON.parse(localStorage.getItem('result')));
+                      localStorage.removeItem('result');
                     }
                   }}>
                     cache
