@@ -102,6 +102,7 @@ const Ide = ({currentUser})=>{
   let [memo,setmemo]=useState(false);
   let [reg,setreg]=useState(false);
   let [stk,setstk]=useState(false);//for showing stack
+  let [cache,setCache]=useState(false);//for showing cache
   let [isHexa,setIsHexa]=useState(false);
   let [iscode,setIsCode]=useState(true);
   let [iserr,seterr]=useState(false);
@@ -136,7 +137,7 @@ switch (Speed) {
     for(let i=0;i<50;i++){//initializing first 50 bytes in memory to 0 (data memory)
       memory.setRam(TwosComplement(i,8));
       memory.setRim("00000000");
-      memory.write();
+      memory.initialize();
     }
 
     memory.setcode(codeArray);
@@ -197,6 +198,19 @@ switch (Speed) {
     )
   });
 
+  let tablecache=[];
+      Array.from(memory.cache.getCache()).forEach( (element,index) => {
+    tablecache.push(
+      <tr>
+        <td>
+            {element[0]}
+        </td>
+        <td>
+            {element[1]}
+        </td>
+      </tr>
+    )
+  });
 
   let tablestk=[];
   memory.getstack().forEach((element,index) => {
@@ -548,14 +562,20 @@ code[index]=hexaArray[index]+"//"+codeArray[index]
   let [isRefreshed,setIsRefreshed]=useState(true);
 
   useEffect(()=>{
-      let storedArray = JSON.parse(localStorage.getItem('arr'));          
-      if(storedArray!=null){
-        storedArray=storedArray.join('\n');
-        localStorage.removeItem('arr');
-        setCode(storedArray);
-        setIsRefreshed(false);
-
-      }
+    let storedArray = JSON.parse(localStorage.getItem('arr'));          
+    if(storedArray!=null){
+      storedArray=storedArray.join('\n');
+      localStorage.removeItem('arr');
+      setCode(storedArray);
+      setIsRefreshed(false);
+    }
+    let restoredCode = JSON.parse(localStorage.getItem('restoreCode'));          
+    if(restoredCode){
+      restoredCode = restoredCode.replace(/\n{2,}/g, "\n");
+      localStorage.removeItem('restoreCode');
+      setCode(restoredCode);
+      setIsRefreshed(false);
+    }
   },[isRefreshed])
 
   return (
@@ -716,6 +736,12 @@ console.log("the error",error)
                   {!iserr &&< button 
                     className='ide-exec-button' 
                     onClick={()=>{
+                      const editor = codeMirrorRef.current.editor;
+                      let restoreCode = "";
+                      editor.display.maxLine.parent.lines.forEach(element => {
+                        restoreCode += element.text + "\n";
+                      });
+                      localStorage.setItem("restoreCode", JSON.stringify(restoreCode));
                       const parser = new UAParser();
                       const result = parser.getResult();
                       result.device.type==='mobile'? alert('Simulation not availble for this type of devices') : setsimul(true) ;
@@ -729,6 +755,7 @@ console.log("the error",error)
                       setreg(true)
                       setmemo(false)
                       setstk(false)
+                      setCache(false)
                     }}
                   >
                     registers
@@ -740,6 +767,7 @@ console.log("the error",error)
                     setmemo(true)
                     setstk(false)
                     setreg(false)
+                    setCache(false)
                   }}
                   >
                     memory
@@ -751,8 +779,20 @@ console.log("the error",error)
                     setstk(true)
                     setreg(false)
                     setmemo(false)
+                    setCache(false)
                   }}>
                     stack
+                  </button>
+                  }
+                  {!iserr &&<button 
+                  className='ide-exec-button' 
+                  onClick={()=>{
+                    setstk(false)
+                    setreg(false)
+                    setmemo(false)
+                    setCache(true)
+                  }}>
+                    cache
                   </button>
                   }
                 </div>
@@ -808,6 +848,21 @@ console.log("the error",error)
                         </td>
                     </tr>
                         {tablec}
+                    </tbody>
+                  </table>
+                }
+                {cache && 
+                  <table className="contentTableMCIde" style={{fontFamily: "JetBrains Mono"}}>
+                    <tbody>
+                    <tr>
+                        <td style={{color:"#1BE985"}}>
+                            key
+                        </td>
+                        <td style={{color:"#1BE985"}}>
+                            value
+                        </td>
+                    </tr>
+                        {tablecache}
                     </tbody>
                   </table>
                 }
