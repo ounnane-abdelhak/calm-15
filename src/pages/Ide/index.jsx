@@ -752,10 +752,14 @@ console.log("the error",error)
                   {!iserr &&<button 
                     className='ide-exec-button' 
                     onClick={()=>{
-                      setreg(true)
-                      setmemo(false)
-                      setstk(false)
-                      setCache(false)
+                      if (!reg) {
+                        setreg(true)
+                        setmemo(false)
+                        setstk(false)
+                        setCache(false)
+                      } else {
+                        setreg(false)
+                      }
                     }}
                   >
                     registers
@@ -764,10 +768,14 @@ console.log("the error",error)
                   {!iserr &&<button 
                   className='ide-exec-button' 
                   onClick={()=>{
-                    setmemo(true)
-                    setstk(false)
-                    setreg(false)
-                    setCache(false)
+                    if (!memo) {
+                      setmemo(true)
+                      setstk(false)
+                      setreg(false)
+                      setCache(false)
+                    } else {
+                      setmemo(false)
+                    }
                   }}
                   >
                     memory
@@ -776,10 +784,15 @@ console.log("the error",error)
                   {!iserr &&<button 
                   className='ide-exec-button' 
                   onClick={()=>{
-                    setstk(true)
-                    setreg(false)
-                    setmemo(false)
-                    setCache(false)
+                    if (!stk) {
+                      setstk(true)
+                      setreg(false)
+                      setmemo(false)
+                      setCache(false)
+                    } else {
+                      setstk(false)
+                    }
+                    
                   }}>
                     stack
                   </button>
@@ -787,10 +800,14 @@ console.log("the error",error)
                   {!iserr &&<button 
                   className='ide-exec-button' 
                   onClick={()=>{
-                    setstk(false)
-                    setreg(false)
-                    setmemo(false)
-                    setCache(true)
+                    if (!cache) {
+                      setstk(false)
+                      setreg(false)
+                      setmemo(false)
+                      setCache(true)
+                    } else {
+                      setCache(false)
+                    }
                   }}>
                     cache
                   </button>
