@@ -3,35 +3,145 @@ import { useState, useRef } from "react";
 import Archi2 from "../../assets/newarchi.png";
 import gsap from "gsap";
 import queuearrow from "../../assets/images/icons/fleche.png";
+import { Registers, memory } from "../Ide";
 
 //////////////////////////////////////
 
+const decimalToBinary = (dec) => {
+  return dec.toString(2).padStart(16, '0')
+}
+
+const decimalToHexa = (dec) => {
+  return Number(dec).toString(16);
+}
+
+const hexadecimalToBinary = (hex) => {
+  return hex.split('')
+            .map(char => parseInt(char, 16).toString(2).padStart(4, '0'))
+            .join('')
+            .padStart(16, "0");
+}
+
+const isBinary = (str) => {
+  return /^[01]+$/.test(str);
+}
+
+let tablec = [];
+let MCen = memory.getData();
+
+const initialization = () => {
+  const code = JSON.parse(localStorage.getItem('restoreCode'));
+  const codeArray = code.replace(/\n{2,}/g, "\n").trim().split('\n');
+  let result = [];
+  codeArray.forEach(element => {
+    result.push(element.trim().split(""));
+  });
+  let strings = "";
+  if (result && result[0][0]+result[0][1]+result[0][2]) {
+    if ((result[0][0]+result[0][1]+result[0][2]).toLowerCase() === "str") {
+      for (let i = 0; i < result.length; i++) {
+        if ((result[i][0]+result[i][1]+result[i][2]).toLowerCase() === "str") {
+          let line = "";
+          result[i].forEach(element => {
+            line += element;
+          });
+          strings += line.slice(line.indexOf("\"")+1, line.length-1);
+        }
+      }
+        let j = 0;
+        MCen.forEach((element, index) => {
+          if (strings[index-1]) {
+            j = 2*index;
+            tablec.push(
+              <tr>
+                <td>{j-1}</td>
+                <td>{decimalToHexa(strings[index-1].charCodeAt(0))}</td>
+              </tr>
+            );
+            tablec.push(
+              <tr>
+                <td>{j}</td>
+                <td>00</td>
+              </tr>
+            );
+          } else {
+            j++;
+            tablec.push(
+              <tr>
+                <td>{j}</td>
+                <td>00000000</td>
+              </tr>
+            );
+          }
+        });
+    } else {
+      MCen.forEach((element, index) => {
+        tablec.push(
+            <tr>
+              <td>{index - 1}</td>
+              <td>00000000</td>
+            </tr>
+          );
+      });
+    }
+  } else {
+    MCen.forEach((element, index) => {
+      tablec.push(
+          <tr>
+            <td>{index - 1}</td>
+            <td>00000000</td>
+          </tr>
+        );
+    });
+  }
+}
+
 const Arch = (props) => {
+
+  initialization();
+
   let [dataBusText, setDataBusText] = useState("");
   let [AdrBusText, setAdrBusText] = useState("");
+  let [reg1, setReg1] = useState("0000000000000000");
+  let [reg2, setReg2] = useState("0000000000000000");
+  let [reg3, setReg3] = useState("0000000000000000");
+  let [reg4, setReg4] = useState("0000000000000000");
+  let [regIdr, setRegIdr] = useState("0000000000000000");
+  let [regIr, setRegIr] = useState("0000000000000000");
+  let [regIp, setRegIp] = useState("0000000000000000");
+  let [regBr, setRegBr] = useState("0000000000000000");
+  let [regSr, setRegSr] = useState("0000000000000000");
+  let [regAcc, setRegAcc] = useState("0000000000000000");
+  let [zeroFlag, setZeroFlag] = useState(0);
+  let [signFlag, setSignFlag] = useState(0);
+  let [carryFlag, setCarryFlag] = useState(0);
+  let [parityFlag, setParityFlag] = useState(0);
+  let [pairImpairFlag, setPairImpairFlag] = useState(0);
+  let [overflowFlag, setOverflowFlag] = useState(0);
+  let [interruptFlag, setInterruptFlag] = useState(0);
+  let [ioFlag, setIoFlag] = useState(0);
+  let [memoryContent, setMemoryContent] = useState(tablec);
   let [ballText, setballText] = useState("");
   let [ball2Text, setball2Text] = useState(0);
   let [IPval, setipval] = useState(0);
   let [AluVal, setAluVal] = useState("");
   let [MCVal, setMCVal] = useState("");
   let [CacheVal, setCacheVal] = useState("");
-  let MC = props.mem.getData();
-  let tablec = [];
-
-  MC.forEach((element, index) => {
-    tablec.push(
-      <tr>
-        <td>{index}</td>
-        <td>{element}</td>
-      </tr>
-    );
-  });
 
   ///////////////to add delay////////////////////////
   let thecontext = [...props.theCTX];
   console.log("the context : " + thecontext);
   let tmpctx = 0;
   let done = 0;
+
+  const updateElementAtIndex = (index, newElement) => {
+    setMemoryContent(prevElements => {
+      const updated = [...prevElements];
+      updated[index] = newElement;
+      return updated;
+    })
+  }
+
   const animate = (i, animation, h, w, dl, chaine) => {
     setTimeout(function () {
       if (animation.target === ".ball") {
@@ -54,6 +164,7 @@ const Arch = (props) => {
         }
       } else if (animation.target === "IP") {
         IPval = IPval + 2;
+        setRegIp(decimalToBinary(IPval));
         setipval(IPval);
       } else if (animation.target === ".ALU") {
         setAluVal(animation.value);
@@ -61,6 +172,139 @@ const Arch = (props) => {
         setMCVal(animation.value);
       } else if (animation.target === ".Cache") {
         setCacheVal(animation.value);
+      }
+
+      if (animation.flag) {
+        switch (animation.flag) {
+          case "0-ZERO":
+            setZeroFlag(prev => { return 0 });
+            break;
+          case "1-ZERO":
+            setZeroFlag(prev => { return 1 });
+            break;
+          case "0-SIGN":
+            setSignFlag(prev => { return 0 });
+            break;
+          case "1-SIGN":
+            setSignFlag(prev => { return 1 });
+            break;
+          case "0-CARRY":
+            setCarryFlag(prev => { return 0 });
+            break;
+          case "1-CARRY":
+            setCarryFlag(prev => { return 1 });
+            break;
+          case "0-PARITY":
+            setParityFlag(prev => { return 0 });
+            break;
+          case "1-PARITY":
+            setParityFlag(prev => { return 1 });
+            break;
+          case "0-PAIRIMPAIR":
+            setPairImpairFlag(prev => { return 0 });
+            break;
+          case "1-PAIRIMPAIR":
+            setPairImpairFlag(prev => { return 1 });
+            break;
+          case "0-OVERFLOW":
+            setOverflowFlag(prev => { return 0 });
+            break;
+          case "1-OVERFLOW":
+            setOverflowFlag(prev => { return 1 });
+            break;
+          case "0-INTERRUPT":
+            setInterruptFlag(prev => { return 0 });
+            break;
+          case "1-INTERRUPT":
+            setInterruptFlag(prev => { return 1 });
+            break;
+          case "IO":
+            setIoFlag(prev => prev + 1);
+            break;
+          case "END-IO":
+            setIoFlag(prev => prev - 1);
+            break;
+          default:
+            break;
+        }
+      }
+
+      if (animation.nom && animation.nom === 'ACC') {
+        console.log("ACC animation", animation)
+      }
+
+      if (animation.nom && animation.value !== "") {
+        switch (animation.nom) {
+          case 'R1':
+            setReg1(prev => {return decimalToBinary(animation.value)})
+          break;
+          case 'R2':
+            setReg2(prev => {return decimalToBinary(animation.value)})
+          break;
+          case 'R3':
+            setReg3(prev => {return decimalToBinary(animation.value)})
+          break;
+          case 'R4':
+            setReg4(prev => {return decimalToBinary(animation.value)})
+          break;
+          case 'IDR':
+            setRegIdr(prev => {return decimalToBinary(animation.value)})
+          break;
+          case 'SR':
+            setRegSr(prev => {return decimalToBinary(animation.value)})
+          break;
+          case 'BR':
+            setRegBr(prev => {return decimalToBinary(animation.value)})
+          break;
+          case 'ACC':
+            setRegAcc(prev => {return decimalToBinary(animation.value)})
+          break;
+          default:
+            break;
+        }
+      }
+
+      if (animation.name && animation.name === 'IR') {
+        if (isBinary(animation.value)) {
+          setRegIr(prev => {return animation.value.padStart(16, '0')})
+        } else {
+          setRegIr(prev => {return hexadecimalToBinary(animation.value)})
+        }
+      }
+
+      if (animation.value === 'WRITE' && animation.name !== "cacheMem") {
+        if (animation.taille) {
+          if (animation.taille == 0) {
+            const element = <tr>
+                              <td>{animation.address + 1}</td>
+                              <td>{animation.content[0] + animation.content[1]}</td>
+                            </tr>;
+            updateElementAtIndex(animation.address + 2, element);
+          } else {
+            const element = <tr>
+                              <td>{animation.address + 1}</td>
+                              <td>{animation.content[0] + animation.content[1]}</td>
+                            </tr>;
+            const element1 =  <tr>
+                                <td>{animation.address}</td>
+                                <td>{animation.content[2] + animation.content[3]}</td>
+                              </tr>;
+            updateElementAtIndex(animation.address + 1, element1);
+            updateElementAtIndex(animation.address + 2, element);
+          }
+        } else {
+          const element = <tr>
+                            <td>{animation.address + 1}</td>
+                            <td>{animation.content[0] + animation.content[1]}</td>
+                          </tr>;
+          const element1 =  <tr>
+                              <td>{animation.address}</td>
+                              <td>{animation.content[2] + animation.content[3]}</td>
+                            </tr>;
+          updateElementAtIndex(animation.address + 1, element1);
+          updateElementAtIndex(animation.address + 2, element);
+        }
+        
       }
 
       if (
@@ -702,51 +946,63 @@ const Arch = (props) => {
           <h2 className="contentTableText">Registers</h2>
           <div className="contentTableDiv">
             <div className="aregister">
+              <p className="aregP">IP :</p>
+              <div className="aregC">
+                <p style={{ margin: "6px" }}>{regIp}</p>
+              </div>
+            </div>
+            <div className="aregister">
               <p className="aregP">R1 :</p>
               <div className="aregC">
-                <p style={{ margin: "6px" }}>{props.reg[0].getvalue()}</p>
+                <p style={{ margin: "6px" }}>{reg1}</p>
               </div>
             </div>
             <div className="aregister">
               <p className="aregP">R2 :</p>
               <div className="aregC">
-                <p style={{ margin: "6px" }}>{props.reg[1].getvalue()}</p>
+                <p style={{ margin: "6px" }}>{reg2}</p>
               </div>
             </div>
             <div className="aregister">
               <p className="aregP">R3 :</p>
               <div className="aregC">
-                <p style={{ margin: "6px" }}>{props.reg[2].getvalue()}</p>
+                <p style={{ margin: "6px" }}>{reg3}</p>
               </div>
             </div>
             <div className="aregister">
               <p className="aregP">R4 :</p>
               <div className="aregC">
-                <p style={{ margin: "6px" }}>{props.reg[3].getvalue()}</p>
+                <p style={{ margin: "6px" }}>{reg4}</p>
               </div>
             </div>
             <div className="aregister">
-              <p className="aregP">RI :</p>
+              <p className="aregP">IR :</p>
               <div className="aregC">
-                <p style={{ margin: "6px" }}>{props.reg[6].getvalue()}</p>
+                <p style={{ margin: "6px" }}>{regIr}</p>
               </div>
             </div>
             <div className="aregister">
-              <p className="aregP">RB :</p>
+              <p className="aregP">BR :</p>
               <div className="aregC">
-                <p style={{ margin: "6px" }}>{props.reg[5].getvalue()}</p>
+                <p style={{ margin: "6px" }}>{regBr}</p>
               </div>
             </div>
             <div className="aregister">
-              <p className="aregP">RS :</p>
+              <p className="aregP">SR :</p>
               <div className="aregC">
-                <p style={{ margin: "6px" }}>{props.reg[7].getvalue()}</p>
+                <p style={{ margin: "6px" }}>{regSr}</p>
               </div>
             </div>
             <div className="aregister">
-              <p className="aregP">Acc :</p>
+              <p className="aregP">IDR :</p>
               <div className="aregC">
-                <p style={{ margin: "6px" }}>{props.reg[4].getvalue()}</p>
+                <p style={{ margin: "6px" }}>{regIdr}</p>
+              </div>
+            </div>
+            <div className="aregister">
+              <p className="aregP">ACC :</p>
+              <div className="aregC">
+                <p style={{ margin: "6px" }}>{regAcc}</p>
               </div>
             </div>
           </div>
@@ -754,29 +1010,53 @@ const Arch = (props) => {
         <div>
           <h2 className="contentTableText">Flags</h2>
           <div className="contentTableDivFlags">
-            <div className="aflagdiv">
-              <p className="aflag">{props.flags[0]}</p>
+            <div className="aflagContainer">
+              <p className="aflagName">ZF</p>
+              <div className="aflagdiv">
+                <p className="aflag">{zeroFlag}</p>
+              </div>
             </div>
-            <div className="aflagdiv">
-              <p className="aflag">{props.flags[1]}</p>
+            <div className="aflagContainer">
+              <p className="aflagName">SF</p>
+              <div className="aflagdiv">
+                <p className="aflag">{signFlag}</p>
+              </div>
             </div>
-            <div className="aflagdiv">
-              <p className="aflag">{props.flags[2]}</p>
+            <div className="aflagContainer">
+              <p className="aflagName">CF</p>
+              <div className="aflagdiv">
+                <p className="aflag">{carryFlag}</p>
+              </div>
             </div>
-            <div className="aflagdiv">
-              <p className="aflag">{props.flags[3]}</p>
+            <div className="aflagContainer">
+              <p className="aflagName">PF</p>
+              <div className="aflagdiv">
+                <p className="aflag">{parityFlag}</p>
+              </div>
             </div>
-            <div className="aflagdiv">
-              <p className="aflag">{props.flags[4]}</p>
+            <div className="aflagContainer">
+              <p className="aflagName">PIF</p>
+              <div className="aflagdiv">
+                <p className="aflag">{pairImpairFlag}</p>
+              </div>
             </div>
-            <div className="aflagdiv">
-              <p className="aflag">{props.flags[5]}</p>
+            <div className="aflagContainer">
+              <p className="aflagName">OF</p>
+              <div className="aflagdiv">
+                <p className="aflag">{overflowFlag}</p>
+              </div>
             </div>
-            <div className="aflagdiv">
-              <p className="aflag">{props.flags[6]}</p>
+            <div className="aflagContainer">
+              <p className="aflagName">IF</p>
+              <div className="aflagdiv">
+                <p className="aflag">{interruptFlag}</p>
+              </div>
             </div>
-            <div className="aflagdiv">
-              <p className="aflag">{props.flags[7]}</p>
+            <div className="aflagContainer">
+              <p className="aflagName">IOF</p>
+              <div className="aflagdiv">
+                <p className="aflag">{ioFlag}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -793,7 +1073,7 @@ const Arch = (props) => {
                   <td>adresse</td>
                   <td>content</td>
                 </tr>
-                {tablec}
+                {memoryContent.slice(0, 51)}
               </tbody>
             </table>
           </div>

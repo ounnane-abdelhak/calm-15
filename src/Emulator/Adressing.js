@@ -1452,12 +1452,14 @@ class AddressingModes{
                 anim:fitToRual1.anim,
             });
             animations.push({
+                nom: "BR",
                 value:parseInt(BR.getvalue(),2),
                 target:fitToBr.target,
                 time:fitToBr.time,
                 anim:fitToBr.anim,
             });
             animations.push({
+                nom: "BR",
                 value:parseInt(BR.getvalue(),2),
                 target:infitToBr.target,
                 time:infitToBr.time,
@@ -1488,6 +1490,7 @@ class AddressingModes{
                 anim:AluToAcc.anim,
             });
             animations.push({
+                nom: "ACC",
                 value:adressenv,
                 target:fitToAcc.target,
                 time:fitToAcc.time,
@@ -1736,12 +1739,14 @@ class AddressingModes{
                 anim:fitToRual1.anim,
             });
             animations.push({
+                nom: "IDR",
                 value:parseInt(IR.getvalue(),2),
                 target:fitToIdr.target,
                 time:fitToIdr.time,
                 anim:fitToIdr.anim,
             });
             animations.push({
+                nom: "IDR",
                 value:parseInt(IR.getvalue(),2),
                 target:infitToIdr.target,
                 time:infitToIdr.time,
@@ -1772,6 +1777,7 @@ class AddressingModes{
                 anim:AluToAcc.anim,
             });
             animations.push({
+                nom: "ACC",
                 value:adressenv,
                 target:fitToAcc.target,
                 time:fitToAcc.time,
@@ -2092,6 +2098,7 @@ class AddressingModes{
                 anim:BusToAcc.anim,
             });
             animations.push({
+                nom: "ACC",
                 value:adresse,
                 target:fitToAcc.target,
                 time:fitToAcc.time,
@@ -2293,6 +2300,7 @@ class AddressingModes{
                     anim:BusToAcc.anim,
                 });
                 animations.push({
+                    nom: "ACC",
                     value:parseInt(memory.getRim(), 16),
                     target:fitToAcc.target,
                     time:fitToAcc.time,

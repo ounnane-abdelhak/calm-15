@@ -22,7 +22,7 @@ const HelpDoc = () => {
             <ul className="c7 lst-kix_xdeeteg9a996-0 start">
                 <li className="c0 c20 li-bullet-0">
                         <span className="c1">
-                            Zero operands instructions, which are: <b>RET, PUSHA, POPA</b>
+                            Zero operands instructions, which are: <b>RET, PUSHA, POPA, RD, WRT</b>
                         </span>
                 </li>
             </ul>
@@ -53,6 +53,22 @@ const HelpDoc = () => {
                         This instruction is used to pop values from the &nbsp;stack &nbsp;and store them in the main 8 registers.
                     </span>
                 </li>
+                <li className="c9 li-bullet-0">
+                    <span className="c1 c4">
+                        RD:
+                    </span>
+                    <span className="c3 c1">
+                        This instruction is used to read a single character from the input and store it by default in the register R4.
+                    </span>
+                </li>
+                <li className="c9 li-bullet-0">
+                    <span className="c1 c4">
+                        WRT:
+                    </span>
+                    <span className="c3 c1">
+                        This instruction is used to display a single character in the console stored by default in the register R4.
+                    </span>
+                </li>
             </ul>
             <ul className="c7 lst-kix_xdeeteg9a996-0">
                 <li className="c0 c20 li-bullet-0"><span className="c2 c1">One operand instructions, where we find two types of instructions:</span>
@@ -62,7 +78,7 @@ const HelpDoc = () => {
                 <li className="c9 li-bullet-0"><span
                     className="c1">Instructions that can take only registers as operands: they are </span><span
                     className="c1">generally arithmetic and logic instructions operations that operate only one operand, let&rsquo;s list them: </span><span
-                    className="c6 c1 c4">NEG, NOT, SHL, SHR, READ, WRITE, PUSH, POP, ROR, ROL.</span></li>
+                    className="c6 c1 c4">NEG, NOT, SHL, SHR, PUSH, POP, ROR, ROL.</span></li>
                 <li className="c9 li-bullet-0"><span className="c1 c4">NEG: </span><span className="c1">it used to negate the value of the operand &ldquo;</span><span
                     className="c3 c1">multiplying the value by -1&rdquo;</span></li>
                 <li className="c9 li-bullet-0"><span className="c1 c4">NOT: </span><span
@@ -72,10 +88,6 @@ const HelpDoc = () => {
                 <li className="c9 li-bullet-0"><span className="c1 c4">SHL: </span><span className="c3 c1">This instruction is used to shift the bits of a register or a memory location to the left by a specified number of bits, with the bits shifted out on the left side discarded and 0&#39;s added on the right side.</span>
                 </li>
                 <li className="c9 li-bullet-0"><span className="c1 c4">SHR: </span><span className="c2 c1">the same like SHL but it shifts the bits to the right.</span>
-                </li>
-                <li className="c9 li-bullet-0"><span className="c1 c4">READ: </span><span className="c3 c1">This instruction is used to read a value from an input device or a memory location and store it in a register.</span>
-                </li>
-                <li className="c9 li-bullet-0"><span className="c1 c4">WRITE: </span><span className="c3 c1">This instruction is used to write the value of a register or a memory location to an output device or a memory location.</span>
                 </li>
                 <li className="c9 li-bullet-0"><span className="c1 c4">PUSH: </span><span className="c3 c1">This instruction is used to push the value of a register or a memory location onto the top of the stack.</span>
                 </li>
@@ -89,11 +101,15 @@ const HelpDoc = () => {
             <p className="c5"><span className="c6 c1 c4"></span></p>
             <ul className="c7 lst-kix_xdeeteg9a996-1">
                 <li className="c9 li-bullet-0"><span className="c1">Instructions that can only take addresses as operands( which means only one addressing mode is available it&rsquo;s the direct mode for these instructions of course): they are branching instructions let&rsquo;s list them: </span><span
-                    className="c6 c1 c4">CALL, BE, BNE, BS, BI, BIE, BSE, BRI:</span></li>
+                    className="c6 c1 c4">CALL, RDS, WRTS, BE, BNE, BS, BI, BIE, BSE, BRI:</span></li>
             </ul>
             <p className="c5"><span className="c6 c1 c4"></span></p>
             <ul className="c7 lst-kix_xdeeteg9a996-2 start">
                 <li className="c12 c17 li-bullet-0"><span className="c1 c4">CALL: </span><span className="c3 c1">It transfers program control to a subroutine or a function, saving the return address so that the program can resume execution from where it left off after the subroutine completes its operation.</span>
+                </li>
+                <li className="c12 c17 li-bullet-0"><span className="c1 c4">RDS: </span><span className="c3 c1">It performs a read operation of a string from the input and stores it in the address operand</span>
+                </li>
+                <li className="c12 c17 li-bullet-0"><span className="c1 c4">WRTS: </span><span className="c3 c1">It displays a string stored in the address operand in the console (the string must have the special character '$' at the end)</span>
                 </li>
                 <li className="c12 c17 li-bullet-0"><span className="c1 c4">BE: </span><span className="c3 c1">It performs a conditional branch to a target address if the zero &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; flag is set. The zero flag is typically set when the result of a previous arithmetic or logical operation is zero.</span>
                 </li>
@@ -254,8 +270,8 @@ const HelpDoc = () => {
                 <li className="c9 li-bullet-0"><span className="c1 c4">execute</span><span
                     className="c2 c1">&nbsp;to execute the code, </span>
                 </li>
-                <li className="c9 li-bullet-0"><span className="c1 c4">registers and memory</span><span
-                    className="c2 c1">&nbsp;to check the content of the memory and registers after execution.</span>
+                <li className="c9 li-bullet-0"><span className="c1 c4">registers, memory & cache</span><span
+                    className="c2 c1">&nbsp;to check the content of the memory, registers and cache after execution.</span>
                 </li>
                 <li className="c9 li-bullet-0"><span className="c1 c4">simulate </span><span className="c2 c1">to play the animation of the execution of the code in the machine.</span>
                 </li>
@@ -272,7 +288,7 @@ const HelpDoc = () => {
                 className="c2 c1">Some errors you can do while writing calM&rsquo;s assembly code:</span>
             </p>
             <p className="c12"><span className="c2 c1">Pay attention !</span></p>
-            <p className="c12"><span className="c1">Those instructions for example: </span><span className="c1 c4">NEG, NOT, SHL, SHR, READ, WRITE, PUSH, POP, ROR, ROL </span><span
+            <p className="c12"><span className="c1">Those instructions for example: </span><span className="c1 c4">NEG, NOT, SHL, SHR, PUSH, POP, ROR, ROL </span><span
                 className="c2 c1">can only have registers as operands.</span></p>
             <p className="c12"><span className="c2 c1">A label cannot have a name as a register and cannot contain special characters.</span>
             </p>

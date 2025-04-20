@@ -563,6 +563,7 @@ class Sequenceur{
                 });
                 animations.push({
                     value:Ins,
+                    name: "IR",
                     nom:"fitToIr",
                     target:fitToIr.target,
                     time:fitToIr.time,
@@ -570,6 +571,7 @@ class Sequenceur{
                 });
                 animations.push({
                     value:Ins,
+                    name: "IR",
                     target:infitToIr.target,
                     time:infitToIr.time,
                     anim:infitToIr.anim,
@@ -599,12 +601,14 @@ class Sequenceur{
                 animations.push({
                     value:Inshex.toString()+Inshex2.toString(),
                     nom:"fitToIr",
+                    name: "IR",
                     target:fitToIr.target,
                     time:fitToIr.time,
                     anim:fitToIr.anim,
                 });
                 animations.push({
                     value:Inshex.toString()+Inshex2.toString(),
+                    name: "IR",
                     target:infitToIr.target,
                     time:infitToIr.time,
                     anim:infitToIr.anim,
@@ -748,12 +752,14 @@ class Sequenceur{
             if(key !== "1000" & key !== "1001" & key !== "1010" & key !== "1011"){
             if(numreg=='000'){
                 animations.push({
+                    nom: "R1",
                     value:value,
                     target:fitToR1.target,
                     time:fitToR1.time,
                     anim:fitToR1.anim,
                 })
                 animations.push({
+                    nom: "R1",
                     value:value,
                     target:infitToR1.target,
                     time:infitToR1.time,
@@ -779,12 +785,14 @@ class Sequenceur{
                 })
             }else if(numreg=='001'){
                 animations.push({
+                    nom: "R2",
                     value:value,
                     target:fitToR2.target,
                     time:fitToR2.time,
                     anim:fitToR2.anim,
                 })
                 animations.push({
+                    nom: "R2",
                     value:value,
                     target:infitToR2.target,
                     time:infitToR2.time,
@@ -811,12 +819,14 @@ class Sequenceur{
             }
             else if(numreg=='010'){
                 animations.push({
+                    nom: "R3",
                     value:value,
                     target:fitToR3.target,
                     time:fitToR3.time,
                     anim:fitToR3.anim,
                 })
                 animations.push({
+                    nom: "R3",
                     value:value,
                     target:infitToR3.target,
                     time:infitToR3.time,
@@ -842,12 +852,14 @@ class Sequenceur{
                 })
             }else if(numreg=='011'){
                 animations.push({
+                    nom: "R4",
                     value:value,
                     target:fitToR4.target,
                     time:fitToR4.time,
                     anim:fitToR4.anim,
                 })
                 animations.push({
+                    nom: "R4",
                     value:value,
                     target:infitToR4.target,
                     time:infitToR4.time,
@@ -874,12 +886,14 @@ class Sequenceur{
             }
             else if(numreg=='100'){
                 animations.push({
+                    nom: "ACC",
                     value:value,
                     target:fitToAcc.target,
                     time:fitToAcc.time,
                     anim:fitToAcc.anim,
                 })
                 animations.push({
+                    nom: "ACC",
                     value:value,
                     target:infitToAcc.target,
                     time:infitToAcc.time,
@@ -911,12 +925,14 @@ class Sequenceur{
                 })
             }else if(numreg=='101'){
                 animations.push({
+                    nom: "BR",
                     value:value,
                     target:fitToBr.target,
                     time:fitToBr.time,
                     anim:fitToBr.anim,
                 })
                 animations.push({
+                    nom: "BR",
                     value:value,
                     target:infitToBr.target,
                     time:infitToBr.time,
@@ -943,12 +959,14 @@ class Sequenceur{
             }
             else if(numreg=='110'){
                 animations.push({
+                    nom: "IDR",
                     value:value,
                     target:fitToIdr.target,
                     time:fitToIdr.time,
                     anim:fitToIdr.anim,
                 })
                 animations.push({
+                    nom: "IDR",
                     value:value,
                     target:infitToIdr.target,
                     time:infitToIdr.time,
@@ -974,12 +992,14 @@ class Sequenceur{
                 })
             }else if(numreg=='111'){
                 animations.push({
+                    nom: "SR",
                     value:value,
                     target:fitToSr.target,
                     time:fitToSr.time,
                     anim:fitToSr.anim,
                 })
                 animations.push({
+                    nom: "SR",
                     value:value,
                     target:infitToSR.target,
                     time:infitToSR.time,
@@ -1289,12 +1309,14 @@ class Sequenceur{
                         /////////////////////////////animations des registres vers RUAL1 et RUAL2
                         if(regMod1=='000'){
                             animations.push({
+                                nom: "R1",
                                 value:value1,
                                 target:fitToR1.target,
                                 time:fitToR1.time,
                                 anim:fitToR1.anim,
                             })
                             animations.push({
+                                nom: "R1",
                                 value:value1,
                                 target:infitToR1.target,
                                 time:infitToR1.time,
@@ -1320,12 +1342,14 @@ class Sequenceur{
                             })
                         }else if(regMod1=='001'){
                             animations.push({
+                                nom: "R2",
                                 value:value1,
                                 target:fitToR2.target,
                                 time:fitToR2.time,
                                 anim:fitToR2.anim,
                             })
                             animations.push({
+                                nom: "R2",
                                 value:value1,
                                 target:infitToR2.target,
                                 time:infitToR2.time,
@@ -1352,12 +1376,14 @@ class Sequenceur{
                         }
                         else if(regMod1=='010'){
                             animations.push({
+                                nom: "R3",
                                 value:value1,
                                 target:fitToR3.target,
                                 time:fitToR3.time,
                                 anim:fitToR3.anim,
                             })
                             animations.push({
+                                nom: "R3",
                                 value:value1,
                                 target:infitToR3.target,
                                 time:infitToR3.time,
@@ -1383,12 +1409,14 @@ class Sequenceur{
                             })
                         }else if(regMod1=='011'){
                             animations.push({
+                                nom: "R4",
                                 value:value1,
                                 target:fitToR4.target,
                                 time:fitToR4.time,
                                 anim:fitToR4.anim,
                             })
                             animations.push({
+                                nom: "R4",
                                 value:value1,
                                 target:infitToR4.target,
                                 time:infitToR4.time,
@@ -1415,12 +1443,14 @@ class Sequenceur{
                         }
                         else if(regMod1=='100'){
                             animations.push({
+                                nom: "ACC",
                                 value:value1,
                                 target:fitToAcc.target,
                                 time:fitToAcc.time,
                                 anim:fitToAcc.anim,
                             })
                             animations.push({
+                                nom: "ACC",
                                 value:value1,
                                 target:infitToAcc.target,
                                 time:infitToAcc.time,
@@ -1452,12 +1482,14 @@ class Sequenceur{
                             })
                         }else if(regMod1=='101'){
                             animations.push({
+                                nom: "BR",
                                 value:value1,
                                 target:fitToBr.target,
                                 time:fitToBr.time,
                                 anim:fitToBr.anim,
                             })
                             animations.push({
+                                nom: "BR",
                                 value:value1,
                                 target:infitToBr.target,
                                 time:infitToBr.time,
@@ -1484,12 +1516,14 @@ class Sequenceur{
                         }
                         else if(regMod1=='110'){
                             animations.push({
+                                nom: "IDR",
                                 value:value1,
                                 target:fitToIdr.target,
                                 time:fitToIdr.time,
                                 anim:fitToIdr.anim,
                             })
                             animations.push({
+                                nom: "IDR",
                                 value:value1,
                                 target:infitToIdr.target,
                                 time:infitToIdr.time,
@@ -1515,12 +1549,14 @@ class Sequenceur{
                             })
                         }else if(regMod1=='111'){
                             animations.push({
+                                nom: "SR",
                                 value:value1,
                                 target:fitToSr.target,
                                 time:fitToSr.time,
                                 anim:fitToSr.anim,
                             })
                             animations.push({
+                                nom: "SR",
                                 value:value1,
                                 target:infitToSR.target,
                                 time:infitToSR.time,
@@ -1547,12 +1583,14 @@ class Sequenceur{
                         }
                         if(regMod2=='000'){
                             animations.push({
+                                nom: "R1",
                                 value:value2,
                                 target:fitToR1.target,
                                 time:fitToR1.time,
                                 anim:fitToR1.anim,
                             })
                             animations.push({
+                                nom: "R1",
                                 value:value2,
                                 target:infitToR1.target,
                                 time:infitToR1.time,
@@ -1578,12 +1616,14 @@ class Sequenceur{
                             })
                         }else if(regMod2=='001'){
                             animations.push({
+                                nom: "R2",
                                 value:value2,
                                 target:fitToR2.target,
                                 time:fitToR2.time,
                                 anim:fitToR2.anim,
                             })
                             animations.push({
+                                nom: "R2",
                                 value:value2,
                                 target:infitToR2.target,
                                 time:infitToR2.time,
@@ -1610,12 +1650,14 @@ class Sequenceur{
                         }
                         else if(regMod2=='010'){
                             animations.push({
+                                nom: "R3",
                                 value:value2,
                                 target:fitToR3.target,
                                 time:fitToR3.time,
                                 anim:fitToR3.anim,
                             })
                             animations.push({
+                                nom: "R3",
                                 value:value2,
                                 target:infitToR3.target,
                                 time:infitToR3.time,
@@ -1641,12 +1683,14 @@ class Sequenceur{
                             })
                         }else if(regMod2=='011'){
                             animations.push({
+                                nom: "R4",
                                 value:value2,
                                 target:fitToR4.target,
                                 time:fitToR4.time,
                                 anim:fitToR4.anim,
                             })
                             animations.push({
+                                nom: "R4",
                                 value:value2,
                                 target:infitToR4.target,
                                 time:infitToR4.time,
@@ -1673,12 +1717,14 @@ class Sequenceur{
                         }
                         else if(regMod2=='100'){
                             animations.push({
+                                nom: "ACC",
                                 value:value2,
                                 target:fitToAcc.target,
                                 time:fitToAcc.time,
                                 anim:fitToAcc.anim,
                             })
                             animations.push({
+                                nom: "ACC",
                                 value:value2,
                                 target:infitToAcc.target,
                                 time:infitToAcc.time,
@@ -1710,12 +1756,14 @@ class Sequenceur{
                             })
                         }else if(regMod2=='101'){
                             animations.push({
+                                nom: "BR",
                                 value:value2,
                                 target:fitToBr.target,
                                 time:fitToBr.time,
                                 anim:fitToBr.anim,
                             })
                             animations.push({
+                                nom: "BR",
                                 value:value2,
                                 target:infitToBr.target,
                                 time:infitToBr.time,
@@ -1742,12 +1790,14 @@ class Sequenceur{
                         }
                         else if(regMod2=='110'){
                             animations.push({
+                                nom: "IDR",
                                 value:value2,
                                 target:fitToIdr.target,
                                 time:fitToIdr.time,
                                 anim:fitToIdr.anim,
                             })
                             animations.push({
+                                nom: "IDR",
                                 value:value2,
                                 target:infitToIdr.target,
                                 time:infitToIdr.time,
@@ -1773,12 +1823,14 @@ class Sequenceur{
                             })
                         }else if(regMod2=='111'){
                             animations.push({
+                                nom: "SR",
                                 value:value2,
                                 target:fitToSr.target,
                                 time:fitToSr.time,
                                 anim:fitToSr.anim,
                             })
                             animations.push({
+                                nom: "SR",
                                 value:value2,
                                 target:infitToSR.target,
                                 time:infitToSR.time,
@@ -1855,12 +1907,14 @@ class Sequenceur{
                         /////////////////////////////animations des registres vers RUAL1 et RUAL2
                         if(regMod1=='000'){
                             animations.push({
+                                nom: "R1",
                                 value:value1,
                                 target:fitToR1.target,
                                 time:fitToR1.time,
                                 anim:fitToR1.anim,
                             })
                             animations.push({
+                                nom: "R1",
                                 value:value1,
                                 target:infitToR1.target,
                                 time:infitToR1.time,
@@ -1886,12 +1940,14 @@ class Sequenceur{
                             })
                         }else if(regMod1=='001'){
                             animations.push({
+                                nom: "R2",
                                 value:value1,
                                 target:fitToR2.target,
                                 time:fitToR2.time,
                                 anim:fitToR2.anim,
                             })
                             animations.push({
+                                nom: "R2",
                                 value:value1,
                                 target:infitToR2.target,
                                 time:infitToR2.time,
@@ -1918,12 +1974,14 @@ class Sequenceur{
                         }
                         else if(regMod1=='010'){
                             animations.push({
+                                nom: "R3",
                                 value:value1,
                                 target:fitToR3.target,
                                 time:fitToR3.time,
                                 anim:fitToR3.anim,
                             })
                             animations.push({
+                                nom: "R3",
                                 value:value1,
                                 target:infitToR3.target,
                                 time:infitToR3.time,
@@ -1949,12 +2007,14 @@ class Sequenceur{
                             })
                         }else if(regMod1=='011'){
                             animations.push({
+                                nom: "R4",
                                 value:value1,
                                 target:fitToR4.target,
                                 time:fitToR4.time,
                                 anim:fitToR4.anim,
                             })
                             animations.push({
+                                nom: "R4",
                                 value:value1,
                                 target:infitToR4.target,
                                 time:infitToR4.time,
@@ -1981,12 +2041,14 @@ class Sequenceur{
                         }
                         else if(regMod1=='100'){
                             animations.push({
+                                nom: "ACC",
                                 value:value1,
                                 target:fitToAcc.target,
                                 time:fitToAcc.time,
                                 anim:fitToAcc.anim,
                             })
                             animations.push({
+                                nom: "ACC",
                                 value:value1,
                                 target:infitToAcc.target,
                                 time:infitToAcc.time,
@@ -2018,12 +2080,14 @@ class Sequenceur{
                             })
                         }else if(regMod1=='101'){
                             animations.push({
+                                nom: "BR",
                                 value:value1,
                                 target:fitToBr.target,
                                 time:fitToBr.time,
                                 anim:fitToBr.anim,
                             })
                             animations.push({
+                                nom: "BR",
                                 value:value1,
                                 target:infitToBr.target,
                                 time:infitToBr.time,
@@ -2050,12 +2114,14 @@ class Sequenceur{
                         }
                         else if(regMod1=='110'){
                             animations.push({
+                                nom: "IDR",
                                 value:value1,
                                 target:fitToIdr.target,
                                 time:fitToIdr.time,
                                 anim:fitToIdr.anim,
                             })
                             animations.push({
+                                nom: "IDR",
                                 value:value1,
                                 target:infitToIdr.target,
                                 time:infitToIdr.time,
@@ -2081,12 +2147,14 @@ class Sequenceur{
                             })
                         }else if(regMod1=='111'){
                             animations.push({
+                                nom: "SR",
                                 value:value1,
                                 target:fitToSr.target,
                                 time:fitToSr.time,
                                 anim:fitToSr.anim,
                             })
                             animations.push({
+                                nom: "SR",
                                 value:value1,
                                 target:infitToSR.target,
                                 time:infitToSR.time,
@@ -2160,12 +2228,14 @@ class Sequenceur{
                         }
                         if(regMod2=='000'){
                             animations.push({
+                                nom: "R1",
                                 value:value2,
                                 target:fitToR1.target,
                                 time:fitToR1.time,
                                 anim:fitToR1.anim,
                             })
                             animations.push({
+                                nom: "R1",
                                 value:value2,
                                 target:infitToR1.target,
                                 time:infitToR1.time,
@@ -2191,12 +2261,14 @@ class Sequenceur{
                             })
                         }else if(regMod2=='001'){
                             animations.push({
+                                nom: "R2",
                                 value:value2,
                                 target:fitToR2.target,
                                 time:fitToR2.time,
                                 anim:fitToR2.anim,
                             })
                             animations.push({
+                                nom: "R2",
                                 value:value2,
                                 target:infitToR2.target,
                                 time:infitToR2.time,
@@ -2223,12 +2295,14 @@ class Sequenceur{
                         }
                         else if(regMod2=='010'){
                             animations.push({
+                                nom: "R3",
                                 value:value2,
                                 target:fitToR3.target,
                                 time:fitToR3.time,
                                 anim:fitToR3.anim,
                             })
                             animations.push({
+                                nom: "R3",
                                 value:value2,
                                 target:infitToR3.target,
                                 time:infitToR3.time,
@@ -2254,12 +2328,14 @@ class Sequenceur{
                             })
                         }else if(regMod2=='011'){
                             animations.push({
+                                nom: "R4",
                                 value:value2,
                                 target:fitToR4.target,
                                 time:fitToR4.time,
                                 anim:fitToR4.anim,
                             })
                             animations.push({
+                                nom: "R4",
                                 value:value2,
                                 target:infitToR4.target,
                                 time:infitToR4.time,
@@ -2286,12 +2362,14 @@ class Sequenceur{
                         }
                         else if(regMod2=='100'){
                             animations.push({
+                                nom: "ACC",
                                 value:value2,
                                 target:fitToAcc.target,
                                 time:fitToAcc.time,
                                 anim:fitToAcc.anim,
                             })
                             animations.push({
+                                nom: "ACC",
                                 value:value2,
                                 target:infitToAcc.target,
                                 time:infitToAcc.time,
@@ -2323,12 +2401,14 @@ class Sequenceur{
                             })
                         }else if(regMod2=='101'){
                             animations.push({
+                                nom: "BR",
                                 value:value2,
                                 target:fitToBr.target,
                                 time:fitToBr.time,
                                 anim:fitToBr.anim,
                             })
                             animations.push({
+                                nom: "BR",
                                 value:value2,
                                 target:infitToBr.target,
                                 time:infitToBr.time,
@@ -2355,12 +2435,14 @@ class Sequenceur{
                         }
                         else if(regMod2=='110'){
                             animations.push({
+                                nom: "IDR",
                                 value:value2,
                                 target:fitToIdr.target,
                                 time:fitToIdr.time,
                                 anim:fitToIdr.anim,
                             })
                             animations.push({
+                                nom: "IDR",
                                 value:value2,
                                 target:infitToIdr.target,
                                 time:infitToIdr.time,
@@ -2386,12 +2468,14 @@ class Sequenceur{
                             })
                         }else if(regMod2=='111'){
                             animations.push({
+                                nom: "SR",
                                 value:value2,
                                 target:fitToSr.target,
                                 time:fitToSr.time,
                                 anim:fitToSr.anim,
                             })
                             animations.push({
+                                nom: "SR",
                                 value:value2,
                                 target:infitToSR.target,
                                 time:infitToSR.time,
@@ -2499,6 +2583,18 @@ class Sequenceur{
                     tempobj.value=res;
                 }else if(tempobj.value==="addresse1"){
                     tempobj.value=instrObject.addresse1;
+                }else if(tempobj.address) {
+                    if (tempobj.address==="addresse1") {
+                        tempobj.address=instrObject.addresse1;
+                    }
+                }else if(tempobj.content) {
+                    if (tempobj.content==="value2") {
+                        tempobj.content=instrObject.value2;
+                    }
+                }else if(tempobj.taille) {
+                    if (tempobj.taille==="taille") {
+                        tempobj.taille=instrObject.taille;
+                    }
                 }
                 
                 animations.push(tempobj);

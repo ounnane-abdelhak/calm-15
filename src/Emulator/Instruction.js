@@ -1241,6 +1241,7 @@ class InstructionCMP {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "CMP",
@@ -1250,15 +1251,45 @@ class InstructionCMP {
         },
         {
           value: "",
-          target: AluToAcc.target,
-          time: AluToAcc.time,
-          anim: AluToAcc.anim,
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
         },
         {
-          value: "res",
-          target: fitToAcc.target,
-          time: fitToAcc.time,
-          anim: fitToAcc.anim,
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[5] === "1" ? "1-OVERFLOW" : "0-OVERFLOW",
+          target: "",
+          time: 0,
+          anim: () => {},
         },
       ];
     };
@@ -1294,6 +1325,7 @@ class InstructionADD {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "ADD",
@@ -1308,10 +1340,53 @@ class InstructionADD {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
+        },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[5] === "1" ? "1-OVERFLOW" : "0-OVERFLOW",
+          target: "",
+          time: 0,
+          anim: () => {},
         },
       ];
     };
@@ -1338,12 +1413,14 @@ class InstructionMOV00 {
         if (this.register2 == "000") {
           return [
             {
+              nom: "R1",
               value: "value2",
               target: infitToR1.target,
               time: infitToR1.time,
               anim: infitToR1.anim,
             },
             {
+              nom: "R1",
               value: "value2",
               target: fitToR1.target,
               time: fitToR1.time,
@@ -1353,12 +1430,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "001") {
           return [
             {
+              nom: "R2",
               value: "value2",
               target: infitToR2.target,
               time: infitToR2.time,
               anim: infitToR2.anim,
             },
             {
+              nom: "R1",
               value: "value2",
               target: fitToR1.target,
               time: fitToR1.time,
@@ -1368,12 +1447,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "2") {
           return [
             {
+              nom: "R3",
               value: "value2",
               target: infitToR3.target,
               time: infitToR3.time,
               anim: infitToR3.anim,
             },
             {
+              nom: "R1",
               value: "value2",
               target: fitToR1.target,
               time: fitToR1.time,
@@ -1383,12 +1464,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "3") {
           return [
             {
+              nom: "R4",
               value: "value2",
               target: infitToR4.target,
               time: infitToR4.time,
               anim: infitToR4.anim,
             },
             {
+              nom: "R1",
               value: "value2",
               target: infitToR1.target,
               time: infitToR1.time,
@@ -1398,6 +1481,7 @@ class InstructionMOV00 {
         } else if (this.register2 == "4") {
           return [
             {
+              nom: "ACC",
               value: "value2",
               target: infitToAcc.target,
               time: infitToAcc.time,
@@ -1416,6 +1500,7 @@ class InstructionMOV00 {
               anim: AccToReg.anim,
             },
             {
+              nom: "R1",
               value: "value2",
               target: fitToR1.target,
               time: fitToR1.time,
@@ -1425,12 +1510,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "5") {
           return [
             {
+              nom: "BR",
               value: "value2",
               target: infitToBr.target,
               time: infitToBr.time,
               anim: infitToBr.anim,
             },
             {
+              nom: "R1",
               value: "value2",
               target: fitToR1.target,
               time: fitToR1.time,
@@ -1440,12 +1527,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "6") {
           return [
             {
+              nom: "IDR",
               value: "value2",
               target: infitToIdr.target,
               time: infitToIdr.time,
               anim: infitToIdr.anim,
             },
             {
+              nom: "R1",
               value: "value2",
               target: fitToR1.target,
               time: fitToR1.time,
@@ -1455,12 +1544,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "7") {
           return [
             {
+              nom: "SR",
               value: "value2",
               target: infitToSR.target,
               time: infitToSR.time,
               anim: infitToSR.anim,
             },
             {
+              nom: "R1",
               value: "value2",
               target: fitToR1.target,
               time: fitToR1.time,
@@ -1472,12 +1563,14 @@ class InstructionMOV00 {
         if (this.register2 == "000") {
           return [
             {
+              nom: "R1",
               value: "value2",
               target: infitToR1.target,
               time: infitToR1.time,
               anim: infitToR1.anim,
             },
             {
+              nom: "R2",
               target: fitToR2.target,
               time: fitToR2.time,
               value: "value2",
@@ -1487,12 +1580,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "001") {
           return [
             {
+              nom: "R2",
               value: "value2",
               target: infitToR2.target,
               time: infitToR2.time,
               anim: infitToR2.anim,
             },
             {
+              nom: "R2",
               value: "value2",
               target: fitToR2.target,
               time: fitToR2.time,
@@ -1502,12 +1597,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "2") {
           return [
             {
+              nom: "R3",
               value: "value2",
               target: infitToR3.target,
               time: infitToR3.time,
               anim: infitToR3.anim,
             },
             {
+              nom: "R2",
               value: "value2",
               target: fitToR2.target,
               time: fitToR2.time,
@@ -1517,12 +1614,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "3") {
           return [
             {
+              nom: "R4",
               value: "value2",
               target: infitToR4.target,
               time: infitToR4.time,
               anim: infitToR4.anim,
             },
             {
+              nom: "R2",
               value: "value2",
               target: fitToR2.target,
               time: fitToR2.time,
@@ -1532,6 +1631,7 @@ class InstructionMOV00 {
         } else if (this.register2 == "4") {
           return [
             {
+              nom: "ACC",
               value: "value2",
               target: infitToAcc.target,
               time: infitToAcc.time,
@@ -1550,6 +1650,7 @@ class InstructionMOV00 {
               anim: AccToReg.anim,
             },
             {
+              nom: "R2",
               value: "value2",
               target: fitToR2.target,
               time: fitToR2.time,
@@ -1559,12 +1660,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "5") {
           return [
             {
+              nom: "BR",
               value: "value2",
               target: infitToBr.target,
               time: infitToBr.time,
               anim: infitToBr.anim,
             },
             {
+              nom: "R2",
               value: "value2",
               target: fitToR2.target,
               time: fitToR2.time,
@@ -1574,12 +1677,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "6") {
           return [
             {
+              nom: "IDR",
               value: "value2",
               target: infitToIdr.target,
               time: infitToIdr.time,
               anim: infitToIdr.anim,
             },
             {
+              nom: "R2",
               value: "value2",
               target: fitToR2.target,
               time: fitToR2.time,
@@ -1589,12 +1694,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "7") {
           return [
             {
+              nom: "SR",
               value: "value2",
               target: infitToSR.target,
               time: infitToSR.time,
               anim: infitToSR.anim,
             },
             {
+              nom: "R2",
               value: "value2",
               target: fitToR2.target,
               time: fitToR2.time,
@@ -1606,12 +1713,14 @@ class InstructionMOV00 {
         if (this.register2 == "000") {
           return [
             {
+              nom: "R1",
               value: "value2",
               target: infitToR1.target,
               time: infitToR1.time,
               anim: infitToR1.anim,
             },
             {
+              nom: "R3",
               value: "value2",
               target: fitToR3.target,
               time: fitToR3.time,
@@ -1621,12 +1730,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "001") {
           return [
             {
+              nom: "R2",
               value: "value2",
               target: infitToR2.target,
               time: infitToR2.time,
               anim: infitToR2.anim,
             },
             {
+              nom: "R3",
               value: "value2",
               target: fitToR3.target,
               time: fitToR3.time,
@@ -1636,12 +1747,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "2") {
           return [
             {
+              nom: "R3",
               value: "value2",
               target: infitToR3.target,
               time: infitToR3.time,
               anim: infitToR3.anim,
             },
             {
+              nom: "R3",
               value: "value2",
               target: fitToR3.target,
               time: fitToR3.time,
@@ -1651,12 +1764,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "3") {
           return [
             {
+              nom: "R4",
               value: "value2",
               target: infitToR4.target,
               time: infitToR4.time,
               anim: infitToR4.anim,
             },
             {
+              nom: "R3",
               value: "value2",
               target: fitToR3.target,
               time: fitToR3.time,
@@ -1666,6 +1781,7 @@ class InstructionMOV00 {
         } else if (this.register2 == "4") {
           return [
             {
+              nom: "ACC",
               value: "value2",
               target: infitToAcc.target,
               time: infitToAcc.time,
@@ -1684,6 +1800,7 @@ class InstructionMOV00 {
               anim: AccToReg.anim,
             },
             {
+              nom: "R3",
               value: "value2",
               target: fitToR3.target,
               time: fitToR3.time,
@@ -1693,12 +1810,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "5") {
           return [
             {
+              nom: "BR",
               value: "value2",
               target: infitToBr.target,
               time: infitToBr.time,
               anim: infitToBr.anim,
             },
             {
+              nom: "R3",
               value: "value2",
               target: fitToR3.target,
               time: fitToR3.time,
@@ -1708,12 +1827,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "6") {
           return [
             {
+              nom: "IDR",
               value: "value2",
               target: infitToIdr.target,
               time: infitToIdr.time,
               anim: infitToIdr.anim,
             },
             {
+              nom: "R3",
               value: "value2",
               target: fitToR3.target,
               time: fitToR3.time,
@@ -1723,12 +1844,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "7") {
           return [
             {
+              nom: "SR",
               value: "value2",
               target: infitToSR.target,
               time: infitToSR.time,
               anim: infitToSR.anim,
             },
             {
+              nom: "R3",
               value: "value2",
               target: fitToR3.target,
               time: fitToR3.time,
@@ -1740,12 +1863,14 @@ class InstructionMOV00 {
         if (this.register2 == "000") {
           return [
             {
+              nom: "R1",
               value: "value2",
               target: infitToR1.target,
               time: infitToR1.time,
               anim: infitToR1.anim,
             },
             {
+              nom: "R4",
               value: "value2",
               target: fitToR4.target,
               time: fitToR4.time,
@@ -1755,12 +1880,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "001") {
           return [
             {
+              nom: "R2",
               value: "value2",
               target: infitToR2.target,
               time: infitToR2.time,
               anim: infitToR2.anim,
             },
             {
+              nom: "R4",
               value: "value2",
               target: fitToR4.target,
               time: fitToR4.time,
@@ -1770,12 +1897,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "2") {
           return [
             {
+              nom: "R3",
               value: "value2",
               target: infitToR3.target,
               time: infitToR3.time,
               anim: infitToR3.anim,
             },
             {
+              nom: "R4",
               value: "value2",
               target: fitToR4.target,
               time: fitToR4.time,
@@ -1785,12 +1914,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "3") {
           return [
             {
+              nom: "R4",
               value: "value2",
               target: infitToR4.target,
               time: infitToR4.time,
               anim: infitToR4.anim,
             },
             {
+              nom: "R4",
               value: "value2",
               target: fitToR4.target,
               time: fitToR4.time,
@@ -1800,6 +1931,7 @@ class InstructionMOV00 {
         } else if (this.register2 == "4") {
           return [
             {
+              nom: "ACC",
               value: "value2",
               target: infitToAcc.target,
               time: infitToAcc.time,
@@ -1818,6 +1950,7 @@ class InstructionMOV00 {
               anim: AccToReg.anim,
             },
             {
+              nom: "R4",
               value: "value2",
               target: fitToR4.target,
               time: fitToR4.time,
@@ -1827,12 +1960,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "5") {
           return [
             {
+              nom: "BR",
               value: "value2",
               target: infitToBr.target,
               time: infitToBr.time,
               anim: infitToBr.anim,
             },
             {
+              nom: "R4",
               value: "value2",
               target: fitToR4.target,
               time: fitToR4.time,
@@ -1842,12 +1977,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "6") {
           return [
             {
+              nom: "IDR",
               value: "value2",
               target: infitToIdr.target,
               time: infitToIdr.time,
               anim: infitToIdr.anim,
             },
             {
+              nom: "R4",
               value: "value2",
               target: fitToR4.target,
               time: fitToR4.time,
@@ -1857,12 +1994,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "7") {
           return [
             {
+              nom: "SR",
               value: "value2",
               target: infitToSR.target,
               time: infitToSR.time,
               anim: infitToSR.anim,
             },
             {
+              nom: "R4",
               value: "value2",
               target: fitToR4.target,
               time: fitToR4.time,
@@ -1874,6 +2013,7 @@ class InstructionMOV00 {
         if (this.register2 == "000") {
           return [
             {
+              nom: "R1",
               value: "value2",
               target: infitToR1.target,
               time: infitToR1.time,
@@ -1892,6 +2032,7 @@ class InstructionMOV00 {
               anim: BusToAcc.anim,
             },
             {
+              nom: "ACC",
               value: "value2",
               target: fitToAcc.target,
               time: fitToAcc.time,
@@ -1901,6 +2042,7 @@ class InstructionMOV00 {
         } else if (this.register2 == "001") {
           return [
             {
+              nom: "R2",
               value: "value2",
               target: infitToR2.target,
               time: infitToR2.time,
@@ -1919,6 +2061,7 @@ class InstructionMOV00 {
               anim: BusToAcc.anim,
             },
             {
+              nom: "ACC",
               value: "value2",
               target: fitToAcc.target,
               time: fitToAcc.time,
@@ -1928,6 +2071,7 @@ class InstructionMOV00 {
         } else if (this.register2 == "2") {
           return [
             {
+              nom: "R3",
               value: "value2",
               target: infitToR3.target,
               time: infitToR3.time,
@@ -1946,6 +2090,7 @@ class InstructionMOV00 {
               anim: BusToAcc.anim,
             },
             {
+              nom: "ACC",
               value: "value2",
               target: fitToAcc.target,
               time: fitToAcc.time,
@@ -1955,6 +2100,7 @@ class InstructionMOV00 {
         } else if (this.register2 == "3") {
           return [
             {
+              nom: "R4",
               value: "value2",
               target: infitToR4.target,
               time: infitToR4.time,
@@ -1973,6 +2119,7 @@ class InstructionMOV00 {
               anim: BusToAcc.anim,
             },
             {
+              nom: "ACC",
               value: "value2",
               target: fitToAcc.target,
               time: fitToAcc.time,
@@ -1982,12 +2129,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "4") {
           return [
             {
+              nom: "ACC",
               value: "value2",
               target: infitToAcc.target,
               time: infitToAcc.time,
               anim: infitToAcc.anim,
             },
             {
+              nom: "ACC",
               value: "value2",
               target: fitToAcc.target,
               time: fitToAcc.time,
@@ -1997,6 +2146,7 @@ class InstructionMOV00 {
         } else if (this.register2 == "5") {
           return [
             {
+              nom: "BR",
               value: "value2",
               target: infitToBr.target,
               time: infitToBr.time,
@@ -2015,6 +2165,7 @@ class InstructionMOV00 {
               anim: BusToAcc.anim,
             },
             {
+              nom: "ACC",
               value: "value2",
               target: fitToAcc.target,
               time: fitToAcc.time,
@@ -2024,6 +2175,7 @@ class InstructionMOV00 {
         } else if (this.register2 == "6") {
           return [
             {
+              nom: "IDR",
               value: "value2",
               target: infitToIdr.target,
               time: infitToIdr.time,
@@ -2042,6 +2194,7 @@ class InstructionMOV00 {
               anim: BusToAcc.anim,
             },
             {
+              nom: "ACC",
               value: "value2",
               target: fitToAcc.target,
               time: fitToAcc.time,
@@ -2051,6 +2204,7 @@ class InstructionMOV00 {
         } else if (this.register2 == "7") {
           return [
             {
+              nom: "SR",
               value: "value2",
               target: infitToSR.target,
               time: infitToSR.time,
@@ -2069,6 +2223,7 @@ class InstructionMOV00 {
               anim: BusToAcc.anim,
             },
             {
+              nom: "ACC",
               value: "value2",
               target: fitToAcc.target,
               time: fitToAcc.time,
@@ -2080,12 +2235,14 @@ class InstructionMOV00 {
         if (this.register2 == "000") {
           return [
             {
+              nom: "R1",
               value: "value2",
               target: infitToR1.target,
               time: infitToR1.time,
               anim: infitToR1.anim,
             },
             {
+              nom: "BR",
               value: "value2",
               target: fitToBr.target,
               time: fitToBr.time,
@@ -2095,12 +2252,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "001") {
           return [
             {
+              nom: "R2",
               value: "value2",
               target: infitToR2.target,
               time: infitToR2.time,
               anim: infitToR2.anim,
             },
             {
+              nom: "BR",
               value: "value2",
               target: fitToBr.target,
               time: fitToBr.time,
@@ -2110,12 +2269,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "2") {
           return [
             {
+              nom: "R3",
               value: "value2",
               target: infitToR3.target,
               time: infitToR3.time,
               anim: infitToR3.anim,
             },
             {
+              nom: "BR",
               value: "value2",
               target: fitToBr.target,
               time: fitToBr.time,
@@ -2125,12 +2286,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "3") {
           return [
             {
+              nom: "R4",
               value: "value2",
               target: infitToR4.target,
               time: infitToR4.time,
               anim: infitToR4.anim,
             },
             {
+              nom: "BR",
               value: "value2",
               target: fitToBr.target,
               time: fitToBr.time,
@@ -2140,6 +2303,7 @@ class InstructionMOV00 {
         } else if (this.register2 == "4") {
           return [
             {
+              nom: "ACC",
               value: "value2",
               target: infitToAcc.target,
               time: infitToAcc.time,
@@ -2158,6 +2322,7 @@ class InstructionMOV00 {
               anim: AccToReg.anim,
             },
             {
+              nom: "BR",
               value: "value2",
               target: fitToBr.target,
               time: fitToBr.time,
@@ -2167,12 +2332,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "5") {
           return [
             {
+              nom: "BR",
               value: "value2",
               target: infitToBr.target,
               time: infitToBr.time,
               anim: infitToBr.anim,
             },
             {
+              nom: "BR",
               value: "value2",
               target: fitToBr.target,
               time: fitToBr.time,
@@ -2182,12 +2349,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "6") {
           return [
             {
+              nom: "IDR",
               value: "value2",
               target: infitToIdr.target,
               time: infitToIdr.time,
               anim: infitToIdr.anim,
             },
             {
+              nom: "BR",
               value: "value2",
               target: fitToBr.target,
               time: fitToBr.time,
@@ -2197,12 +2366,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "7") {
           return [
             {
+              nom: "SR",
               value: "value2",
               target: infitToSR.target,
               time: infitToSR.time,
               anim: infitToSR.anim,
             },
             {
+              nom: "BR",
               value: "value2",
               target: fitToBr.target,
               time: fitToBr.time,
@@ -2214,12 +2385,14 @@ class InstructionMOV00 {
         if (this.register2 == "000") {
           return [
             {
+              nom: "R1",
               value: "value2",
               target: infitToR1.target,
               time: infitToR1.time,
               anim: infitToR1.anim,
             },
             {
+              nom: "IDR",
               value: "value2",
               target: fitToIdr.target,
               time: fitToIdr.time,
@@ -2229,12 +2402,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "001") {
           return [
             {
+              nom: "R2",
               value: "value2",
               target: infitToR2.target,
               time: infitToR2.time,
               anim: infitToR2.anim,
             },
             {
+              nom: "IDR",
               value: "value2",
               target: fitToIdr.target,
               time: fitToIdr.time,
@@ -2244,12 +2419,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "2") {
           return [
             {
+              nom: "R3",
               value: "value2",
               target: infitToR3.target,
               time: infitToR3.time,
               anim: infitToR3.anim,
             },
             {
+              nom: "IDR",
               value: "value2",
               target: fitToIdr.target,
               time: fitToIdr.time,
@@ -2259,12 +2436,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "3") {
           return [
             {
+              nom: "R4",
               value: "value2",
               target: infitToR4.target,
               time: infitToR4.time,
               anim: infitToR4.anim,
             },
             {
+              nom: "IDR",
               value: "value2",
               target: fitToIdr.target,
               time: fitToIdr.time,
@@ -2274,6 +2453,7 @@ class InstructionMOV00 {
         } else if (this.register2 == "4") {
           return [
             {
+              nom: "ACC",
               value: "value2",
               target: infitToAcc.target,
               time: infitToAcc.time,
@@ -2292,6 +2472,7 @@ class InstructionMOV00 {
               anim: AccToReg.anim,
             },
             {
+              nom: "IDR",
               value: "value2",
               target: fitToIdr.target,
               time: fitToIdr.time,
@@ -2301,12 +2482,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "5") {
           return [
             {
+              nom: "BR",
               value: "value2",
               target: infitToBr.target,
               time: infitToBr.time,
               anim: infitToBr.anim,
             },
             {
+              nom: "IDR",
               value: "value2",
               target: fitToIdr.target,
               time: fitToIdr.time,
@@ -2316,12 +2499,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "6") {
           return [
             {
+              nom: "IDR",
               value: "value2",
               target: infitToIdr.target,
               time: infitToIdr.time,
               anim: infitToIdr.anim,
             },
             {
+              nom: "IDR",
               value: "value2",
               target: fitToIdr.target,
               time: fitToIdr.time,
@@ -2331,12 +2516,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "7") {
           return [
             {
+              nom: "SR",
               value: "value2",
               target: infitToSR.target,
               time: infitToSR.time,
               anim: infitToSR.anim,
             },
             {
+              nom: "IDR",
               value: "value2",
               target: fitToIdr.target,
               time: fitToIdr.time,
@@ -2348,12 +2535,14 @@ class InstructionMOV00 {
         if (this.register2 == "000") {
           return [
             {
+              nom: "R1",
               value: "value2",
               target: infitToR1.target,
               time: infitToR1.time,
               anim: infitToR1.anim,
             },
             {
+              nom: "SR",
               value: "value2",
               target: fitToSr.target,
               time: fitToSr.time,
@@ -2363,12 +2552,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "001") {
           return [
             {
+              nom: "R2",
               value: "value2",
               target: infitToR2.target,
               time: infitToR2.time,
               anim: infitToR2.anim,
             },
             {
+              nom: "SR",
               value: "value2",
               target: fitToSr.target,
               time: fitToSr.time,
@@ -2378,12 +2569,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "2") {
           return [
             {
+              nom: "R3",
               value: "value2",
               target: infitToR3.target,
               time: infitToR3.time,
               anim: infitToR3.anim,
             },
             {
+              nom: "SR",
               value: "value2",
               target: fitToSr.target,
               time: fitToSr.time,
@@ -2393,12 +2586,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "3") {
           return [
             {
+              nom: "R4",
               value: "value2",
               target: infitToR4.target,
               time: infitToR4.time,
               anim: infitToR4.anim,
             },
             {
+              nom: "SR",
               value: "value2",
               target: fitToSr.target,
               time: fitToSr.time,
@@ -2408,6 +2603,7 @@ class InstructionMOV00 {
         } else if (this.register2 == "4") {
           return [
             {
+              nom: "ACC",
               value: "value2",
               target: infitToAcc.target,
               time: infitToAcc.time,
@@ -2426,6 +2622,7 @@ class InstructionMOV00 {
               anim: AccToReg.anim,
             },
             {
+              nom: "SR",
               value: "value2",
               target: fitToSr.target,
               time: fitToSr.time,
@@ -2435,12 +2632,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "5") {
           return [
             {
+              nom: "BR",
               value: "value2",
               target: infitToBr.target,
               time: infitToBr.time,
               anim: infitToBr.anim,
             },
             {
+              nom: "SR",
               value: "value2",
               target: fitToSr.target,
               time: fitToSr.time,
@@ -2450,12 +2649,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "6") {
           return [
             {
+              nom: "IDR",
               value: "value2",
               target: infitToIdr.target,
               time: infitToIdr.time,
               anim: infitToIdr.anim,
             },
             {
+              nom: "SR",
               value: "value2",
               target: fitToSr.target,
               time: fitToSr.time,
@@ -2465,12 +2666,14 @@ class InstructionMOV00 {
         } else if (this.register2 == "7") {
           return [
             {
+              nom: "SR",
               value: "value2",
               target: infitToSR.target,
               time: infitToSR.time,
               anim: infitToSR.anim,
             },
             {
+              nom: "SR",
               value: "value2",
               target: fitToSr.target,
               time: fitToSr.time,
@@ -2504,6 +2707,7 @@ class InstructionMOV01 {
         if (this.isimmed === 1) {
           return [
             {
+              nom: "R1",
               value: "value2",
               target: fitToR1.target,
               time: fitToR1.time,
@@ -2531,6 +2735,7 @@ class InstructionMOV01 {
               anim: MdrToReg.anim,
             },
             {
+              nom: "R1",
               value: "value2",
               target: fitToR1.target,
               time: fitToR1.time,
@@ -2542,6 +2747,7 @@ class InstructionMOV01 {
         if (this.isimmed === 1) {
           return [
             {
+              nom: "R2",
               value: "value2",
               target: fitToR2.target,
               time: fitToR2.time,
@@ -2569,6 +2775,7 @@ class InstructionMOV01 {
               anim: MdrToReg.anim,
             },
             {
+              nom: "R2",
               value: "value2",
               target: fitToR2.target,
               time: fitToR2.time,
@@ -2580,6 +2787,7 @@ class InstructionMOV01 {
         if (this.isimmed === 1) {
           return [
             {
+              nom: "R3",
               value: "value2",
               target: fitToR3.target,
               time: fitToR3.time,
@@ -2607,6 +2815,7 @@ class InstructionMOV01 {
               anim: MdrToReg.anim,
             },
             {
+              nom: "R3",
               value: "value2",
               target: fitToR3.target,
               time: fitToR3.time,
@@ -2618,6 +2827,7 @@ class InstructionMOV01 {
         if (this.isimmed === 1) {
           return [
             {
+              nom: "R4",
               value: "value2",
               target: fitToR4.target,
               time: fitToR4.time,
@@ -2645,6 +2855,7 @@ class InstructionMOV01 {
               anim: MdrToReg.anim,
             },
             {
+              nom: "R4",
               value: "value2",
               target: fitToR4.target,
               time: fitToR4.time,
@@ -2662,6 +2873,7 @@ class InstructionMOV01 {
               anim: BusToAcc.anim,
             },
             {
+              nom: "ACC",
               value: "value2",
               target: fitToAcc.target,
               time: fitToAcc.time,
@@ -2695,6 +2907,7 @@ class InstructionMOV01 {
               anim: BusToAcc.anim,
             },
             {
+              nom: "ACC",
               value: "value2",
               target: fitToAcc.target,
               time: fitToAcc.time,
@@ -2706,6 +2919,7 @@ class InstructionMOV01 {
         if (this.isimmed === 1) {
           return [
             {
+              nom: "BR",
               value: "value2",
               target: fitToBr.target,
               time: fitToBr.time,
@@ -2733,6 +2947,7 @@ class InstructionMOV01 {
               anim: MdrToReg.anim,
             },
             {
+              nom: "BR",
               value: "value2",
               target: fitToBr.target,
               time: fitToBr.time,
@@ -2744,6 +2959,7 @@ class InstructionMOV01 {
         if (this.isimmed === 1) {
           return [
             {
+              nom: "IDR",
               value: "value2",
               target: fitToIdr.target,
               time: fitToIdr.time,
@@ -2771,6 +2987,7 @@ class InstructionMOV01 {
               anim: MdrToReg.anim,
             },
             {
+              nom: "IDR",
               value: "value2",
               target: fitToIdr.target,
               time: fitToIdr.time,
@@ -2782,6 +2999,7 @@ class InstructionMOV01 {
         if (this.isimmed === 1) {
           return [
             {
+              nom: "SR",
               value: "value2",
               target: fitToSr.target,
               time: fitToSr.time,
@@ -2809,6 +3027,7 @@ class InstructionMOV01 {
               anim: MdrToReg.anim,
             },
             {
+              nom: "SR",
               value: "value2",
               target: fitToSr.target,
               time: fitToSr.time,
@@ -2855,6 +3074,7 @@ class InstructionMOV10 {
       if (this.register1 == "000") {
         return [
           {
+            nom: "R1",
             value: "value2",
             target: infitToR1.target,
             time: infitToR1.time,
@@ -2885,7 +3105,11 @@ class InstructionMOV10 {
             anim: fitToMdr.anim,
           },
           {
+            name: "mainMem",
             value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
             target: MCanim.target,
             time: MCanim.time,
             anim: MCanim.anim,
@@ -2894,6 +3118,7 @@ class InstructionMOV10 {
       } else if (this.register1 == "001") {
         return [
           {
+            nom: "R2",
             value: "value2",
             target: infitToR2.target,
             time: infitToR2.time,
@@ -2924,7 +3149,11 @@ class InstructionMOV10 {
             anim: fitToMdr.anim,
           },
           {
+            name: "mainMem",
             value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
             target: MCanim.target,
             time: MCanim.time,
             anim: MCanim.anim,
@@ -2933,6 +3162,7 @@ class InstructionMOV10 {
       } else if (this.register1 == "2") {
         return [
           {
+            nom: "R3",
             value: "value2",
             target: infitToR3.target,
             time: infitToR3.time,
@@ -2963,7 +3193,11 @@ class InstructionMOV10 {
             anim: fitToMdr.anim,
           },
           {
+            name: "mainMem",
             value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
             target: MCanim.target,
             time: MCanim.time,
             anim: MCanim.anim,
@@ -2972,6 +3206,7 @@ class InstructionMOV10 {
       } else if (this.register1 == "3") {
         return [
           {
+            nom: "R4",
             value: "value2",
             target: infitToR4.target,
             time: infitToR4.time,
@@ -3002,7 +3237,11 @@ class InstructionMOV10 {
             anim: fitToMdr.anim,
           },
           {
+            name: "mainMem",
             value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
             target: MCanim.target,
             time: MCanim.time,
             anim: MCanim.anim,
@@ -3011,6 +3250,7 @@ class InstructionMOV10 {
       } else if (this.register1 == "4") {
         return [
           {
+            nom: "ACC",
             value: "value2",
             target: infitToAcc.target,
             time: infitToAcc.time,
@@ -3041,7 +3281,11 @@ class InstructionMOV10 {
             anim: fitToMdr.anim,
           },
           {
+            name: "mainMem",
             value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
             target: MCanim.target,
             time: MCanim.time,
             anim: MCanim.anim,
@@ -3050,6 +3294,7 @@ class InstructionMOV10 {
       } else if (this.register1 == "5") {
         return [
           {
+            nom: "BR",
             value: "value2",
             target: infitToBr.target,
             time: infitToBr.time,
@@ -3080,7 +3325,11 @@ class InstructionMOV10 {
             anim: fitToMdr.anim,
           },
           {
+            name: "mainMem",
             value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
             target: MCanim.target,
             time: MCanim.time,
             anim: MCanim.anim,
@@ -3089,6 +3338,7 @@ class InstructionMOV10 {
       } else if (this.register1 == "6") {
         return [
           {
+            nom: "IDR",
             value: "value2",
             target: infitToIdr.target,
             time: infitToIdr.time,
@@ -3119,7 +3369,11 @@ class InstructionMOV10 {
             anim: fitToMdr.anim,
           },
           {
+            name: "mainMem",
             value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
             target: MCanim.target,
             time: MCanim.time,
             anim: MCanim.anim,
@@ -3128,6 +3382,7 @@ class InstructionMOV10 {
       } else if (this.register1 == "7") {
         return [
           {
+            nom: "SR",
             value: "value2",
             target: infitToSR.target,
             time: infitToSR.time,
@@ -3158,7 +3413,11 @@ class InstructionMOV10 {
             anim: fitToMdr.anim,
           },
           {
+            name: "mainMem",
             value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
             target: MCanim.target,
             time: MCanim.time,
             anim: MCanim.anim,
@@ -3205,6 +3464,7 @@ class InstructionMOV11 {
       if (this.isimmed == false) {
         return [
           {
+            nom: "ACC",
             value: "addresse1",
             target: infitToAcc.target,
             time: infitToAcc.time,
@@ -3235,7 +3495,11 @@ class InstructionMOV11 {
             anim: fitToMar.anim,
           },
           {
+            name: "mainMem",
             value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
             target: MCanim.target,
             time: MCanim.time,
             anim: MCanim.anim,
@@ -3250,7 +3514,11 @@ class InstructionMOV11 {
             anim: infitToMdr.anim,
           },
           {
+            name: "mainMem",
             value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
             target: MCanim.target,
             time: MCanim.time,
             anim: MCanim.anim,
@@ -3289,6 +3557,7 @@ class InstructionSUB {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "SUB",
@@ -3303,10 +3572,53 @@ class InstructionSUB {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
+        },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[5] === "1" ? "1-OVERFLOW" : "0-OVERFLOW",
+          target: "",
+          time: 0,
+          anim: () => {},
         },
       ];
     };
@@ -3344,6 +3656,7 @@ class InstructionMUL {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "MUL",
@@ -3358,10 +3671,53 @@ class InstructionMUL {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
+        },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[5] === "1" ? "1-OVERFLOW" : "0-OVERFLOW",
+          target: "",
+          time: 0,
+          anim: () => {},
         },
       ];
     };
@@ -3398,6 +3754,7 @@ class InstructionDIV {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "DIV",
@@ -3412,10 +3769,53 @@ class InstructionDIV {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
+        },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[5] === "1" ? "1-OVERFLOW" : "0-OVERFLOW",
+          target: "",
+          time: 0,
+          anim: () => {},
         },
       ];
     };
@@ -3449,6 +3849,7 @@ class InstructionAND {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "AND",
@@ -3463,10 +3864,46 @@ class InstructionAND {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
+        },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
         },
       ];
     };
@@ -3500,6 +3937,7 @@ class InstructionOR {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "OR",
@@ -3514,11 +3952,47 @@ class InstructionOR {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
         },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        }
       ];
     };
   }
@@ -3552,6 +4026,7 @@ class InstructionXOR {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "XOR",
@@ -3566,11 +4041,47 @@ class InstructionXOR {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
         },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        }
       ];
     };
   }
@@ -3604,6 +4115,7 @@ class InstructionNOR {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "NOR",
@@ -3618,11 +4130,47 @@ class InstructionNOR {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
         },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        }
       ];
     };
   }
@@ -3656,6 +4204,7 @@ class InstructionNAND {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "NAND",
@@ -3670,11 +4219,47 @@ class InstructionNAND {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
         },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        }
       ];
     };
   }
@@ -3716,12 +4301,14 @@ class InstructionPUSH {
       if (this.register1 == "000") {
         return [
           {
+            nom: "R1",
             value: this.value1,
             target: fitToR1.target,
             time: fitToR1.time,
             anim: fitToR1.anim,
           },
           {
+            nom: "R1",
             value: this.value1,
             target: infitToR1.target,
             time: infitToR1.time,
@@ -3761,12 +4348,14 @@ class InstructionPUSH {
       } else if (this.register1 == "001") {
         return [
           {
+            nom: "R2",
             value: this.value1,
             target: fitToR2.target,
             time: fitToR2.time,
             anim: fitToR2.anim,
           },
           {
+            nom: "R2",
             value: this.value1,
             target: infitToR2.target,
             time: infitToR2.time,
@@ -3806,12 +4395,14 @@ class InstructionPUSH {
       } else if (this.register1 == "010") {
         return [
           {
+            nom: "R3",
             value: this.value1,
             target: fitToR3.target,
             time: fitToR3.time,
             anim: fitToR3.anim,
           },
           {
+            nom: "R3",
             value: this.value1,
             target: infitToR3.target,
             time: infitToR3.time,
@@ -3851,12 +4442,14 @@ class InstructionPUSH {
       } else if (this.register1 == "011") {
         return [
           {
+            nom: "R4",
             value: this.value1,
             target: fitToR4.target,
             time: fitToR4.time,
             anim: fitToR4.anim,
           },
           {
+            nom: "R4",
             value: this.value1,
             target: infitToR4.target,
             time: infitToR4.time,
@@ -3896,12 +4489,14 @@ class InstructionPUSH {
       } else if (this.register1 == "100") {
         return [
           {
+            nom: "ACC",
             value: this.value1,
             target: fitToAcc.target,
             time: fitToAcc.time,
             anim: fitToAcc.anim,
           },
           {
+            nom: "ACC",
             value: this.value1,
             target: infitToAcc.target,
             time: infitToAcc.time,
@@ -3947,12 +4542,14 @@ class InstructionPUSH {
       } else if (this.register1 == "101") {
         return [
           {
+            nom: "BR",
             value: this.value1,
             target: fitToBr.target,
             time: fitToBr.time,
             anim: fitToBr.anim,
           },
           {
+            nom: "BR",
             value: this.value1,
             target: infitToBr.target,
             time: infitToBr.time,
@@ -3992,12 +4589,14 @@ class InstructionPUSH {
       } else if (this.register1 == "110") {
         return [
           {
+            nom: "IDR",
             value: this.value1,
             target: fitToIdr.target,
             time: fitToIdr.time,
             anim: fitToIdr.anim,
           },
           {
+            nom: "IDR",
             value: this.value1,
             target: infitToIdr.target,
             time: infitToIdr.time,
@@ -4037,12 +4636,14 @@ class InstructionPUSH {
       } else if (this.register1 == "111") {
         return [
           {
+            nom: "SR",
             value: this.value1,
             target: fitToSr.target,
             time: fitToSr.time,
             anim: fitToSr.anim,
           },
           {
+            nom: "SR",
             value: this.value1,
             target: infitToSR.target,
             time: infitToSR.time,
@@ -4172,12 +4773,14 @@ class InstructionPOP {
             anim: MdrToReg.anim,
           },
           {
+            nom: "R1",
             value: this.value1,
             target: fitToR1.target,
             time: fitToR1.time,
             anim: fitToR1.anim,
           },
           {
+            nom: "R1",
             value: this.value1,
             target: infitToR1.target,
             time: infitToR1.time,
@@ -4218,12 +4821,14 @@ class InstructionPOP {
             anim: MdrToReg.anim,
           },
           {
+            nom: "R2",
             value: this.value1,
             target: fitToR2.target,
             time: fitToR2.time,
             anim: fitToR2.anim,
           },
           {
+            nom: "R2",
             value: this.value1,
             target: infitToR2.target,
             time: infitToR2.time,
@@ -4264,12 +4869,14 @@ class InstructionPOP {
             anim: MdrToReg.anim,
           },
           {
+            nom: "R3",
             value: this.value1,
             target: fitToR3.target,
             time: fitToR3.time,
             anim: fitToR3.anim,
           },
           {
+            nom: "R3",
             value: this.value1,
             target: infitToR3.target,
             time: infitToR3.time,
@@ -4310,12 +4917,14 @@ class InstructionPOP {
             anim: MdrToReg.anim,
           },
           {
+            nom: "R4",
             value: this.value1,
             target: fitToR4.target,
             time: fitToR4.time,
             anim: fitToR4.anim,
           },
           {
+            nom: "R4",
             value: this.value1,
             target: infitToR4.target,
             time: infitToR4.time,
@@ -4363,12 +4972,14 @@ class InstructionPOP {
             anim: BusToAcc.anim,
           },
           {
+            nom: "ACC",
             value: this.value1,
             target: fitToAcc.target,
             time: fitToAcc.time,
             anim: fitToAcc.anim,
           },
           {
+            nom: "ACC",
             value: this.value1,
             target: infitToAcc.target,
             time: infitToAcc.time,
@@ -4410,12 +5021,14 @@ class InstructionPOP {
             anim: MdrToReg.anim,
           },
           {
+            nom: "BR",
             value: this.value1,
             target: fitToBr.target,
             time: fitToBr.time,
             anim: fitToBr.anim,
           },
           {
+            nom: "BR",
             value: this.value1,
             target: infitToBr.target,
             time: infitToBr.time,
@@ -4457,12 +5070,14 @@ class InstructionPOP {
             anim: MdrToReg.anim,
           },
           {
+            nom: "IDR",
             value: this.value1,
             target: fitToIdr.target,
             time: fitToIdr.time,
             anim: fitToIdr.anim,
           },
           {
+            nom: "IDR",
             value: this.value1,
             target: infitToIdr.target,
             time: infitToIdr.time,
@@ -4504,12 +5119,14 @@ class InstructionPOP {
             anim: MdrToReg.anim,
           },
           {
+            nom: "SR",
             value: this.value1,
             target: fitToSr.target,
             time: fitToSr.time,
             anim: fitToSr.anim,
           },
           {
+            nom: "SR",
             value: this.value1,
             target: infitToSR.target,
             time: infitToSR.time,
@@ -4796,6 +5413,7 @@ class InstructionSHL {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "SHL",
@@ -4810,11 +5428,47 @@ class InstructionSHL {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
         },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        }
       ];
     };
   }
@@ -4846,6 +5500,7 @@ class InstructionSHR {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "SHR",
@@ -4860,11 +5515,47 @@ class InstructionSHR {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
         },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        }
       ];
     };
   }
@@ -4896,6 +5587,7 @@ class InstructionROR {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "ROR",
@@ -4910,11 +5602,47 @@ class InstructionROR {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
         },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        }
       ];
     };
   }
@@ -4946,6 +5674,7 @@ class InstructionROL {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "ROL",
@@ -4960,11 +5689,47 @@ class InstructionROL {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
         },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        }
       ];
     };
   }
@@ -4996,6 +5761,7 @@ class InstructionNOT {
       },
     ];
     this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
       return [
         {
           value: "NOT",
@@ -5010,11 +5776,47 @@ class InstructionNOT {
           anim: AluToAcc.anim,
         },
         {
+          nom: "ACC",
           value: "res",
           target: fitToAcc.target,
           time: fitToAcc.time,
           anim: fitToAcc.anim,
         },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        }
       ];
     };
   }
@@ -5045,6 +5847,7 @@ class InstructionNEG{
         }
         ];
         this.buildanim=function(){
+          const flags = Alu1.getAllFlags();
             return[{
                 value:"NEG",
                 target:addanim.target,
@@ -5058,10 +5861,46 @@ class InstructionNEG{
                 anim:AluToAcc.anim,
             },
             {
+                nom: "ACC",
                 value:"res",
                 target:fitToAcc.target,
                 time:fitToAcc.time,
                 anim:fitToAcc.anim,
+            },
+            {
+              value: "",
+              flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+              target: "",
+              time: 0,
+              anim: () => {},
+            },
+            {
+              value: "",
+              flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+              target: "",
+              time: 0,
+              anim: () => {},
+            },
+            {
+              value: "",
+              flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+              target: "",
+              time: 0,
+              anim: () => {},
+            },
+            {
+              value: "",
+              flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+              target: "",
+              time: 0,
+              anim: () => {},
+            },
+            {
+              value: "",
+              flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+              target: "",
+              time: 0,
+              anim: () => {},
             },
         ];
         }
@@ -5118,13 +5957,16 @@ class InstructionPUSHA{
         this.buildanim=function(){
 
 
-                return[{
+                return[
+                {
+                    nom: "R1",
                     value:this.value1,
                     target:fitToR1.target,
                     time:fitToR1.time,
                     anim:fitToR1.anim,
                 },
                 {
+                    nom: "R1",
                     value:this.value1,
                     target:infitToR1.target,
                     time:infitToR1.time,
@@ -5161,12 +6003,14 @@ class InstructionPUSHA{
                     anim:MCanim.anim,
                 }
  ,{
+                    nom: "R2",
                     value:this.value1,
                     target:fitToR2.target,
                     time:fitToR2.time,
                     anim:fitToR2.anim,
                 },
                 {
+                    nom: "R2",
                     value:this.value1,
                     target:infitToR2.target,
                     time:infitToR2.time,
@@ -5203,12 +6047,14 @@ class InstructionPUSHA{
                     anim:MCanim.anim,
                 }
   ,{
+                    nom: "R3",
                     value:this.value1,
                     target:fitToR3.target,
                     time:fitToR3.time,
                     anim:fitToR3.anim,
                 },
                 {
+                    nom: "R3",
                     value:this.value1,
                     target:infitToR3.target,
                     time:infitToR3.time,
@@ -5245,12 +6091,14 @@ class InstructionPUSHA{
                     anim:MCanim.anim,
                 }
  ,{
+                    nom: "R4",
                     value:this.value1,
                     target:fitToR4.target,
                     time:fitToR4.time,
                     anim:fitToR4.anim,
                 },
                 {
+                    nom: "R4",
                     value:this.value1,
                     target:infitToR4.target,
                     time:infitToR4.time,
@@ -5287,12 +6135,14 @@ class InstructionPUSHA{
                     anim:MCanim.anim,
                 }
  ,{
+                    nom: "ACC",
                     value:this.value1,
                     target:fitToAcc.target,
                     time:fitToAcc.time,
                     anim:fitToAcc.anim,
                 },
                 {
+                    nom: "ACC",
                     value:this.value1,
                     target:infitToAcc.target,
                     time:infitToAcc.time,
@@ -5335,12 +6185,14 @@ class InstructionPUSHA{
                     anim:MCanim.anim,
                 }
 ,{
+                    nom: "BR",
                     value:this.value1,
                     target:fitToBr.target,
                     time:fitToBr.time,
                     anim:fitToBr.anim,
                 },
                 {
+                    nom: "BR",
                     value:this.value1,
                     target:infitToBr.target,
                     time:infitToBr.time,
@@ -5377,12 +6229,14 @@ class InstructionPUSHA{
                     anim:MCanim.anim,
                 }
 ,{
+                    nom: "IDR",
                     value:this.value1,
                     target:fitToIdr.target,
                     time:fitToIdr.time,
                     anim:fitToIdr.anim,
                 },
                 {
+                    nom: "IDR",
                     value:this.value1,
                     target:infitToIdr.target,
                     time:infitToIdr.time,
@@ -5419,12 +6273,14 @@ class InstructionPUSHA{
                     anim:MCanim.anim,
                 }
 ,{
+                    nom: "SR",
                     value:this.value1,
                     target:fitToSr.target,
                     time:fitToSr.time,
                     anim:fitToSr.anim,
                 },
                 {
+                    nom: "SR",
                     value:this.value1,
                     target:infitToSR.target,
                     time:infitToSR.time,
@@ -5555,12 +6411,14 @@ class InstructionPOPA{
                     anim:MdrToReg.anim,
                 },
                 {
+                    nom: "R1",
                     value:this.value1,
                     target:fitToR1.target,
                     time:fitToR1.time,
                     anim:fitToR1.anim,
                 },
                 {
+                    nom: "R1",
                     value:this.value1,
                     target:infitToR1.target,
                     time:infitToR1.time,
@@ -5597,12 +6455,14 @@ class InstructionPOPA{
                     anim:MdrToReg.anim,
                 },
                 {
+                    nom: "R2",
                     value:this.value1,
                     target:fitToR2.target,
                     time:fitToR2.time,
                     anim:fitToR2.anim,
                 },
                 {
+                    nom: "R2",
                     value:this.value1,
                     target:infitToR2.target,
                     time:infitToR2.time,
@@ -5639,12 +6499,14 @@ class InstructionPOPA{
                     anim:MdrToReg.anim,
                 },
                 {
+                    nom: "R3",
                     value:this.value1,
                     target:fitToR3.target,
                     time:fitToR3.time,
                     anim:fitToR3.anim,
                 },
                 {
+                    nom: "R3",
                     value:this.value1,
                     target:infitToR3.target,
                     time:infitToR3.time,
@@ -5681,12 +6543,14 @@ class InstructionPOPA{
                     anim:MdrToReg.anim,
                 },
                 {
+                    nom: "R4",
                     value:this.value1,
                     target:fitToR4.target,
                     time:fitToR4.time,
                     anim:fitToR4.anim,
                 },
                 {
+                    nom: "R4",
                     value:this.value1,
                     target:infitToR4.target,
                     time:infitToR4.time,
@@ -5729,12 +6593,14 @@ class InstructionPOPA{
                     anim:BusToAcc.anim,
                 },
                 {
+                    nom: "ACC",
                     value:this.value1,
                     target:fitToAcc.target,
                     time:fitToAcc.time,
                     anim:fitToAcc.anim,
                 },
                 {
+                    nom: "ACC",
                     value:this.value1,
                     target:infitToAcc.target,
                     time:infitToAcc.time,
@@ -5771,12 +6637,14 @@ class InstructionPOPA{
                     anim:MdrToReg.anim,
                 },
                 {
+                    nom: "BR",
                     value:this.value1,
                     target:fitToBr.target,
                     time:fitToBr.time,
                     anim:fitToBr.anim,
                 },
                 {
+                    nom: "BR",
                     value:this.value1,
                     target:infitToBr.target,
                     time:infitToBr.time,
@@ -5813,12 +6681,14 @@ class InstructionPOPA{
                     anim:MdrToReg.anim,
                 },
                 {
+                    nom: "IDR",
                     value:this.value1,
                     target:fitToIdr.target,
                     time:fitToIdr.time,
                     anim:fitToIdr.anim,
                 },
                 {
+                    nom: "IDR",
                     value:this.value1,
                     target:infitToIdr.target,
                     time:infitToIdr.time,
@@ -5855,12 +6725,14 @@ class InstructionPOPA{
                     anim:MdrToReg.anim,
                 },
                 {
+                    nom: "SR",
                     value:this.value1,
                     target:fitToSr.target,
                     time:fitToSr.time,
                     anim:fitToSr.anim,
                 },
                 {
+                    nom: "SR",
                     value:this.value1,
                     target:infitToSR.target,
                     time:infitToSR.time,
@@ -5887,11 +6759,13 @@ class InstructionREAD {
     this.name = "RD";
     this.steps = [
       () => {
+        Alu1.Flags[7] = "1";
         let chr = this.value1.charCodeAt(0);
 
         ioUnit.buffer.setvalue("0".repeat(8) + Dec2bin(chr));
 
         Registers[3].setvalue(ioUnit.getBuffer());
+        Alu1.Flags[7] = "0";
       },
     ];
 
@@ -5899,6 +6773,7 @@ class InstructionREAD {
       return [
         {
           value: this.value1,
+          flag: "IO",
           target: fitToIO.target,
           time: fitToIO.time,
           anim: fitToIO.anim,
@@ -5922,12 +6797,15 @@ class InstructionREAD {
           anim: IOToBus.anim,
         },
         {
+          nom: "R4",
           value: this.value2,
           target: fitToR4.target,
           time: fitToR4.time,
           anim: fitToR4.anim,
         },
         {
+          nom: "R4",
+          flag: "END-IO",
           value: this.value2,
           target: infitToR4.target,
           time: infitToR4.time,
@@ -5951,21 +6829,26 @@ class InstructionWRITE {
     this.name = "WRT";
     this.steps = [
       () => {
+        Alu1.Flags[7] = "1";
         ioUnit.buffer.setvalue(Registers[3].getvalue());
         let chr = ioUnit.buffer.getvalue();
         const result = String.fromCharCode(parseInt(chr, 2));
         txt.push(result);
+        Alu1.Flags[7] = "0";
       },
     ];
     this.buildanim = function () {
       return [
         {
+          nom: "R4",
+          flag: "IO",
           value: this.value2,
           target: fitToR4.target,
           time: fitToR4.time,
           anim: fitToR4.anim,
         },
         {
+          nom: "R4",
           value: this.value2,
           target: infitToR4.target,
           time: infitToR4.time,
@@ -5991,6 +6874,7 @@ class InstructionWRITE {
         },
         {
           value: this.value1,
+          flag: "END-IO",
           target: infitToIO.target,
           time: infitToIO.time,
           anim: infitToIO.anim,
@@ -6013,12 +6897,13 @@ class InstructionREADS {
     this.name = "RDS";
     this.steps = [
       () => {
+        Alu1.Flags[7] = "1";
         let string = this.value1;
         let address = this.addresse1;
         let i = 0;
         while (string[i]) {
           ioUnit.buffer.setvalue(
-            "0".repeat(8) + Dec2bin(string[i].charCodeAt(0))
+            Dec2bin(string[i].charCodeAt(0)).padStart(16, "0")
           );
           memory.setRim(Bin16ToHexaLow(ioUnit.buffer.getvalue()));
           memory.setRam(Dec2bin(address));
@@ -6030,12 +6915,14 @@ class InstructionREADS {
           i++;
           address++;
         }
+        Alu1.Flags[7] = "0";
       },
     ];
     this.buildanim = function () {
       let animationSteps = [
         {
           value: "",
+          flag: "IO",
           nom: "QueueToIr",
           target: queueExitToBus2.target,
           time: queueExitToBus2.time,
@@ -6077,9 +6964,10 @@ class InstructionREADS {
       let string = this.value1;
       let address = this.addresse1;
       let i = 0;
+      let char = "";
       while (string[i]) {
-        const char = string[i];
-        const ascii = char.charCodeAt(0);
+        char = string[i];
+        const ascii = parseInt(char.charCodeAt(0)).toString(16);
         animationSubSteps = [
           {
             value: char,
@@ -6124,6 +7012,7 @@ class InstructionREADS {
             anim: infitToCache.anim,
           },
           {
+            name: "cacheMem",
             value: "WRITE",
             target: Cacheanim.target,
             time: Cacheanim.time,
@@ -6203,7 +7092,10 @@ class InstructionREADS {
             anim: infitToMar.anim,
           },
           {
+            name: "mainMem",
             value: "WRITE",
+            address: address,
+            content: "00" + ascii,
             target: MCanim.target,
             time: MCanim.time,
             anim: MCanim.anim,
@@ -6214,6 +7106,12 @@ class InstructionREADS {
         address++;
         i++;
       }
+      animationSteps.push({
+        flag: "END-IO",
+        target: "",
+        time: 0,
+        anim: () => {},
+      });
       return animationSteps;
     };
   }
@@ -6234,6 +7132,7 @@ class InstructionWRITES {
     // Core steps remain unchanged, animation logic adapts dynamically
     this.steps = [
       () => {
+        Alu1.Flags[7] = "1";
         let adr = this.addresse1;
         let result = "";
         let char = "";
@@ -6241,7 +7140,6 @@ class InstructionWRITES {
         let count = 0;
 
         while (char !== "$" && count < 256) {
-          console.log("adr", Dec2bin(adr));
           memory.setRam(Dec2bin(adr));
           memory.read(false);
           ascii = memory.getRim();
@@ -6259,6 +7157,7 @@ class InstructionWRITES {
           count++;
         }
         txt.push(result);
+        Alu1.Flags[7] = "0";
       },
     ];
 
@@ -6267,6 +7166,7 @@ class InstructionWRITES {
       let animationSteps = [
         {
           value: "",
+          flag: "IO",
           nom: "QueueToIr",
           target: queueExitToBus2.target,
           time: queueExitToBus2.time,
@@ -6496,7 +7396,12 @@ class InstructionWRITES {
         i++;
         i++;
       }
-
+      animationSteps.push({
+        flag: "END-IO",
+        target: "",
+        time: 0,
+        anim: () => {},
+      });
       return animationSteps;
     };
   }
