@@ -6967,7 +6967,7 @@ class InstructionREADS {
       let char = "";
       while (string[i]) {
         char = string[i];
-        const ascii = parseInt(char.charCodeAt(0)).toString(16);
+        const ascii = parseInt(char.charCodeAt(0)).toString(16) + "h";
         animationSubSteps = [
           {
             value: char,
@@ -7211,7 +7211,7 @@ class InstructionWRITES {
 
       while (string[i]) {
         const char = string[i];
-        const ascii = char.charCodeAt(0);
+        const ascii = parseInt(char.charCodeAt(0)).toString(16) + "h";
 
         // Check if data exists in cache
         let cachedData = memory.cache.get(address);

@@ -229,10 +229,6 @@ const Arch = (props) => {
         }
       }
 
-      if (animation.nom && animation.nom === 'ACC') {
-        console.log("ACC animation", animation)
-      }
-
       if (animation.nom && animation.value !== "") {
         switch (animation.nom) {
           case 'R1':
