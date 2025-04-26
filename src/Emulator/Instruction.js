@@ -11,7 +11,7 @@ import {
   ioUnit,
   sequenceur,
 } from "../pages/Ide";
-
+import { settext } from "./setgettxt.js";
 import { TwosComplement } from "./ALU.js";
 import { gsap } from "gsap";
 // import { Register } from "./Register.js";
@@ -6815,7 +6815,7 @@ class InstructionREAD {
     };
   }
 }
-let txt = [];
+let txt = '';
 class InstructionWRITE {
   constructor() {
     this.value1 = 0;
@@ -6833,7 +6833,8 @@ class InstructionWRITE {
         ioUnit.buffer.setvalue(Registers[3].getvalue());
         let chr = ioUnit.buffer.getvalue();
         const result = String.fromCharCode(parseInt(chr, 2));
-        txt.push(result);
+        txt += result;
+        settext(txt);
         Alu1.Flags[7] = "0";
       },
     ];
@@ -7138,7 +7139,7 @@ class InstructionWRITES {
         let char = "";
         let ascii = "";
         let count = 0;
-
+      
         while (char !== "$" && count < 256) {
           memory.setRam(Dec2bin(adr));
           memory.read(false);
@@ -7156,8 +7157,10 @@ class InstructionWRITES {
           adr++;
           count++;
         }
-        txt.push(result);
+        txt += result;
         Alu1.Flags[7] = "0";
+        
+        settext(txt);
       },
     ];
 
@@ -7444,4 +7447,4 @@ export {
   InstructionPOPA,
   InstructionPUSHA,
 };
-export default txt;
+

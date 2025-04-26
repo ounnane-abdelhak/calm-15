@@ -29,7 +29,7 @@ import {HexaToCode} from "../../HexaToCode/HexaToCode"
 import { Errorcalm } from "../../assembler/Errorcalm";
 import { useLocation } from 'react-router-dom';
 import IOUnit from '../../Emulator/IO_Unit.js';
-import txt from "../../Emulator/Instruction.js";
+import { gettext } from '../../Emulator/setgettxt.js';
 
 
 ////////////////animations declarations////////////////////////////////
@@ -96,7 +96,6 @@ export {memory,BR,IR,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur};
 const Ide = ({currentUser})=>{
   ////////////////////hooks///////////////////////////////:
   let [result,setresult]=useState("");
-  let [txtColor,setTxtColor]=useState("green");
   let [done,setdone]=useState(false);
   let [simul,setsimul]=useState(false)
   let [memo,setmemo]=useState(false);
@@ -111,6 +110,11 @@ const Ide = ({currentUser})=>{
   let offset=0;
   let offset2=0;
 
+  let [displayedtext ,setDtxt] =useState("") ; 
+  useEffect(() => {
+
+    setDtxt(gettext());
+  },[gettext()])
 
 useEffect(()=>{setSpeed(Speed)
 switch (Speed) {
@@ -688,16 +692,11 @@ code[index]=hexaArray[index]+"//"+codeArray[index]
                     Errorcalm.errorr = Errorcalm.LexicalError.length + Errorcalm.SemanticError.length;
                     if (Errorcalm.errorr === 0) {
                       traitement(input);
-                      let res = "";
-                      txt.map((item) => {
-                        res += item;
-                      });
-                      setresult(res);
-                      setTxtColor("green");
+                    
                     }else{
                       setresult(Errorcalm.printError());
                       seterr(true);
-                      setTxtColor("red");
+
                     }
                        
                     
@@ -923,8 +922,12 @@ console.log("the error",error)
                   </table>
                 }
                 {console.log(result)}
-                <pre style={{color:txtColor}}>{`
+               <pre style={{color:"green"}}>{`
+${displayedtext}`}</pre>
+                <pre style={{color:"red"}}>{`
 ${result}`}</pre>
+  
+
               </div>
             }
           </div>
