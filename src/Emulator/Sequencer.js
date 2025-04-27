@@ -552,8 +552,8 @@ class Sequenceur{
         /////those 2 animations must be at the same time___________________
         if(is_animated){
             let key=hex2bin(Inshex).substring(0,4);
-
-            if(key>="0010"){//instructions with 1 general byte
+            console.log("key ",key);
+            if(key>="0010" ){//instructions with 1 general byte
                 animations.push({
                     value:"",
                     nom:"QueueToIr",

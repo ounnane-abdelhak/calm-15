@@ -7410,7 +7410,298 @@ class InstructionWRITES {
   }
 }
 
+class InstructionMOVS{
+  constructor() {
+    this.value1 = 0;
+    this.value2 = 0;
+    this.addresse1 = 0;
+    this.register1 = 0;
+    this.addresse2 = 0;
+    this.register2 = 0;
+    this.taille = 0;
+    this.stepsNum = 1;
+    this.isimmed = true;
+    this.name = "MOVS";
+    this.steps = [
+      () => {
+        let temp ;
+        let res ;
+        memory.setRam(Registers[3].getvalue());
+        memory.read(false);
+        temp = memory.getRim() ;
+        memory.setRam(Registers[4].getvalue());
+        memory.read(false);
+        memory.setRim(memory.getRim());
+        memory.setRam(Registers[3].getvalue());
+        memory.write();
+        memory.setRim( temp);
+        memory.setRam(Registers[4].getvalue());
+        memory.write();
+      }
+    ];
+    this.buildanim = function () {
+      if (this.isimmed == false) {
+        return [
+          {
+            nom: "ACC",
+            value: "addresse1",
+            target: infitToAcc.target,
+            time: infitToAcc.time,
+            anim: infitToAcc.anim,
+          },
+          {
+            value: "",
+            target: AccToBus.target,
+            time: AccToBus.time,
+            anim: AccToBus.anim,
+          },
+          {
+            value: "addresse1",
+            target: AccToADR.target,
+            time: AccToADR.time,
+            anim: AccToADR.anim,
+          },
+          {
+            value: "addresse1",
+            target: ADRToMAR.target,
+            time: ADRToMAR.time,
+            anim: ADRToMAR.anim,
+          },
+          {
+            value: "addresse1",
+            target: fitToMar.target,
+            time: fitToMar.time,
+            anim: fitToMar.anim,
+          },
+          {
+            name: "mainMem",
+            value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
+            target: MCanim.target,
+            time: MCanim.time,
+            anim: MCanim.anim,
+          },
+        ];
+      } else {
+        return [
+          {
+            value: "value2",
+            target: infitToMdr.target,
+            time: infitToMdr.time,
+            anim: infitToMdr.anim,
+          },
+          {
+            name: "mainMem",
+            value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
+            target: MCanim.target,
+            time: MCanim.time,
+            anim: MCanim.anim,
+          },
+        ]; ///animation of writing in MC/___________________________
+      }
+    };
+  }
+}
+
+class InstructionLODS{
+  constructor() {
+    this.value1 = 0;
+    this.value2 = 0;
+    this.addresse1 = 0;
+    this.register1 = 0;
+    this.addresse2 = 0;
+    this.register2 = 0;
+    this.taille = 0;
+    this.stepsNum = 1;
+    this.isimmed = true;
+    this.name = "LODS";
+    this.steps = [
+      () => {
+       let res ;
+        memory.setRam(Registers[4].getvalue());
+        memory.read(false);
+        res = memory.getRim();
+        Registers[3].setvalue( hex2bin(res));
+      
+        
+      }
+    ];
+    this.buildanim = function () {
+      if (this.isimmed == false) {
+        return [
+          {
+            nom: "ACC",
+            value: "addresse1",
+            target: infitToAcc.target,
+            time: infitToAcc.time,
+            anim: infitToAcc.anim,
+          },
+          {
+            value: "",
+            target: AccToBus.target,
+            time: AccToBus.time,
+            anim: AccToBus.anim,
+          },
+          {
+            value: "addresse1",
+            target: AccToADR.target,
+            time: AccToADR.time,
+            anim: AccToADR.anim,
+          },
+          {
+            value: "addresse1",
+            target: ADRToMAR.target,
+            time: ADRToMAR.time,
+            anim: ADRToMAR.anim,
+          },
+          {
+            value: "addresse1",
+            target: fitToMar.target,
+            time: fitToMar.time,
+            anim: fitToMar.anim,
+          },
+          {
+            name: "mainMem",
+            value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
+            target: MCanim.target,
+            time: MCanim.time,
+            anim: MCanim.anim,
+          },
+        ];
+      } else {
+        return [
+          {
+            value: "value2",
+            target: infitToMdr.target,
+            time: infitToMdr.time,
+            anim: infitToMdr.anim,
+          },
+          {
+            name: "mainMem",
+            value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
+            target: MCanim.target,
+            time: MCanim.time,
+            anim: MCanim.anim,
+          },
+        ]; ///animation of writing in MC/___________________________
+      }
+    };
+  }
+}
+class InstructionCMPS{
+  constructor() {
+    this.value1 = 0;
+    this.value2 = 0;
+    this.addresse1 = 0;
+    this.register1 = 0;
+    this.addresse2 = 0;
+    this.register2 = 0;
+    this.taille = 0;
+    this.stepsNum = 1;
+    this.isimmed = true;
+    this.name = "CMPS";
+    this.steps = [
+      () => {
+        let temp ;
+        let res ;
+        memory.setRam(Registers[3].getvalue());
+        memory.read(false);
+        temp = memory.getRim() ;
+        memory.setRam(Registers[4].getvalue());
+        memory.read(false);
+        res = memory.getRim() ;
+        console.log("here is CMPS");
+        Alu1.Flags[0] ='1';
+        Alu1.Flags[1] ='1';
+        Alu1.Flags[2] ='1';
+        Alu1.Flags[3] ='1';
+        Alu1.Flags[4] ='1';
+      }
+    ];
+    this.buildanim = function () {
+      if (this.isimmed == false) {
+        return [
+          {
+            nom: "ACC",
+            value: "addresse1",
+            target: infitToAcc.target,
+            time: infitToAcc.time,
+            anim: infitToAcc.anim,
+          },
+          {
+            value: "",
+            target: AccToBus.target,
+            time: AccToBus.time,
+            anim: AccToBus.anim,
+          },
+          {
+            value: "addresse1",
+            target: AccToADR.target,
+            time: AccToADR.time,
+            anim: AccToADR.anim,
+          },
+          {
+            value: "addresse1",
+            target: ADRToMAR.target,
+            time: ADRToMAR.time,
+            anim: ADRToMAR.anim,
+          },
+          {
+            value: "addresse1",
+            target: fitToMar.target,
+            time: fitToMar.time,
+            anim: fitToMar.anim,
+          },
+          {
+            name: "mainMem",
+            value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
+            target: MCanim.target,
+            time: MCanim.time,
+            anim: MCanim.anim,
+          },
+        ];
+      } else {
+        return [
+          {
+            value: "value2",
+            target: infitToMdr.target,
+            time: infitToMdr.time,
+            anim: infitToMdr.anim,
+          },
+          {
+            name: "mainMem",
+            value: "WRITE",
+            taille: "taille",
+            address: "addresse1",
+            content: "value2",
+            target: MCanim.target,
+            time: MCanim.time,
+            anim: MCanim.anim,
+          },
+        ]; ///animation of writing in MC/___________________________
+      }
+    };
+  }
+}
+
 export {
+  InstructionCMPS,
+  InstructionLODS,
+  InstructionMOVS,
   InstructionREADS,
   InstructionWRITES,
   InstructionCMP,

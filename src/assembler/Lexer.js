@@ -85,6 +85,9 @@ export class Lexer {
             t === 'BSE' ||
             t === 'BRI' ||
             t === 'RDS' ||
+            t === 'MOVS' ||
+            t === 'LODS' ||
+            t === 'CMPS' ||
             t === 'WRTS'
           ) {
             return {

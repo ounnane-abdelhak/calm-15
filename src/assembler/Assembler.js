@@ -765,7 +765,7 @@ export class  Assembler{
                             
                     }
                 case 'INST1':
-                    if (['NEG', 'NOT', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL'].includes(element.value)) {
+                    if (['MOVS','NEG', 'NOT', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL'].includes(element.value)) {
                         var reg ;
                         var size  ;
                         var oppcode;
@@ -801,11 +801,15 @@ export class  Assembler{
                             case 'ROL':
                                 oppcode = '1101';
                                 break;
+                                case 'MOVS':
+                                oppcode = '1110';
+                                break;
+                                
                             default:
                                 break;
                         }
                          
-                        if (oppcode != '1001' && oppcode != '1000') {
+                        if (oppcode != '1001' && oppcode != '1000' && oppcode != '1110' ) {
                         if (element.adrmode === 0 && input[1].type === 'REGISTER') {
                             switch(input[1].value){
                                 case 'R1':
@@ -880,14 +884,14 @@ export class  Assembler{
                             let instcode=oppcode+reg+size;
                             return FuncInterface.binaryToHexoneByte(instcode) ;
                         }
-                        } else {
-                            let instcode = oppcode + '011'+'1';
+                        }else {
+                                let instcode = oppcode + '011'+'1';
                             return FuncInterface.binaryToHexoneByte(instcode) ;
                         }
 
                     }else{
                     var oppcode = "";
-                    var adr = FuncInterface.decimalToHex(input[1].value,4);
+                    
                     switch(element.value){
                         case 'CALL':
                             oppcode = '33';
@@ -919,10 +923,19 @@ export class  Assembler{
                             case 'WRTS':
                             oppcode = '3B'
                             break;
+                            case 'LODS':
+                            oppcode = '35'
+                            break;
                         default:
                             break;
                     }
-                    let instcode=oppcode+adr;
+                    let instcode;
+                    if ( oppcode === '35'  ) {
+                        instcode=oppcode;  
+                    }else{
+                        var adr = FuncInterface.decimalToHex(input[1].value,4);
+                        instcode=oppcode+adr;
+                    }
                     return instcode;
                    
                 }
