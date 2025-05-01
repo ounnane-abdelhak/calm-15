@@ -1,9 +1,10 @@
 import "./style.css";
-import { useState, useRef } from "react";
+import { useState, useRef,useEffect } from "react";
 import Archi2 from "../../assets/newarchi.png";
 import gsap from "gsap";
 import queuearrow from "../../assets/images/icons/fleche.png";
-
+import { getSpeed,nsp  } from "../../Emulator/speed.js";
+import { components } from "react-select";
 //////////////////////////////////////
 
 const Arch = (props) => {
@@ -17,6 +18,8 @@ const Arch = (props) => {
   let [CacheVal, setCacheVal] = useState("");
   let MC = props.mem.getData();
   let tablec = [];
+
+  useEffect(()=>{console.log("yep it working");stop();},[getSpeed()])
 
   MC.forEach((element, index) => {
     tablec.push(
@@ -71,51 +74,51 @@ const Arch = (props) => {
         gsap.fromTo(
           ".queuearrow",
           { top: "60%", left: "83%", opacity: "0" },
-          { top: "60%", left: "73%", opacity: "1", duration: 0.3 }
+          { top: "60%", left: "73%", opacity: "1", duration: 0.3*nsp() }
         );
-        gsap.to(".queuearrow", { opacity: "0", duration: "0.1", delay: "0.3" });
+        gsap.to(".queuearrow", { opacity: "0", duration: 0.1*nsp(), delay: 0.3*nsp() });
         if (animqueuelen() == 6) {
-          gsap.to(".queue6", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue5", { opacity: "1", duration: 0.4 });
-          gsap.to(".queue4", { opacity: "1", duration: 0.4 });
-          gsap.to(".queue3", { opacity: "1", duration: 0.4 });
-          gsap.to(".queue2", { opacity: "1", duration: 0.4 });
-          gsap.to(".queue1", { opacity: "1", duration: 0.4 });
+          gsap.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue5", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue4", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
         } else if (animqueuelen() == 5) {
-          gsap.to(".queue6", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue5", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue4", { opacity: "1", duration: 0.4 });
-          gsap.to(".queue3", { opacity: "1", duration: 0.4 });
-          gsap.to(".queue2", { opacity: "1", duration: 0.4 });
-          gsap.to(".queue1", { opacity: "1", duration: 0.4 });
+          gsap.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue4", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
         } else if (animqueuelen() == 4) {
-          gsap.to(".queue6", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue5", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue4", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue3", { opacity: "1", duration: 0.4 });
-          gsap.to(".queue2", { opacity: "1", duration: 0.4 });
-          gsap.to(".queue1", { opacity: "1", duration: 0.4 });
+          gsap.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue4", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
         } else if (animqueuelen() == 3) {
-          gsap.to(".queue6", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue5", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue4", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue3", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue2", { opacity: "1", duration: 0.4 });
-          gsap.to(".queue1", { opacity: "1", duration: 0.4 });
+          gsap.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue4", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue3", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
         } else if (animqueuelen() == 2) {
-          gsap.to(".queue6", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue5", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue4", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue3", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue2", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue1", { opacity: "1", duration: 0.4 });
+          gsap.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue4", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue3", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue2", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
         } else if (animqueuelen() == 1) {
-          gsap.to(".queue6", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue5", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue4", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue3", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue2", { opacity: "0", duration: 0.4 });
-          gsap.to(".queue1", { opacity: "0", duration: 0.4 });
+          gsap.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue4", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue3", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue2", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue1", { opacity: "0", duration: 0.4*nsp() });
         }
       }
       animation.anim(animation.value, h, w);
@@ -138,14 +141,14 @@ const Arch = (props) => {
                 y: h * 0.14,
                 opacity: "0",
               },
-              { opacity: "1", duration: 0.5 }
+              { opacity: "1", duration: 0.5*nsp() }
             )
             .fromTo(
               ".ball2",
               { x: w * 0.782, y: h * 0.14 },
-              { y: h * 0.18, duration: 0.8 }
+              { y: h * 0.18, duration: 0.8*nsp() }
             )
-            .to(".ball2", { opacity: "0", duration: 0.5 })
+            .to(".ball2", { opacity: "0", duration: 0.5*nsp() })
             .add(() => {
               setAdrBusText(thecontext[tmpctx]);
               IPval = IPval + 2;
@@ -154,14 +157,14 @@ const Arch = (props) => {
             .fromTo(
               ".box-ADR",
               { x: w * 0.753, opacity: "0" },
-              { opacity: "1", duration: 0.5 }
+              { opacity: "1", duration: 0.5*nsp() }
             )
             .fromTo(
               ".box-ADR",
               { x: w * 0.753 },
-              { x: w * 0.648, duration: 0.8 }
+              { x: w * 0.648, duration: 0.8*nsp() }
             )
-            .to(".box-ADR", { opacity: "0", duration: 0.5 })
+            .to(".box-ADR", { opacity: "0", duration: 0.5*nsp() })
             .add(() => {
               setball2Text(thecontext[tmpctx]);
               tmpctx++;
@@ -176,9 +179,9 @@ const Arch = (props) => {
                 y: h * 0.165,
                 opacity: "0",
               },
-              { opacity: "1", duration: 0.5 }
+              { opacity: "1", duration: 0.5*nsp() }
             )
-            .to(".ball2", { opacity: "0", duration: 0.5 })
+            .to(".ball2", { opacity: "0", duration: 0.5*nsp() })
             .add(() => {
               setball2Text(thecontext[tmpctx]);
             })
@@ -192,9 +195,9 @@ const Arch = (props) => {
                 y: h * 0.38,
                 opacity: "0",
               },
-              { opacity: "1", duration: 0.5 }
+              { opacity: "1", duration: 0.5*nsp() }
             )
-            .to(".ball2", { opacity: "0", duration: 0.5 })
+            .to(".ball2", { opacity: "0", duration: 0.5*nsp() })
             .fromTo(
               ".ball2",
               {
@@ -205,14 +208,14 @@ const Arch = (props) => {
                 y: h * 0.445,
                 opacity: "0",
               },
-              { opacity: "1", duration: 0.5 }
+              { opacity: "1", duration: 0.5*nsp() }
             )
             .fromTo(
               ".ball2",
               { x: w * 0.539, y: h * 0.445 },
-              { y: h * 0.465, duration: 0.8 }
+              { y: h * 0.465, duration: 0.8*nsp() }
             )
-            .to(".ball2", { opacity: "0", duration: 0.5 })
+            .to(".ball2", { opacity: "0", duration: 0.5*nsp() })
             .add(() => {
               setDataBusText(thecontext[tmpctx]);
               tmpctx++;
@@ -220,14 +223,14 @@ const Arch = (props) => {
             .fromTo(
               ".box-data",
               { x: w * 0.497, opacity: "0" },
-              { opacity: "1", duration: 0.5 }
+              { opacity: "1", duration: 0.5*nsp() }
             )
             .fromTo(
               ".box-data",
               { x: w * 0.497 },
-              { x: w * 0.874, duration: 0.8 }
+              { x: w * 0.874, duration: 0.8*nsp() }
             )
-            .to(".box-data", { opacity: "0", duration: 0.5 })
+            .to(".box-data", { opacity: "0", duration: 0.5*nsp() })
             .fromTo(
               ".ball2",
               {
@@ -238,64 +241,66 @@ const Arch = (props) => {
                 y: h * 0.56,
                 opacity: "0",
               },
-              { opacity: "1", duration: 0.5 }
+              { opacity: "1", duration: 0.5*nsp() }
             )
             .fromTo(
               ".ball2",
               { x: w * 0.931, y: h * 0.56 },
-              { y: h * 0.6638, duration: 0.5 }
+              { y: h * 0.6638, duration: 0.5*nsp() }
             )
-            .to(".ball2", { x: w * 0.921, duration: 0.5 })
-            .to(".ball2", { opacity: "0", duration: 0.3 });
+            .to(".ball2", { x: w * 0.921, duration: 0.5*nsp() })
+            .to(".ball2", { opacity: "0", duration: 0.3*nsp() });
           if (animqueuelen() === 5) {
-            tl.to(".queue6", { opacity: "1", duration: 0.4 });
-            tl.to(".queue5", { opacity: "1", duration: 0.4 });
-            tl.to(".queue4", { opacity: "1", duration: 0.4 });
-            tl.to(".queue3", { opacity: "1", duration: 0.4 });
-            tl.to(".queue2", { opacity: "1", duration: 0.4 });
-            tl.to(".queue1", { opacity: "1", duration: 0.4 });
+            tl.to(".queue6", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue5", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue4", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
           } else if (animqueuelen() === 4) {
-            tl.to(".queue6", { opacity: "1", duration: 0.4 });
-            tl.to(".queue5", { opacity: "1", duration: 0.4 });
-            tl.to(".queue4", { opacity: "1", duration: 0.4 });
-            tl.to(".queue3", { opacity: "1", duration: 0.4 });
-            tl.to(".queue2", { opacity: "1", duration: 0.4 });
-            tl.to(".queue1", { opacity: "1", duration: 0.4 });
+            tl.to(".queue6", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue5", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue4", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
           } else if (animqueuelen() === 3) {
-            tl.to(".queue6", { opacity: "0", duration: 0.4 });
-            tl.to(".queue5", { opacity: "1", duration: 0.4 });
-            tl.to(".queue4", { opacity: "1", duration: 0.4 });
-            tl.to(".queue3", { opacity: "1", duration: 0.4 });
-            tl.to(".queue2", { opacity: "1", duration: 0.4 });
-            tl.to(".queue1", { opacity: "1", duration: 0.4 });
+            tl.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
+            tl.to(".queue5", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue4", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
           } else if (animqueuelen() === 2) {
-            tl.to(".queue6", { opacity: "0", duration: 0.4 });
-            tl.to(".queue5", { opacity: "0", duration: 0.4 });
-            tl.to(".queue4", { opacity: "1", duration: 0.4 });
-            tl.to(".queue3", { opacity: "1", duration: 0.4 });
-            tl.to(".queue2", { opacity: "1", duration: 0.4 });
-            tl.to(".queue1", { opacity: "1", duration: 0.4 });
+            tl.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
+            tl.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
+            tl.to(".queue4", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
           } else if (animqueuelen() === 1) {
-            tl.to(".queue6", { opacity: "0", duration: 0.4 });
-            tl.to(".queue5", { opacity: "0", duration: 0.4 });
-            tl.to(".queue4", { opacity: "0", duration: 0.4 });
-            tl.to(".queue3", { opacity: "1", duration: 0.4 });
-            tl.to(".queue2", { opacity: "1", duration: 0.4 });
-            tl.to(".queue1", { opacity: "1", duration: 0.4 });
+            tl.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
+            tl.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
+            tl.to(".queue4", { opacity: "0", duration: 0.4*nsp() });
+            tl.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
           } else if (animqueuelen() === 0) {
-            tl.to(".queue6", { opacity: "0", duration: 0.4 });
-            tl.to(".queue5", { opacity: "0", duration: 0.4 });
-            tl.to(".queue4", { opacity: "0", duration: 0.4 });
-            tl.to(".queue3", { opacity: "0", duration: 0.4 });
-            tl.to(".queue2", { opacity: "1", duration: 0.4 });
-            tl.to(".queue1", { opacity: "1", duration: 0.4 });
+            tl.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
+            tl.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
+            tl.to(".queue4", { opacity: "0", duration: 0.4*nsp() });
+            tl.to(".queue3", { opacity: "0", duration: 0.4*nsp() });
+            tl.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
           }
         }
       }
     }, dl);
-  };
+
+  }; 
+  const [len,setlen] =useState(0);
   const animqueuelen = () => {
-    let len = 0;
+     let len = 0;
     if (q6.current.style.opacity == 1) {
       len = len + 1;
     }
@@ -314,6 +319,7 @@ const Arch = (props) => {
     if (q1.current.style.opacity == 1) {
       len = len + 1;
     }
+    setlen(len)
     return len;
   };
   let myref = useRef();
@@ -324,117 +330,135 @@ const Arch = (props) => {
   let q5 = useRef();
   let q6 = useRef();
   const [inanim, incanim] = useState(0);
+  const [cont,setcont] = useState("start"); 
   const next = () => {
+    setcont("continue");
     document.getElementById("next").disabled = true;
-    document.getElementById("previous").disabled = true;
+    document.getElementById("reload").disabled = true;
     document.getElementById("stop").disabled = true;
     document.getElementById("continue").disabled = true;
     simulate(inanim);
-
     setTimeout(() => {
       document.getElementById("next").disabled = false;
-      document.getElementById("previous").disabled = false;
+      document.getElementById("reload").disabled = false;
       document.getElementById("stop").disabled = false;
       document.getElementById("continue").disabled = false;
-    }, props.anim[inanim].time);
+    }, props.anim[inanim]?.time?.() ?? 1000 * nsp());
     incanim(inanim + 1);
   };
-  const previous = () => {
-    document.getElementById("next").disabled = true;
-    document.getElementById("previous").disabled = true;
-    document.getElementById("stop").disabled = true;
-    document.getElementById("continue").disabled = true;
-    let newIndex = inanim;
-    if (inanim > 0) {
-      newIndex -= 1;
-      incanim(newIndex);
-    }
-    simulate(newIndex);
-    setTimeout(() => {
-      document.getElementById("next").disabled = false;
-      document.getElementById("previous").disabled = false;
-      document.getElementById("stop").disabled = false;
-      document.getElementById("continue").disabled = false;
-    }, props.anim[newIndex].time);
+  const reload = () => {
+    stop();
+     incanim(0);
+     setipval(0);
+     setcont("start");
+     setlen(0);
+
+     q1.current.style.opacity = 0;
+     q2.current.style.opacity = 0;
+     q3.current.style.opacity = 0;
+     q4.current.style.opacity = 0;
+     q5.current.style.opacity = 0;
+     q6.current.style.opacity = 0; 
   };
   const stopan = useRef(true);
-  const currentTimeout = useRef(null);
-
+  const curtime = useRef(null);
+  const dl2 = useRef(0);
   const continu = () => {
+    setcont("continue");
     document.getElementById("next").disabled = true;
-    document.getElementById("previous").disabled = true;
     document.getElementById("continue").disabled = true;
-
     stopan.current = false;
-    let newIndex = inanim;
+    let currentIndex = inanim;
 
-    function runAnimation() {
-      if (stopan.current || newIndex >= props.anim.length) {
+    const runAnimation = () => {
+      if (stopan.current || currentIndex >= (props.anim?.length || 0)) {
         document.getElementById("next").disabled = false;
-        document.getElementById("previous").disabled = false;
         document.getElementById("continue").disabled = false;
         return;
       }
-      simulate(newIndex);
-      incanim(newIndex + 1);
-      const delay = props.anim[newIndex].time;
-      newIndex++;
-      currentTimeout.current = setTimeout(runAnimation, delay / 5);
-    }
+
+      const cfg = props.anim[currentIndex];
+      simulate(currentIndex);
+      const timeValue = typeof cfg.time === 'function' 
+      ? cfg.time() 
+      : cfg.time ?? 1000; 
+  
+  dl2.current = timeValue * (nsp() || 1); 
+      
+
+      currentIndex++;
+      incanim(currentIndex);
+      curtime.current = setTimeout(runAnimation, dl2.current*0.5);
+    };
 
     runAnimation();
   };
 
   const stop = () => {
+   const compon=[".ball",".box-ADR",".box-data",".MC",".IP",".Cache",".ball2"]
     stopan.current = true;
-    clearTimeout(currentTimeout.current);
+
+    compon.forEach(selector => {
+      const elements = document.querySelectorAll(selector);
+      elements.forEach(element => {
+        gsap.killTweensOf(element);
+      });
+    });
+
+      clearTimeout(curtime.current);
+    dl.current=0;
+    dl2.current=0;
+    allow.current = false;
+    allowtmp.current = 0;
+    
     document.getElementById("next").disabled = false;
-    document.getElementById("previous").disabled = false;
     document.getElementById("continue").disabled = false;
   };
+    const allow = useRef(false);
+      const allowtmp = useRef(0);
+      const dl = useRef(0);
+    const simulate = (j) => {
+console.log(props.anim)
 
-  let allow = true;
-  let allowtmp = 0;
-  let dl = 0;
-  const simulate = (j) => {
-    const h = myref.current.clientHeight;
-    const w = myref.current.clientWidth;
-    let i = 0;
-    console.log("anim", props.anim);
-    if (j < props.anim.length) {
+      const cfg = props.anim[j];
+      if (!cfg) return null;
+
+      const h = myref.current.clientHeight ;
+      const w = myref.current.clientWidth ;
+
       let k = 0;
       let stop = false;
       let chaine = false;
-      allowtmp++;
-      if (allowtmp >= 10) {
-        allow = true;
+  
+      
+      allowtmp.current++;
+      if (allowtmp.current >= 10) {
+        allow.current = true;
       }
-      while ((k < 10) & !stop & !(k + j === props.anim.length)) {
-        if (
-          (props.anim[k + j - 4 > 0 ? k + j - 4 : k + j].target !==
-            ".box-data") &
-          (props.anim[k + j - 4 > 0 ? k + j - 4 : k + j].target !== ".box-ADR")
-        ) {
+
+      while (k < 10 && !stop && (j + k) < props.anim.length) {
+        const checkIndex = Math.max(j + k - 4, 0);
+        const animItem = props.anim[checkIndex];
+        
+        if (animItem?.target !== ".box-data" && animItem?.target !== ".box-ADR") {
           k++;
         } else {
           stop = true;
         }
       }
-      if ((k === 10) & (animqueuelen() <= 4) & allow) {
+
+      if (k === 10 && animqueuelen() <= 4 && allow.current) {
         chaine = true;
-        allow = false;
-        allowtmp = 0;
+        allow.current = false;
+        allowtmp.current = 0;
       }
 
-      animate(i, props.anim[j], h, w, dl, chaine);
-      dl = dl + props.anim[j].time + 1;
-      i++;
-      // if((props.anim[j+1].nom==="QueueToIr")&(j<props.anim.length-4)&(props.anim[j+2].nom==="fitToIr"|props.anim[j+3].nom==="fitToIr")){//en cas instruction avec 2 general bytes
-      // contin=false;
-      // }
-    }
-  };
+      const timeValue = typeof cfg.time === 'function' ? cfg.time() : 1000 * nsp();
 
+      animate(0, cfg, h, w, dl.current, chaine);
+      dl.current += timeValue*0.8 + 1;
+
+    };
   ///////////////////////////////
   // useEffect(() => {
   // let i=0;
@@ -803,9 +827,9 @@ const Arch = (props) => {
         }}>return</button>
         <br /><br />
             <div>
-                <button className="control" onClick={previous} id="previous">previous</button>
+                <button className="control" onClick={reload} id="reload">reload</button>
                 <button className="control" onClick={next} id="next" >next</button>
-                <button className="control" onClick={continu} id="continue">continue</button>
+                <button className="control" onClick={continu} id="continue">{cont}</button>
                 <button className="control" onClick={stop} id="stop" >stop</button>
             </div>
     </div>

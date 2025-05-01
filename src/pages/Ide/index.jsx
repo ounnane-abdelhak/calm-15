@@ -1,4 +1,4 @@
-import { useState , useRef,useEffect } from 'react';
+import { useState , useRef,useEffect, useContext } from 'react';
 import Toggle from 'react-styled-toggle';
 import { Controlled as CodeMirror } from "react-codemirror2";
 import UAParser from 'ua-parser-js';
@@ -16,7 +16,7 @@ import AddressingModes from "../../Emulator/Adressing.js";
 import { generalPurposeRegister,Register } from "../../Emulator/Register.js";
 import { TwosComplement } from "../../Emulator/ALU.js";
 import Arch from '../Arch/index.jsx';
-import { getSpeed, setSpeed} from '../../Emulator/Instruction.js';
+import { adrs, getadrs, getcode, getSpeed, pushadrs, setcode, setSpeed } from '../../Emulator/speed.js';
 ///// import editor styles//////
 import "../../codemirror/lib/codemirror.css"
 import "../../codemirror/theme/material.css";
@@ -30,6 +30,7 @@ import { Errorcalm } from "../../assembler/Errorcalm";
 import { useLocation } from 'react-router-dom';
 import IOUnit from '../../Emulator/IO_Unit.js';
 import txt from "../../Emulator/Instruction.js";
+import specont from '../../speedcontext.js';
 
 
 ////////////////animations declarations////////////////////////////////
@@ -103,14 +104,15 @@ const Ide = ({currentUser})=>{
   let [isHexa,setIsHexa]=useState(false);
   let [iscode,setIsCode]=useState(true);
   let [iserr,seterr]=useState(false);
-  let [Speed,setspeed]=useState(getSpeed());
+  const {speed, setsp} = useContext(specont);
   let [spmess,setspmess]=useState("normal speed")
   let offset=0;
   let offset2=0;
 
 
-useEffect(()=>{setSpeed(Speed)
-switch (Speed) {
+useEffect(()=>{setSpeed(speed)
+  console.log("External speed updated to:", getSpeed());
+switch (speed) {
   case 1:
     setspmess("slow speed");
     break;
@@ -127,7 +129,7 @@ switch (Speed) {
     break;
 }
 
-},[Speed])
+},[speed])
   ///////////////////////////////executions function////////////////////////////////////////
 
   const traitement= (codeArray)=>{
@@ -165,13 +167,11 @@ switch (Speed) {
               memory.write();
               offset2++;
               }
-        console.log("here",mess)
           }
     while(instrobject.name!=="stop"){
       sequenceur.getinstrbyte(animations,true,Contextarray);
-      instrobject={...sequenceur.decode(animations,Contextarray)};
+      instrobject={...sequenceur.decode(animations,0,Contextarray)};
       if(instrobject.name!=="stop"){
-       
         sequenceur.execute(instrobject,1,animations);
       }
     }
@@ -221,16 +221,116 @@ switch (Speed) {
       setEditMode(state.editMode);
       setCode(state.code);
     }
-  
   },[state])
 
 
   const codeMirrorRef = useRef(null); 
   
   
+  function invalidlist(procName) {
+    // Predefined lists of reserved keywords
+    const instructions = [
+      "ADD", "SUB", "MUL", "DIV", "AND", "OR", "XOR", "NOR", "NAND",
+      "CMP", "CMPS", "MOV", "MOVS", "CALL", "RET", "PUSHA", "POPA",
+      "BE", "BNE", "BS", "BI", "BIE", "BSE", "BR",
+      "NEG", "NOT", "SHL", "SHR",
+      "RD", "RDS", "WRT", "WRTS",
+      "PUSH", "POP", "ROR", "ROL",
+      "LODS"
+    ]
+    const registers = [
+      "R1", "R2", "R3", "R4", "ACC", "BR", "IR", "SR",
+      "R1H", "R2H", "R3H", "R1L", "R2L", "R3L", "ACCR", "ACCL"
+    ];
   
+    const directives = ["MACRO", "ENDM", "ENDP", "LABEL", "STR"];
+  
+    // Combine all reserved words into a single Set
+    const reservedWords = new Set([
+      ...instructions,
+      ...registers,
+      ...directives
+    ]);
+  
+    return reservedWords.has(procName.toUpperCase());
+  }
+  function detproc(lines) {
+    const procRegex = /(^([A-Za-z_]\w*)\s+PROC[ \t]*\r?\n([\s\S]*?)\r?\n\2\s+ENDP\s*$)/gim;
+  
+    const procs = [];
+    let m;
+    while ((m = procRegex.exec(lines)) !== null) {
+      const [, , nameRaw, bodyText] = m;
+      const name = nameRaw.toUpperCase();
 
+      const body = bodyText.split('\n').map(l => 
+        /^\s*;/.test(l) ? l : l.toUpperCase()
+      );
+  
+      procs.push({ 
+        name, 
+        body, 
+        line: getLineNumber(lines, m.index) 
+      });
+  
+      if (invalidlist(name)) {
+        Errorcalm.SemanticError.push(
+          new Errorcalm(`Procedure name "${name}" is forbidden`, null, getLineNumber(lines, m.index))
+        );
+      }
+    }
+
+    for (let i = 0; i < procs.length; i++) {
+      for (let j = i + 1; j < procs.length; j++) {
+        if (procs[i].name === procs[j].name) {
+          Errorcalm.SemanticError.push(
+            new Errorcalm(`PROC name "${procs[j].name}" already used`, null, procs[j].line)
+          );
+        }
+      }
+    }
+
+    const allLines = lines.split('\n');
+    for (const p of procs) {
+      if (p.line > 0) {
+        const lineBefore = allLines[p.line - 1].trim();
+        const isValidContext = 
+          /^([A-Za-z_]\w*):$/.test(lineBefore) || 
+          /^\/\//.test(lineBefore) || 
+          /^#/.test(lineBefore) ||  
+          /^\s*$/.test(lineBefore);
+  
+        if (!isValidContext) {
+          Errorcalm.SemanticError.push(
+            new Errorcalm(`Invalid code before procedure "${p.name}"`, null, p.line)
+          );
+        }
+      }
+    }
+
+    let codeLines = lines
+      .replace(procRegex, '') 
+      .split('\n')
+      .filter(l => l.trim()); 
+    return { 
+      procedures: procs, 
+      codeWithoutProcedures: codeLines,
+      errors: Errorcalm.SemanticError 
+    };
+}
+
+
+function getLineNumber(text, charIndex) {
+    const lines = text.split('\n');
+    let count = 0;
+    for (let i = 0; i < lines.length; i++) {
+      count += lines[i].length + 1;
+      if (count > charIndex) return i;
+    }
+    return -1;
+}
   function getInstLeng(instruction) {
+    if(!instruction) return 0;
     const tokens = instruction.trim().split(/[\s,]+/).filter(token => token.length > 0);
     if (tokens.length === 0) return 0;
     const inst = tokens[0].toUpperCase();
@@ -267,13 +367,13 @@ switch (Speed) {
     }
     return 0;
   }
-  
 
-  
   const handleStoreCode = (nb) => {
+
     const editor = codeMirrorRef.current.editor;
     const code = editor.getValue();
     const commentArray = [];
+
     let lines = code.split('\n').filter(line => line.trim() !== '');
     let lines2=lines;
     lines.forEach((line, lineIndex) => {
@@ -298,7 +398,7 @@ switch (Speed) {
       if (name) {
         name = name.toUpperCase();
       }
-      const params = match[3] ? match[3].split(/\s*,\s*/) : [];
+      const params = match[3] ? match[3].toUpperCase().split(/\s*,\s*/) : [];
       const body = (match[4] || '').split('\n');
   
       if (body) {
@@ -354,7 +454,7 @@ switch (Speed) {
             let newLine = macro.body[j];
             for (let i = 0; i < macro.numparam; i++) {
               const paramRegex = new RegExp(`\\b${macro.params[i]}\\b`, 'g');
-              newLine = newLine.replace(paramRegex, params[i]);
+              newLine = newLine.replace(paramRegex,params[i]);
             }
             substitutedBody.push(newLine);
           }
@@ -365,41 +465,10 @@ switch (Speed) {
         }
       }
     }
-    
   
     const labelTable = [];
-    const codeArray = [];
-    let codeLineIndex = 0;
-    
-    codeWithoutMacros.forEach((line) => {
-      const labelMatch = line.match(/^\s*([^:]+):/);
-      if (labelMatch) {
-        labelTable.push({
-          name: labelMatch[1].trim().replace(/\s/g, '').toUpperCase(),
-          line: codeLineIndex,
-        });
-      }
-      const newline = line.replace(/^\s*[^:]+:\s*/, '');
-      if (newline !== '') {
-        codeArray.push(newline.toUpperCase());
-        codeLineIndex++;
-      }
-    });
-    
-  console.log("yourcode2",codeArray)
-    if (labelTable) {
-      labelTable.forEach((label) => {
-        let pos = 0;
-         console.log("yournum",label.line)
-        for (let i = 0; i < label.line; i++) {
+    const codeArray = [...codeWithoutMacros];
 
-          
-             pos += getInstLeng(codeArray[i].toUpperCase());
-   
-        }
-        label.line = pos;
-      });
-    }
     console.log("codelabel",labelTable)
  let code2 = [];
  lines2.forEach(line => {
@@ -431,10 +500,6 @@ switch (Speed) {
   }
 });
 
-
-console.log("rwbf",code2)
- 
- let newCodeArray = [];
  for (let i = 0; i < code2.length; i++) {
    const line = code2[i];
    let reg2 = /[a-zA-Z]*[a-z0-9A-Z_]+/;
@@ -497,16 +562,119 @@ console.log("rwbf",code2)
    } 
  }
 let codearray2=[]
+
 codeArray.forEach((line)=>{
   const reg=/^\s*STR\s+/
   if(!reg.test(line)){codearray2.push(line)}
 }) 
-console.log("touvfwrb",codearray2)
 codeArray.length=0;
  codearray2.forEach((line)=>{codeArray.push(line)})
- 
-    if (nb === 0) {
+  let num=0;
 
+let cd=codeArray.join('\n')
+let procs=detproc(cd);
+let ss=0,ss1=0;
+let tab=[];
+for (let i = 0; i < procs.codeWithoutProcedures.length; i++) {
+  ss+=getInstLeng(procs.codeWithoutProcedures[i])  ;
+}
+ss+=getInstLeng("BRI 8")
+ss1=ss;
+for (let j = 0; j < procs.procedures.length; j++) {
+  tab=[...tab,... procs.procedures[j].body]
+for (let i = 0; i < procs.procedures[j].body.length; i++) {
+  ss+=getInstLeng(procs.procedures[j].body[i])  ;
+}
+}
+let recode=[...procs.codeWithoutProcedures,`BRI ${ss}`,...tab];
+
+for (let i = 0; i < procs.procedures.length; i++) {
+  Assembler.PROClist.push({name : procs.procedures[i].name ,adr : ss1})
+  for (let j = 0; j < procs.procedures[i].body.length; j++) {
+    ss1+=getInstLeng(procs.procedures[i].body[j])  ;
+  }
+
+}
+
+let line;
+let code3=[];
+
+ codeArray.length=0;
+let codeLineIndex = 0;
+recode.forEach((line) => {
+  const labelMatch = line.match(/^\s*([^:]+):/);
+  if (labelMatch) {
+    labelTable.push({
+      name: labelMatch[1].trim().replace(/\s/g, '').toUpperCase(),
+      line: codeLineIndex,
+    });
+  }
+  const newline = line.replace(/^\s*[^:]+:\s*/, '');
+  if (newline !== '') {
+    codeArray.push(newline.toUpperCase());
+    codeLineIndex++;
+  }
+});
+if (labelTable) {
+  labelTable.forEach((label) => {
+    let pos = 0;
+     console.log("yournum",label.line)
+    for (let i = 0; i < label.line; i++) {
+         pos += getInstLeng(codeArray[i].toUpperCase());
+
+    }
+    label.line = pos;
+  });
+}
+code3.length=0;
+codeArray.forEach(line => {
+  let inQuotes = false;
+  let cleanLine = "";
+  for (let i = 0; i < line.length; i++) {
+    let char = line[i];
+    if (char === '"') {
+      inQuotes = !inQuotes;
+      cleanLine += char;
+      continue;
+    }
+    if (!inQuotes) {
+      if (char === '#' || char === ';') break;
+      if (char === '/' && i + 1 < line.length && line[i + 1] === '/') break;
+    }
+    cleanLine += char;
+  }
+
+  const tokens = cleanLine.match(/"[^"]*"|\S+/g);
+  if (tokens) {
+    const processedTokens = tokens.map(token => {
+      if (token.startsWith('"') && token.endsWith('"')) {
+        return token;
+      }
+      return token.toUpperCase();
+    });
+    code3.push(processedTokens);
+  }
+});
+console.log("ggg ",code3[0])
+let found=false;
+let l = 0;
+while(!found && l<codeArray.length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code3[l])){
+num=0;
+line=code3[l];
+if(line[0]=="CALL"){found=true;
+
+for (let index = 0; index <=l; index++) {
+num+=getInstLeng(codeArray[index]?.toUpperCase());
+}
+}
+l++;  
+}
+if(found && !adrs.includes(num)){
+  pushadrs(num)
+}
+console.log("slnv  ",codeArray,"  ")
+setcode(codeArray);
+if (nb === 0) {
       return codeArray;
     }
     if (nb === 1) {
@@ -847,11 +1015,11 @@ ${result}`}</pre>
         </>
       }
       {simul && 
-        <Arch anim={animations} mem={memory} Spe={Speed} setspe={setspeed} flags={Alu1.getAllFlags()} reg={Registers} theCTX={Contextarray}/>
+        <Arch anim={animations} mem={memory}  flags={Alu1.getAllFlags()} reg={Registers} theCTX={Contextarray}/>
       }
       <div className='speed'> 
         <label htmlFor="speed">{spmess}</label>
-        <input type="range" min="1" max="4" id="speed" value={Speed}  onChange={(e) => setspeed(Number(e.target.value))} />
+        <input type="range" min="1" max="4" id="speed" value={speed}  onChange={(e) => {setsp(Number(e.target.value))}} />
         </div>
 
     </>

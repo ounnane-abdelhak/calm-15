@@ -8,16 +8,18 @@ import { AddressingModesPage, Arch, CheckYourEmailPage, ComponentsPage, Examples
 import asteriks from "./assets/images/decorations/asteriskgray.png"
 import asteriks2 from "./assets/images/decorations/asteriskgray.png"
 import { useEffect, useState } from 'react';
-
+import specont from './speedcontext';
 import ExercicesPage from "./pages/ExercicesPage";
 import Level1 from "./components/Exercices/Level1/level1";
 import Level2 from './components/Exercices/Level2/level2';
 import Level3 from './components/Exercices/Level3/level3';
 import Level4 from './components/Exercices/Level4/level4';
 
+
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
-  
+  const [speed, setsp] = useState(4);
+  useEffect(()=>{console.log(speed);},[speed]);
   useEffect( ()=>{
     const loggedInUser = localStorage.getItem('user');
     
@@ -27,6 +29,7 @@ function App() {
   }, [])
 
   return (
+    <specont.Provider value={{speed,setsp}}>
     <Router>
       <div className="App">
         
@@ -47,6 +50,7 @@ function App() {
         </img>
         
         <Routes>
+
           <Route exact path="/" element={<Hero/>}/>
           <Route exact path="/ide" element={<Ide currentUser={currentUser}/>}/>
           <Route exact path="/archi" element={<Arch/>}/>
@@ -67,10 +71,12 @@ function App() {
           <Route exact path="/learn/Exercices/Level2" element={<Level2/>}/>
           <Route exact path="/learn/Exercices/Level3" element={<Level3/>}/>
           <Route exact path="/learn/Exercices/Level4" element={<Level4/>}/>
+
         </Routes>
         
       </div>
     </Router>
+              </specont.Provider>
   );
 }
 
