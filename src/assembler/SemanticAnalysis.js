@@ -111,9 +111,9 @@ export class SemanticAnalysis {
                                 } else {
                                     Errorcalm.SemanticError.push(new Errorcalm("INST1 must have an operand",null,i))
                                 }
-                            }else if (lexicalList[i][0].value == "WRT" || lexicalList[i][0].value == "RD") {
+                            }else if (lexicalList[i][0].value == "WRT" || lexicalList[i][0].value == "RD" || lexicalList[i][0].value == "MOVS"|| lexicalList[i][0].value === 'LODS' ) {
                                 if (lexicalList[i].length !== 1) {
-                                    Errorcalm.LexicalError.push(new Errorcalm("RD and WRT Instructions can't have operands",null,i));
+                                    Errorcalm.LexicalError.push(new Errorcalm(`${lexicalList[i][0].value} Instruction can't have operands`,null,i));
                                 } else {
                                     this.Semanticlist.push([{type:lexicalList[i][0].type, value: lexicalList[i][0].value, adrmode:0 }]);
                                 }
@@ -191,7 +191,7 @@ export class SemanticAnalysis {
                                         // add addressing modes direct and indirect for labels
 
                                         //check if it's present in label list
-                                        if (lexicalList[i][0].value === 'RDS' || lexicalList[i][0].value === 'WRTS') {
+                                        if (lexicalList[i][0].value === 'RDS' || lexicalList[i][0].value === 'WRTS' ) {
                                             if (lexicalList[i].length === 2) {
                                                 const isInLabel = Assembler.Labellist.some(obj => obj.name === lexicalList[i][1].value);
                                                 const isInStr = Assembler.STRlist.some(obj => obj.name === lexicalList[i][1].value);
@@ -206,7 +206,11 @@ export class SemanticAnalysis {
                                                 } else {
                                                     Errorcalm.SemanticError.push(new Errorcalm("Label or Str doesn't exist",null,i))
                                                 }
-                                            } else {
+                                            } else if (lexicalList[i].length !== 1) {
+                                    Errorcalm.LexicalError.push(new Errorcalm(`${lexicalList[i][0].value} Instruction can't have operands`,null,i));
+                                } else {
+                                    this.Semanticlist.push([{type:lexicalList[i][0].type, value: lexicalList[i][0].value, adrmode:0 }]);
+                                }{
                                                 Errorcalm.SemanticError.push(new Errorcalm("Wrong Number of operands",null,i))
                                             }
                                         } else {

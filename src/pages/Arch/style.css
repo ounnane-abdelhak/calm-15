@@ -162,9 +162,23 @@
   font-family: "JetBrains Mono", monospace;
 }
 
+.aflagName {
+  margin: 0rem;
+  font-size: 8px;
+  color: white;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.aflagContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .aflagdiv {
   height: 1.5rem;
-  width: 2.5rem;
+  width: 1.5rem;
   border: 1px solid #1be985;
   background-color: #212529;
   border-radius: 10px;

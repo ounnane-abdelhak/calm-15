@@ -14,7 +14,7 @@ import  CodeMirror from 'codemirror'
 })(function(CodeMirror) { 
 
   CodeMirror.defineMode("8086", function(config, parserConfig) {
-      var keywords = ["rds","wrts","str","cmp","mov", "add", "sub", "mul", "div", "jmp", "call", "ret", "push", "pop", "label", "bri", "be", "bne", "bs", "bi", "bse", "bie", "ror", "rol", "shr", "shl","pusha","popa","rd","wrt"];
+      var keywords = ["cmps","lods","movs","rds","wrts","str","cmp","mov", "add", "sub", "mul", "div", "jmp", "call", "ret", "push", "pop", "label", "bri", "be", "bne", "bs", "bi", "bse", "bie", "ror", "rol", "shr", "shl","pusha","popa","rd","wrt"];
       var registers = ["r1", "r2", "r3", "r4", "idr", "br", "sr", "acc", "r1l", "r1r", "r2l", "r2r", "r3l", "r3r", "accl", "accr"];
       var macro=["proc","endp","macro","endm"];
       var number = /-?(?:0x[0-9a-f]+|\d+)/i;

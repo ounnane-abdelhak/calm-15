@@ -29,8 +29,8 @@ import {HexaToCode} from "../../HexaToCode/HexaToCode"
 import { Errorcalm } from "../../assembler/Errorcalm";
 import { useLocation } from 'react-router-dom';
 import IOUnit from '../../Emulator/IO_Unit.js';
-import txt from "../../Emulator/Instruction.js";
 import specont from '../../speedcontext.js';
+import { gettext } from '../../Emulator/setgettxt.js';
 
 
 ////////////////animations declarations////////////////////////////////
@@ -48,8 +48,10 @@ const handleRefresh = () => {
 function convertStrings(arr) {
   const result = [] ;
   for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr[i].length; j += 2) {
-      result.push(arr[i][j] + arr[i][j+1]);
+    if (arr[i]) {
+      for (let j = 0; j < arr[i].length; j += 2) {
+        result.push(arr[i][j] + arr[i][j+1]);
+      }
     }
   }
   return result;
@@ -95,12 +97,12 @@ export {memory,BR,IR,Registers,queue,addressingModes,Alu1,IP,ioUnit,sequenceur};
 const Ide = ({currentUser})=>{
   ////////////////////hooks///////////////////////////////:
   let [result,setresult]=useState("");
-  let [txtColor,setTxtColor]=useState("green");
   let [done,setdone]=useState(false);
   let [simul,setsimul]=useState(false)
   let [memo,setmemo]=useState(false);
   let [reg,setreg]=useState(false);
   let [stk,setstk]=useState(false);//for showing stack
+  let [cache,setCache]=useState(false);//for showing cache
   let [isHexa,setIsHexa]=useState(false);
   let [iscode,setIsCode]=useState(true);
   let [iserr,seterr]=useState(false);
@@ -109,6 +111,11 @@ const Ide = ({currentUser})=>{
   let offset=0;
   let offset2=0;
 
+  let [displayedtext ,setDtxt] =useState("") ; 
+  useEffect(() => {
+
+    setDtxt(gettext());
+  },[gettext()])
 
 useEffect(()=>{setSpeed(speed)
   console.log("External speed updated to:", getSpeed());
@@ -136,7 +143,7 @@ switch (speed) {
     for(let i=0;i<50;i++){//initializing first 50 bytes in memory to 0 (data memory)
       memory.setRam(TwosComplement(i,8));
       memory.setRim("00000000");
-      memory.write();
+      memory.initialize();
     }
 
     memory.setcode(codeArray);
@@ -196,6 +203,19 @@ switch (speed) {
     )
   });
 
+  let tablecache=[];
+      Array.from(memory.cache.getCache()).forEach( (element,index) => {
+    tablecache.push(
+      <tr>
+        <td>
+            {element[0]}
+        </td>
+        <td>
+            {element[1]}
+        </td>
+      </tr>
+    )
+  });
 
   let tablestk=[];
   memory.getstack().forEach((element,index) => {
@@ -428,7 +448,6 @@ function getLineNumber(text, charIndex) {
     }
    
     let codeWithoutMacros = lines.replace(macroRegex, '');
-    console.log("your lines",lines2)
     codeWithoutMacros = codeWithoutMacros.split('\n').filter(line => line.trim() !== '');
 
     for (let lineIndex = 0; lineIndex < codeWithoutMacros.length; lineIndex++) {
@@ -720,14 +739,20 @@ code[index]=hexaArray[index]+"//"+codeArray[index]
   let [isRefreshed,setIsRefreshed]=useState(true);
 
   useEffect(()=>{
-      let storedArray = JSON.parse(localStorage.getItem('arr'));          
-      if(storedArray!=null){
-        storedArray=storedArray.join('\n');
-        localStorage.removeItem('arr');
-        setCode(storedArray);
-        setIsRefreshed(false);
-
-      }
+    let storedArray = JSON.parse(localStorage.getItem('arr'));          
+    if(storedArray!=null){
+      storedArray=storedArray.join('\n');
+      localStorage.removeItem('arr');
+      setCode(storedArray);
+      setIsRefreshed(false);
+    }
+    let restoredCode = JSON.parse(localStorage.getItem('restoreCode'));          
+    if(restoredCode){
+      restoredCode = restoredCode.replace(/\n{2,}/g, "\n");
+      localStorage.removeItem('restoreCode');
+      setCode(restoredCode);
+      setIsRefreshed(false);
+    }
   },[isRefreshed])
 
   return (
@@ -763,8 +788,6 @@ code[index]=hexaArray[index]+"//"+codeArray[index]
                       code+=HexaToCode(handleStoreCode(0)[m])+"\n";
                
                     } 
-                          console.log("hereeeee",handleStoreCode(0));
-                          console.log(code);
                     editor.setValue(code);
                     setChecktest(!checktest);
                     setIsCode(true);
@@ -836,24 +859,17 @@ code[index]=hexaArray[index]+"//"+codeArray[index]
                   }else{
                     inputouter=handleStoreCode(0);
                   }
-                  console.log("inputouter: ", inputouter);
                   let input=convertStrings(inputouter);
                   input.push("ff");
-                  console.log("input: ", input);
                   try {
                     Errorcalm.errorr = Errorcalm.LexicalError.length + Errorcalm.SemanticError.length;
                     if (Errorcalm.errorr === 0) {
                       traitement(input);
-                      let res = "";
-                      txt.map((item) => {
-                        res += item;
-                      });
-                      setresult(res);
-                      setTxtColor("green");
+                    
                     }else{
                       setresult(Errorcalm.printError());
                       seterr(true);
-                      setTxtColor("red");
+
                     }
                        
                     
@@ -884,8 +900,6 @@ console.log("the error",error)
                     // const editor = codeMirrorRef.current.editor;
                     // const code = editor.getValue(); // Get the current content of the editor
                     arr=handleStoreCode2();
-                    console.log(arr);
-                    console.log("old arr=",arr);
                     localStorage.setItem('arr', JSON.stringify(arr));
                     console.log("current local storage : ",localStorage.getItem('arr'))
                     window.location.reload();
@@ -894,6 +908,12 @@ console.log("the error",error)
                   {!iserr &&< button 
                     className='ide-exec-button' 
                     onClick={()=>{
+                      const editor = codeMirrorRef.current.editor;
+                      let restoreCode = "";
+                      editor.display.maxLine.parent.lines.forEach(element => {
+                        restoreCode += element.text + "\n";
+                      });
+                      localStorage.setItem("restoreCode", JSON.stringify(restoreCode));
                       const parser = new UAParser();
                       const result = parser.getResult();
                       result.device.type==='mobile'? alert('Simulation not availble for this type of devices') : setsimul(true) ;
@@ -904,9 +924,20 @@ console.log("the error",error)
                   {!iserr &&<button 
                     className='ide-exec-button' 
                     onClick={()=>{
-                      setreg(true)
-                      setmemo(false)
-                      setstk(false)
+                      if (!reg) {
+                        setreg(true)
+                        setmemo(false)
+                        setstk(false)
+                        setCache(false)
+                        if (!localStorage.getItem('result')) {
+                          localStorage.setItem('result', JSON.stringify(result));
+                          setresult("")
+                        }
+                      } else {
+                        setreg(false)
+                        setresult(JSON.parse(localStorage.getItem('result')));
+                        localStorage.removeItem('result');
+                      }
                     }}
                   >
                     registers
@@ -915,9 +946,20 @@ console.log("the error",error)
                   {!iserr &&<button 
                   className='ide-exec-button' 
                   onClick={()=>{
-                    setmemo(true)
-                    setstk(false)
-                    setreg(false)
+                    if (!memo) {
+                      setmemo(true)
+                      setstk(false)
+                      setreg(false)
+                      setCache(false)
+                      if (!localStorage.getItem('result')) {
+                        localStorage.setItem('result', JSON.stringify(result));
+                        setresult("")
+                      }
+                    } else {
+                      setmemo(false)
+                      setresult(JSON.parse(localStorage.getItem('result')));
+                      localStorage.removeItem('result');
+                    }
                   }}
                   >
                     memory
@@ -926,11 +968,44 @@ console.log("the error",error)
                   {!iserr &&<button 
                   className='ide-exec-button' 
                   onClick={()=>{
-                    setstk(true)
-                    setreg(false)
-                    setmemo(false)
+                    if (!stk) {
+                      setstk(true)
+                      setreg(false)
+                      setmemo(false)
+                      setCache(false)
+                      if (!localStorage.getItem('result')) {
+                        localStorage.setItem('result', JSON.stringify(result));
+                        setresult("")
+                      }
+                    } else {
+                      setstk(false)
+                      setresult(JSON.parse(localStorage.getItem('result')));
+                      localStorage.removeItem('result');
+                    }
+                    
                   }}>
                     stack
+                  </button>
+                  }
+                  {!iserr &&<button 
+                  className='ide-exec-button' 
+                  onClick={()=>{
+                    if (!cache) {
+                      setstk(false)
+                      setreg(false)
+                      setmemo(false)
+                      setCache(true)
+                      if (!localStorage.getItem('result')) {
+                        localStorage.setItem('result', JSON.stringify(result));
+                        setresult("")
+                      }
+                    } else {
+                      setCache(false)
+                      setresult(JSON.parse(localStorage.getItem('result')));
+                      localStorage.removeItem('result');
+                    }
+                  }}>
+                    cache
                   </button>
                   }
                 </div>
@@ -989,6 +1064,21 @@ console.log("the error",error)
                     </tbody>
                   </table>
                 }
+                {cache && 
+                  <table className="contentTableMCIde" style={{fontFamily: "JetBrains Mono"}}>
+                    <tbody>
+                    <tr>
+                        <td style={{color:"#1BE985"}}>
+                            key
+                        </td>
+                        <td style={{color:"#1BE985"}}>
+                            value
+                        </td>
+                    </tr>
+                        {tablecache}
+                    </tbody>
+                  </table>
+                }
                 {stk && 
                   <table className="contentTableMCIde">
                     <tbody>
@@ -1005,8 +1095,12 @@ console.log("the error",error)
                   </table>
                 }
                 {console.log(result)}
-                <pre style={{color:txtColor}}>{`
+               <pre style={{color:"green"}}>{`
+${displayedtext}`}</pre>
+                <pre style={{color:"red"}}>{`
 ${result}`}</pre>
+  
+
               </div>
             }
           </div>

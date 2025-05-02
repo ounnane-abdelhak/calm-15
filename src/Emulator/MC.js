@@ -50,6 +50,12 @@ class MC {
   }
 
   //Store in both main memory & cache
+
+  initialize() {
+    let address = parseInt(this.ram, 2);
+    this.data[address] = this.rim;
+  }
+
   write() {
     let address = parseInt(this.ram, 2);
     this.data[address] = this.rim;
