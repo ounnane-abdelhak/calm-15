@@ -11,44 +11,46 @@ const PasswordForgotPage = () => {
         setEmail(e.target.value);
     }
 
-    const handleSubmit = (e) => {
-        //prevent the form from reloading the page
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
-        //disable the submit button
-        document.querySelector('.auth-button').disabled = true;
         
-        //send a request to check for entered email
-        const URL = process.env.REACT_APP_API_URL + '/check-email';
+        const formError = document.getElementById('form-error');
+        const button = document.querySelector('.auth-button');
+        
+        // Basic email validation
+        if (!email || !/\S+@\S+\.\S+/.test(email)) {
+            formError.innerText = 'Please enter a valid email address';
+            return;
+        }
 
-        axios.post(URL, {email})
-        .then(res => {
-            const user_id = res.data.data.id
-            const URL = process.env.REACT_APP_API_URL + `/reset-password/request/${user_id}`;
+        button.disabled = true;
+        formError.innerText = '';
 
-            return axios.post(URL)
-        })
-        .then(res => {
+        try {
+            const response = await axios.post('http://localhost:5000/api/v1/users/forgotPassword', { email });
+            console.log('Password reset email sent:', response);
             setHasValidated(true);
-        })
-        .catch(err => {
-            console.log(err);
-            document.getElementById('form-error').innerText = err.response.data.message;
-
-        })
-        .finally( () => {
-            document.querySelector('.auth-button').disabled = false;
-
-        })
-
+        } catch (err) {
+            console.error('Password reset request failed:', err);
+            const errorMessage = err.response?.data?.message || 'Failed to send reset email. Please try again.';
+            formError.innerText = errorMessage;
+            
+            // If the error is a 404 (user not found), we still show success to prevent email enumeration
+            if (err.response?.status === 404) {
+                setHasValidated(true);
+                return;
+            }
+        } finally {
+            button.disabled = false;
+        }
     }
 
     return (
         <>
             <div className='auth-form-container'>
-                    <h2>Password Reset Page</h2>
-                    {
-                        hasValidated 
+                <h2>Password Reset Page</h2>
+                {
+                    hasValidated
                         ?
                         <>
                             <h2>Password reset link has been sent to your email!</h2>
@@ -59,17 +61,17 @@ const PasswordForgotPage = () => {
                             <h2 id='form-error'> </h2>
 
                             <form className='auth-form'>
-                                
-                                
+
+
                                 <label className='auth-form-label' htmlFor="email">email</label>
-                                <input className='auth-form-input' type='email' id='email' placeholder='example@host.com' name='email' value={email} onChange={handleEmailChange}/>
+                                <input className='auth-form-input' type='email' id='email' placeholder='example@host.com' name='email' value={email} onChange={handleEmailChange} />
 
                                 <button className='auth-button' type="submit" onClick={handleSubmit}>Reset Password</button>
 
                             </form>
                         </>
-                    }
-                </div>
+                }
+            </div>
         </>
     )
 }

@@ -1,83 +1,116 @@
-import {
-  memory,
-  Registers,
-  queue,
-  Alu1,
-  IP,
-  ioUnit,
-} from "../pages/Ide";
+import { memory, Registers, queue, Alu1, IP, ioUnit } from "../pages/Ide";
 import { settext } from "./setgettxt.js";
 import { TwosComplement } from "./ALU.js";
 import { gsap } from "gsap";
-import { pushadrs,getcode,nsp,code2} from "./speed.js";
+import { pushadrs, getcode, nsp, code2 } from "./speed.js";
 // import { Register } from "./Register.js";
 ////////////////////////////////////////////////
 
-let pos=0;
-function getinst(nu){
-  let v=0;
-  let i=0;
-  while (v!==nu) {
-    v+=getInstLeng(getcode()[i]);
+let pos = 0;
+function getinst(nu) {
+  let v = 0;
+  let i = 0;
+  while (v !== nu) {
+    v += getInstLeng(getcode()[i]);
     i++;
   }
-return i;
+  return i;
 }
 
-function getallLeng(co){
-  const c=[...co]
-  let num=0;
+function getallLeng(co) {
+  const c = [...co];
+  let num = 0;
   for (let i = 0; i < c.length; i++) {
-num+=getInstLeng(c[i])
+    num += getInstLeng(c[i]);
   }
   return num;
 }
 
 function getInstLeng(instruction) {
-  if(!instruction) return 0;
-  const tokens = instruction.trim().split(/[\s,]+/).filter(token => token.length > 0);
+  if (!instruction) return 0;
+  const tokens = instruction
+    .trim()
+    .split(/[\s,]+/)
+    .filter((token) => token.length > 0);
   if (tokens.length === 0) return 0;
   const inst = tokens[0].toUpperCase();
-  const registers = new Set(["R1", "R2", "R3", "R4", "ACC", "BR", "IDR", "IR", "SR", "MAR", "MDR", "IP"]);
+  const registers = new Set([
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "ACC",
+    "BR",
+    "IDR",
+    "IR",
+    "SR",
+    "MAR",
+    "MDR",
+    "IP",
+  ]);
   function isImmediate(token) {
     if (/^(\d+|0x[0-9a-fA-F]+)$/.test(token)) return true;
-    if (token.startsWith('[') && token.endsWith(']')) return false;
+    if (token.startsWith("[") && token.endsWith("]")) return false;
     return !registers.has(token.toUpperCase());
   }
-  const branchInst = new Set(['BNE', 'BE', 'BS', 'BI', 'BIE', 'BSE', 'BRI']);
+  const branchInst = new Set(["BNE", "BE", "BS", "BI", "BIE", "BSE", "BRI"]);
   if (branchInst.has(inst)) return 3;
-  if (inst === 'MOV') {
+  if (inst === "MOV") {
     if (tokens.length < 3) return 0;
     return isImmediate(tokens[2]) ? 4 : 2;
   }
-  if (inst === 'RDS' || inst === 'WRTS') {
+  if (inst === "RDS" || inst === "WRTS") {
     if (tokens.length < 2) return 0;
     return 3;
   }
-  const twoOpInst = new Set(['ADD', 'SUB', 'MUL', 'DIV', 'AND', 'OR', 'XOR', 'NOR', 'NAND', 'CMP']);
+  const twoOpInst = new Set([
+    "ADD",
+    "SUB",
+    "MUL",
+    "DIV",
+    "AND",
+    "OR",
+    "XOR",
+    "NOR",
+    "NAND",
+    "CMP",
+  ]);
   if (twoOpInst.has(inst)) {
     if (tokens.length < 3) return 0;
     return isImmediate(tokens[2]) ? 4 : 2;
   }
-  if (inst === 'CALL') return 3;
-  const noOpInst = new Set(['RET', 'PUSHA', 'POPA']);
+  if (inst === "CALL") return 3;
+  const noOpInst = new Set(["RET", "PUSHA", "POPA"]);
   if (noOpInst.has(inst)) return 1;
-  const reducedInst = new Set(['NOT', 'NEG', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL']);
+  const reducedInst = new Set([
+    "NOT",
+    "NEG",
+    "SHL",
+    "SHR",
+    "RD",
+    "WRT",
+    "PUSH",
+    "POP",
+    "ROR",
+    "ROL",
+  ]);
   if (reducedInst.has(inst)) {
-    if (inst === 'RD' || inst === 'WRT') return 1;
+    if (inst === "RD" || inst === "WRT") return 1;
     if (tokens.length < 2) return 1;
     const operand = tokens[1];
-    return (isImmediate(operand) || (operand.startsWith('[') && operand.endsWith(']'))) ? 2 : 1;
+    return isImmediate(operand) ||
+      (operand.startsWith("[") && operand.endsWith("]"))
+      ? 2
+      : 1;
   }
   return 0;
 }
-
 
 function Dec2bin(dec) {
   return ("00000000" + parseInt(dec, 10).toString(2)).substr(-8);
 }
 function Dec2bin2(dec) {
-  return ("00000000" + parseInt(dec, 10).toString(2));
+  return "00000000" + parseInt(dec, 10).toString(2);
 }
 function hex2bin(hex) {
   return (
@@ -321,11 +354,6 @@ const Bin16ToHexaHigh = (bin) => {
 };
 /////////////////animations to test////////////////////
 
-
-
-
-
-
 function binaryToHex(binaryString) {
   const decimalValue = parseInt(binaryString, 2);
   let hexString = decimalValue.toString(16).toUpperCase();
@@ -340,870 +368,1771 @@ function binaryToHex(binaryString) {
 
 // Speed control (put this at the top)
 
-
 const IounitToBus = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.221, y: h * 0.39, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.221, y: h * 0.39 }, { y: h * 0.46, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.221,
+        y: h * 0.39,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.221, y: h * 0.39 },
+      { y: h * 0.46, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const BusToRual1 = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.143, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.143, y: h * 0.56 }, { y: h * 0.625, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.143,
+        y: h * 0.56,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.143, y: h * 0.56 },
+      { y: h * 0.625, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const Rual1ToBus = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.143, y: h * 0.625, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.143, y: h * 0.625 }, { y: h * 0.56, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.143,
+        y: h * 0.625,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.143, y: h * 0.625 },
+      { y: h * 0.56, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const BusToRual2 = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.299, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.299, y: h * 0.56 }, { y: h * 0.625, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.299,
+        y: h * 0.56,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.299, y: h * 0.56 },
+      { y: h * 0.625, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const BusToRegisters = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.481, y: h * 0.555, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.481, y: h * 0.555 }, { y: h * 0.58, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.481,
+        y: h * 0.555,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.481, y: h * 0.555 },
+      { y: h * 0.58, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const RegistersToBus = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.481, y: h * 0.58, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.481, y: h * 0.58 }, { y: h * 0.555, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.481,
+        y: h * 0.58,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.481, y: h * 0.58 },
+      { y: h * 0.555, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const IrToDecoder = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.644, y: h * 0.708, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.644, y: h * 0.708 }, { y: h * 0.725, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.644,
+        y: h * 0.708,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.644, y: h * 0.708 },
+      { y: h * 0.725, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const DecoderToSequencer = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.644, y: h * 0.813, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.644, y: h * 0.813 }, { y: h * 0.827, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.644,
+        y: h * 0.813,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.644, y: h * 0.813 },
+      { y: h * 0.827, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const QueueToIr = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.726, y: h * 0.6638, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.726, y: h * 0.6638 }, { x: w * 0.711, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.726,
+        y: h * 0.6638,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.726, y: h * 0.6638 },
+      { x: w * 0.711, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const queueExitToBus = {
   value: "",
   target: ".ball",
-  time:()=>  4000 * nsp(),
+  time: () => 4000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.726, y: h * 0.6638, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.726, y: h * 0.6638 }, { x: w * 0.715, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { y: h * 0.555, duration: 1 * nsp(), delay: 2 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.726,
+        y: h * 0.6638,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.726, y: h * 0.6638 },
+      { x: w * 0.715, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { y: h * 0.555, duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
   },
 };
 
 const queueExitToBus2 = {
   value: "",
   target: ".ball",
-  time:()=>  500 * nsp(),
+  time: () => 500 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.726, y: h * 0.6638, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.726, y: h * 0.6638 }, { x: w * 0.715, duration: 1 * nsp(), delay: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.726,
+        y: h * 0.6638,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.726, y: h * 0.6638 },
+      { x: w * 0.715, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
   },
 };
 
 const BusToQueue = {
   value: "",
   target: ".ball",
-  time:()=>  4000 * nsp(),
+  time: () => 4000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.931, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.931, y: h * 0.56 }, { y: h * 0.6638, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { x: w * 0.921, duration: 1 * nsp(), delay: 2 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.931,
+        y: h * 0.56,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.931, y: h * 0.56 },
+      { y: h * 0.6638, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { x: w * 0.921, duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
   },
 };
 
 const BusToAcc = {
   value: "",
   target: ".ball",
-  time:()=>  4000 * nsp(),
+  time: () => 4000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.361, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.361, y: h * 0.56 }, { y: h * 0.923, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { x: w * 0.282, duration: 1 * nsp(), delay: 2 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.361,
+        y: h * 0.56,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.361, y: h * 0.56 },
+      { y: h * 0.923, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { x: w * 0.282, duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
   },
 };
 
 const AccToBus = {
   value: "",
   target: ".ball",
-  time:()=>  4000 * nsp(),
+  time: () => 4000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.282, y: h * 0.923, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.282, y: h * 0.923 }, { x: w * 0.361, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { y: h * 0.56, duration: 1 * nsp(), delay: 2 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.282,
+        y: h * 0.923,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.282, y: h * 0.923 },
+      { x: w * 0.361, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { y: h * 0.56, duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
   },
 };
 
 const AluToAcc = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.226, y: h * 0.863, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.226, y: h * 0.863 }, { y: h * 0.877, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.226,
+        y: h * 0.863,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.226, y: h * 0.863 },
+      { y: h * 0.877, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const MdrToBus = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.539, y: h * 0.445, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.539, y: h * 0.445 }, { y: h * 0.465, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.539,
+        y: h * 0.445,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.539, y: h * 0.445 },
+      { y: h * 0.465, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const BusToMdr = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.539, y: h * 0.465, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.539, y: h * 0.465 }, { y: h * 0.445, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.539,
+        y: h * 0.465,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.539, y: h * 0.465 },
+      { y: h * 0.445, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const AdrToBus = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.784, y: h * 0.137, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.784, y: h * 0.137 }, { y: h * 0.18, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.784,
+        y: h * 0.137,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.784, y: h * 0.137 },
+      { y: h * 0.18, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const IpToAdr = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.746, y: h * 0.26, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.746, y: h * 0.26 }, { y: h * 0.46, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.746,
+        y: h * 0.26,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.746, y: h * 0.26 },
+      { y: h * 0.46, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const MdrTOQue = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.874, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497 },
+      { x: w * 0.874, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const MdrToReg = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.44, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497 },
+      { x: w * 0.44, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const RegToMdr = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.497, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44 },
+      { x: w * 0.497, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const queueExitToReg = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.68, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.68 }, { x: w * 0.44, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.68, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.68 },
+      { x: w * 0.44, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const MdrToIO = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.182, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497 },
+      { x: w * 0.182, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const IOToMdr = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.182, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.182 }, { x: w * 0.497, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.182, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.182 },
+      { x: w * 0.497, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const IOToUnderIP = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.182, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.182 }, { x: w * 0.708, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.182, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.182 },
+      { x: w * 0.708, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
+  },
+};
+
+const RegToUnderIP = {
+  value: "",
+  target: ".box-data",
+  time: 3000 * nsp,
+  anim: (val, h, w) => {
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44 },
+      { x: w * 0.708, duration: 1 * nsp, delay: 1 * nsp }
+    );
+    gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
   },
 };
 
 const UnderIPToMar = {
   value: "",
   target: ".box-ADR",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-ADR", { x: w * 0.712, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-ADR", { x: w * 0.712 }, { x: w * 0.648, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-ADR", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-ADR",
+      { x: w * 0.712, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-ADR",
+      { x: w * 0.712 },
+      { x: w * 0.648, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-ADR", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const UnderIpToAddBus = {
   value: "",
   target: ".ball",
-  time: ()=> 3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.745, y: h * 0.465, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.745, y: h * 0.465 }, { y: h * 0.26, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.745,
+        y: h * 0.465,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.745, y: h * 0.465 },
+      { y: h * 0.26, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const MdrToRual1 = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.262, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497 },
+      { x: w * 0.262, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const RegToRual1 = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.262, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44 },
+      { x: w * 0.262, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const MdrToRual2 = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.106, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497 },
+      { x: w * 0.106, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const RegToRual2 = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.106, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44 },
+      { x: w * 0.106, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const AccToMDR = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.321, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.321 }, { x: w * 0.497, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.321, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.321 },
+      { x: w * 0.497, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const MDRToAcc = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.321, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497 },
+      { x: w * 0.321, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const AccToReg = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.321, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.321 }, { x: w * 0.44, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.321, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.321 },
+      { x: w * 0.44, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const RegToAcc = {
   value: "",
   target: ".box-data",
-  time:()=> 3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.321, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44 },
+      { x: w * 0.321, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const MdrToADR = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.705, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497 },
+      { x: w * 0.705, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const AccToADR = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.321, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.321 }, { x: w * 0.705, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.321, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.321 },
+      { x: w * 0.705, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const Rual1ToADR = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.705, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44 },
+      { x: w * 0.705, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const BusToIr = {
   value: "",
   target: ".ball",
-  time:()=>  4000 * nsp(),
+  time: () => 4000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { x: w * 0.931, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.931, y: h * 0.56 }, { y: h * 0.6638, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { x: w * 0.711, duration: 1 * nsp(), delay: 2 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.931, y: h * 0.56, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.931, y: h * 0.56 },
+      { y: h * 0.6638, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { x: w * 0.711, duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
   },
 };
 
 const IPToMAR = {
   value: "",
   target: ".box-ADR",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-ADR", { x: w * 0.753, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-ADR", { x: w * 0.753 }, { x: w * 0.648, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-ADR", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-ADR",
+      { x: w * 0.753, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-ADR",
+      { x: w * 0.753 },
+      { x: w * 0.648, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-ADR", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const ADRToMAR = {
   value: "",
   target: ".box-ADR",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-ADR", { x: w * 0.712, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-ADR", { x: w * 0.712 }, { x: w * 0.648, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-ADR", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-ADR",
+      { x: w * 0.712, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-ADR",
+      { x: w * 0.712 },
+      { x: w * 0.648, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-ADR", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const fitToRual1 = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "20px", width: w * 0.067, height: h * 0.05, x: w * 0.12, y: h * 0.658, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "20px",
+        width: w * 0.067,
+        height: h * 0.05,
+        x: w * 0.12,
+        y: h * 0.658,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const infitToRual1 = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const fitToRual2 = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "20px", width: w * 0.067, height: h * 0.05, x: w * 0.275, y: h * 0.658, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "20px",
+        width: w * 0.067,
+        height: h * 0.05,
+        x: w * 0.275,
+        y: h * 0.658,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const fitToR2 = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.666, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.1,
+        height: h * 0.045,
+        x: w * 0.442,
+        y: h * 0.666,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const infitToR2 = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const fitToR1 = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.6105, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.1,
+        height: h * 0.045,
+        x: w * 0.442,
+        y: h * 0.6105,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const infitToR1 = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const fitToR3 = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.7205, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.1,
+        height: h * 0.045,
+        x: w * 0.442,
+        y: h * 0.7205,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const infitToR3 = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const fitToR4 = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.7735, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.1,
+        height: h * 0.045,
+        x: w * 0.442,
+        y: h * 0.7735,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const infitToR4 = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const fitToIdr = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.8277, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.1,
+        height: h * 0.045,
+        x: w * 0.442,
+        y: h * 0.8277,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const infitToIdr = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const fitToBr = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.8815, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.1,
+        height: h * 0.045,
+        x: w * 0.442,
+        y: h * 0.8815,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const infitToBr = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const fitToSr = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.9347, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.1,
+        height: h * 0.045,
+        x: w * 0.442,
+        y: h * 0.9347,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const infitToSR = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const fitToIr = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.055, x: w * 0.6, y: h * 0.6495, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.1,
+        height: h * 0.055,
+        x: w * 0.6,
+        y: h * 0.6495,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const fitToDecode = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.055, x: w * 0.6, y: h * 0.753, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.1,
+        height: h * 0.055,
+        x: w * 0.6,
+        y: h * 0.753,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const fitToSequencer = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.055, x: w * 0.6, y: h * 0.858, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.1,
+        height: h * 0.055,
+        x: w * 0.6,
+        y: h * 0.858,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const fitToAcc = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.07, height: h * 0.055, x: w * 0.1995, y: h * 0.91, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.07,
+        height: h * 0.055,
+        x: w * 0.1995,
+        y: h * 0.91,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const infitToAcc = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const fitToMdr = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.11, height: h * 0.06, x: w * 0.49, y: h * 0.38, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.11,
+        height: h * 0.06,
+        x: w * 0.49,
+        y: h * 0.38,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const infitToMdr = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const fitToMar = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.032, height: h * 0.14, x: w * 0.623, y: h * 0.165, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.032,
+        height: h * 0.14,
+        x: w * 0.623,
+        y: h * 0.165,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const infitToMar = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const addanim = {
   value: "",
   target: ".ALU",
-  time:()=>  2000 * nsp(),
+  time: () => 2000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ALU", { opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ALU", { opacity: "1" }, { opacity: "0", duration: 1 * nsp(), delay: 1 * nsp() });
+    gsap.fromTo(
+      ".ALU",
+      { opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ALU",
+      { opacity: "1" },
+      { opacity: "0", duration: 1 * nsp(), delay: 1 * nsp() }
+    );
   },
 };
 
 const MCanim = {
   value: "",
   target: ".MC",
-  time:()=>  2000 * nsp(),
+  time: () => 2000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".MC", { opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".MC", { opacity: "1" }, { opacity: "0", duration: 1 * nsp(), delay: 1 * nsp() });
+    gsap.fromTo(".MC", { opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".MC",
+      { opacity: "1" },
+      { opacity: "0", duration: 1 * nsp(), delay: 1 * nsp() }
+    );
   },
 };
 
 const IOToBus = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.182, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.182 }, { x: w * 0.442, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.182, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.182 },
+      { x: w * 0.442, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const BusToIO = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.442, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.442 }, { x: w * 0.182, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.442, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.442 },
+      { x: w * 0.182, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const QueueToIO = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.68, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.68 }, { x: w * 0.182, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.68, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.68 },
+      { x: w * 0.182, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const BufferToBus = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.221, y: h * 0.39, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.221, y: h * 0.39 }, { y: h * 0.465, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.221,
+        y: h * 0.39,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.221, y: h * 0.39 },
+      { y: h * 0.465, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const BusToBuffer = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.221, y: h * 0.465, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".ball", { x: w * 0.221, y: h * 0.465 }, { y: h * 0.39, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.812%",
+        width: "1.4%",
+        borderRadius: "50%",
+        x: w * 0.221,
+        y: h * 0.465,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".ball",
+      { x: w * 0.221, y: h * 0.465 },
+      { y: h * 0.39, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const fitToIO = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.07, height: h * 0.05, x: w * 0.197, y: h * 0.315, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.07,
+        height: h * 0.05,
+        x: w * 0.197,
+        y: h * 0.315,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
   },
 };
 
 const infitToIO = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const fitToCache = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.07, height: h * 0.05, x: w * 0.325, y: h * 0.31, opacity: "0" }, { opacity: "1", duration: 0.4 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 0.4 * nsp(), delay: 0.4 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        borderRadius: "10px",
+        width: w * 0.07,
+        height: h * 0.05,
+        x: w * 0.33,
+        y: h * 0.31,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 0.4 * nsp() }
+    );
+    gsap.to(".ball", {
+      opacity: "0",
+      duration: 0.4 * nsp(),
+      delay: 0.4 * nsp(),
+    });
   },
 };
 
 const infitToCache = {
   value: "",
   target: ".ball",
-  time:()=>  1000 * nsp(),
+  time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const CacheToBus = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.7%", width: "1.4%", borderRadius: "50%", x: w * 0.35, y: h * 0.4, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.to(".ball", { y: h * 0.465, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.7%",
+        width: "1.5%",
+        borderRadius: "50%",
+        x: w * 0.353,
+        y: h * 0.42,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.to(".ball", { y: h * 0.465, duration: 1 * nsp(), delay: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const BusToCache = {
   value: "",
   target: ".ball",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".ball", { height: "2.7%", width: "1.4%", borderRadius: "50%", x: w * 0.35, y: h * 0.465, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.to(".ball", { y: h * 0.4, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.7%",
+        width: "1.5%",
+        borderRadius: "50%",
+        x: w * 0.353,
+        y: h * 0.465,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.to(".ball", { y: h * 0.42, duration: 1 * nsp(), delay: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const Cacheanim = {
   value: "",
   target: ".Cache",
-  time:()=>  2000 * nsp(),
+  time: () => 2000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".Cache", { opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".Cache", { opacity: "1" }, { opacity: "0", duration: 1 * nsp(), delay: 1 * nsp() });
+    gsap.fromTo(
+      ".Cache",
+      { opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".Cache",
+      { opacity: "1" },
+      { opacity: "0", duration: 1 * nsp(), delay: 1 * nsp() }
+    );
   },
 };
 
 const IOToCache = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.182, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.182 }, { x: w * 0.325, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.182, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.182 },
+      { x: w * 0.32, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 
 const BusCacheToIO = {
   value: "",
   target: ".box-data",
-  time:()=>  3000 * nsp(),
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
-      gsap.fromTo(".box-data", { x: w * 0.325, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
-      gsap.fromTo(".box-data", { x: w * 0.325 }, { x: w * 0.182, duration: 1 * nsp(), delay: 1 * nsp() });
-      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.325, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.325 },
+      { x: w * 0.182, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
   },
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1218,51 +2147,44 @@ class InstructionCALL {
     this.taille = 0;
     this.stepsNum = 1;
     this.res = 0;
-    this.name = "CALL"; 
+    this.name = "CALL";
     this.steps = [
-
-          (animations) => {
-            IP.setvalue(Dec2bin(this.addresse2));
-            pos=this.addresse2;
-            queue.clear(animations);
-            queue.fetchInstruction(animations, 0, 1, [], 0);
-            queue.fetchInstruction(animations, 0, 0, [], 0);
-            queue.fetchInstruction(animations, 1, 1, [], 0);
-            queue.fetchInstruction(animations, 0, 0, [], 0);
-            queue.fetchInstruction(animations, 2, 1, [], 0);
-            queue.fetchInstruction(animations, 0, 0, [], 0);
-              memory.setRim(
-                binaryToHex(
-                  Dec2bin(this.addresse1)
-                ).slice(0, 2)
-              );
-              memory.pushval();
-              memory.setRim(
-                binaryToHex(
-                  Dec2bin(this.addresse1)
-                ).slice(-2)
-              );
-              memory.pushval();
-              const line= getinst(this.addresse2);
-              let i=line;
-             let found=false;
-              while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
-                {
-                  if(code2()[i][0]=="CALL"){found=true;}
-                  i++;
-                }
-                if(found)
-                {
-                 pushadrs(getallLeng(getcode().slice(0,i))) 
-                }
-
-            }
-
-      
+      (animations) => {
+        IP.setvalue(Dec2bin(this.addresse2));
+        pos = this.addresse2;
+        queue.clear(animations);
+        queue.fetchInstruction(animations, 0, 1, [], 0);
+        queue.fetchInstruction(animations, 0, 0, [], 0);
+        queue.fetchInstruction(animations, 1, 1, [], 0);
+        queue.fetchInstruction(animations, 0, 0, [], 0);
+        queue.fetchInstruction(animations, 2, 1, [], 0);
+        queue.fetchInstruction(animations, 0, 0, [], 0);
+        memory.setRim(binaryToHex(Dec2bin(this.addresse1)).slice(0, 2));
+        memory.pushval();
+        memory.setRim(binaryToHex(Dec2bin(this.addresse1)).slice(-2));
+        memory.pushval();
+        const line = getinst(this.addresse2);
+        let i = line;
+        let found = false;
+        while (
+          !found &&
+          i < getcode().length &&
+          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+            code2()[i][0]
+          )
+        ) {
+          if (code2()[i][0] == "CALL") {
+            found = true;
+          }
+          i++;
+        }
+        if (found) {
+          pushadrs(getallLeng(getcode().slice(0, i)));
+        }
+      },
     ];
     this.buildanim = function () {
       return [
-       
         {
           value: this.value1,
           target: RegToMdr.target,
@@ -1311,40 +2233,43 @@ class InstructionRET {
     this.res = 0;
     this.name = "RET";
     this.steps = [
+      (animations) => {
+        let reg;
+        memory.popval();
+        reg = memory.getRim();
+        memory.popval();
+        reg = memory.getRim() + reg;
+        reg = parseInt(reg, 16);
+        IP.setvalue(Dec2bin(reg.toString()));
+        pos = reg;
+        queue.clear(animations);
+        queue.fetchInstruction(animations, 0, 1, [], 0);
+        queue.fetchInstruction(animations, 0, 0, [], 0);
+        queue.fetchInstruction(animations, 1, 1, [], 0);
+        queue.fetchInstruction(animations, 0, 0, [], 0);
+        queue.fetchInstruction(animations, 2, 1, [], 0);
+        queue.fetchInstruction(animations, 0, 0, [], 0);
 
-          (animations) => { 
-            let reg;
-            memory.popval();
-            reg = memory.getRim();
-            memory.popval();
-            reg = memory.getRim() + reg;
-            reg=parseInt(reg,16)
-            IP.setvalue(Dec2bin(reg.toString()));
-            pos=reg;
-            queue.clear(animations);
-            queue.fetchInstruction(animations, 0, 1, [], 0);
-            queue.fetchInstruction(animations, 0, 0, [], 0);
-            queue.fetchInstruction(animations, 1, 1, [], 0);
-            queue.fetchInstruction(animations, 0, 0, [], 0);
-            queue.fetchInstruction(animations, 2, 1, [], 0);
-            queue.fetchInstruction(animations, 0, 0, [], 0);
+        const line = getinst(reg);
+        let i = line;
 
-            const line=getinst(reg); 
-            let i=line;
-
-           let found=false;
-            while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
-              {
-                if(code2()[i][0]=="CALL"){found=true;}
-                i++;
-              }
-              if(found)
-              {
-               pushadrs(getallLeng(getcode().slice(0,i))) 
-              }
-
-          }, 
-      
+        let found = false;
+        while (
+          !found &&
+          i < getcode().length &&
+          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+            code2()[i][0]
+          )
+        ) {
+          if (code2()[i][0] == "CALL") {
+            found = true;
+          }
+          i++;
+        }
+        if (found) {
+          pushadrs(getallLeng(getcode().slice(0, i)));
+        }
+      },
     ];
     this.buildanim = function () {
       return [
@@ -1373,13 +2298,10 @@ class InstructionRET {
           anim: MdrToBus.anim,
         },
         //add here the rest of pop animation
-        
-
       ];
     };
   }
 }
-
 
 class InstructionCMP {
   constructor() {
@@ -1394,7 +2316,8 @@ class InstructionCMP {
     this.res = 0;
     this.name = "CMP";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         if (this.taille === 0) {
           Alu1.Rual1.setright(TwosComplement(this.value1, 8));
           Alu1.Rual2.setleft(TwosComplement(this.value2, 8));
@@ -1404,8 +2327,6 @@ class InstructionCMP {
           Alu1.Rual2.setvalue(TwosComplement(this.value2, 16));
           Alu1.compareBinary(16);
         }
-       
-
       },
     ];
     this.buildanim = function () {
@@ -1459,7 +2380,6 @@ class InstructionCMP {
           time: 0,
           anim: () => {},
         },
-
       ];
     };
   }
@@ -1478,7 +2398,8 @@ class InstructionADD {
     this.res = 0;
     this.name = "ADD";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // this.res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -1573,7 +2494,8 @@ class InstructionMOV00 {
     this.stepsNum = 1;
     this.name = "MOV-RR";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         Registers[this.register1].setvalue(TwosComplement(this.value2, 16));
       },
     ];
@@ -2867,7 +3789,8 @@ class InstructionMOV01 {
     this.isimmed = 0;
     this.name = "MOV-RM";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         Registers[this.register1].setvalue(TwosComplement(this.value2, 16));
       },
     ];
@@ -3220,7 +4143,8 @@ class InstructionMOV10 {
     this.stepsNum = 1;
     this.name = "MOV-MR";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         if (this.taille == 1) {
           let hexval = this.value2.toString(16);
           while (hexval.length < 4) {
@@ -3610,7 +4534,8 @@ class InstructionMOV11 {
     this.isimmed = true;
     this.name = "MOV-MM";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         if (this.taille == 1) {
           let hexval = this.value2.toString(16);
           while (hexval.length < 4) {
@@ -3710,7 +4635,8 @@ class InstructionSUB {
     this.stepsNum = 1;
     this.name = "SUB";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -3806,7 +4732,8 @@ class InstructionMUL {
     this.stepsNum = 1;
     this.name = "MUL";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -3905,7 +4832,8 @@ class InstructionDIV {
     this.stepsNum = 1;
     this.name = "DIV";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -4002,7 +4930,8 @@ class InstructionAND {
     this.stepsNum = 1;
     this.name = "AND";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -4090,7 +5019,8 @@ class InstructionOR {
     this.stepsNum = 1;
     this.name = "OR";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -4161,7 +5091,7 @@ class InstructionOR {
           target: "",
           time: 0,
           anim: () => {},
-        }
+        },
       ];
     };
   }
@@ -4179,7 +5109,8 @@ class InstructionXOR {
     this.stepsNum = 1;
     this.name = "XOR";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -4250,7 +5181,7 @@ class InstructionXOR {
           target: "",
           time: 0,
           anim: () => {},
-        }
+        },
       ];
     };
   }
@@ -4268,7 +5199,8 @@ class InstructionNOR {
     this.stepsNum = 1;
     this.name = "NOR";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -4339,7 +5271,7 @@ class InstructionNOR {
           target: "",
           time: 0,
           anim: () => {},
-        }
+        },
       ];
     };
   }
@@ -4357,7 +5289,8 @@ class InstructionNAND {
     this.stepsNum = 1;
     this.name = "NAND";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -4428,7 +5361,7 @@ class InstructionNAND {
           target: "",
           time: 0,
           anim: () => {},
-        }
+        },
       ];
     };
   }
@@ -4446,7 +5379,8 @@ class InstructionPUSH {
     this.stepsNum = 1;
     this.name = "PUSH";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         if (this.taille == 1) {
           memory.setRim(
             binaryToHex(
@@ -4866,7 +5800,8 @@ class InstructionPOP {
     this.stepsNum = 1;
     this.name = "POP";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         if (this.taille == 1) {
           let reg;
           memory.popval();
@@ -5320,8 +6255,9 @@ class InstructionBR {
     this.stepsNum = 1;
     this.name = "BR";
     this.steps = [
-      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
-        pos=this.addresse1;
+      (animations) => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
+        pos = this.addresse1;
         IP.setvalue(Dec2bin(this.addresse1));
         queue.clear(animations);
         queue.fetchInstruction(animations, 0, 1, [], 0);
@@ -5331,20 +6267,25 @@ class InstructionBR {
         queue.fetchInstruction(animations, 2, 1, [], 0);
         queue.fetchInstruction(animations, 0, 0, [], 0);
 
-        const line=getinst(this.addresse1);
-        let i=line;
-       let found=false;
-       console.log("abdou ",code2()[0]," ",this.addresse1)
-        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
-          {
-            if(code2()[i][0]=="CALL"){found=true;}
-            i++;
+        const line = getinst(this.addresse1);
+        let i = line;
+        let found = false;
+        console.log("abdou ", code2()[0], " ", this.addresse1);
+        while (
+          !found &&
+          i < getcode().length &&
+          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+            code2()[i][0]
+          )
+        ) {
+          if (code2()[i][0] == "CALL") {
+            found = true;
           }
-          if(found)
-          {
-           pushadrs(getallLeng(getcode().slice(0,i))) 
-          }
-
+          i++;
+        }
+        if (found) {
+          pushadrs(getallLeng(getcode().slice(0, i)));
+        }
       },
     ];
     this.buildanim = function () {
@@ -5365,10 +6306,11 @@ class InstructionBE {
     this.stepsNum = 1;
     this.name = "BE";
     this.steps = [
-      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
+      (animations) => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         if (Alu1.getFlags(0) === "1") {
           IP.setvalue(Dec2bin(this.addresse1));
-          pos=this.addresse1;
+          pos = this.addresse1;
           // console.log(`this is ip ${IP.getvalue()}`)
           /////we need to clear the queue from old instruction
           queue.clear(animations);
@@ -5380,20 +6322,25 @@ class InstructionBE {
           queue.fetchInstruction(animations, 2, 1, [], 0);
           queue.fetchInstruction(animations, 0, 0, [], 0);
         }
-        const line=getinst(pos);
+        const line = getinst(pos);
 
-        let i=line;
-       let found=false;
-        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
-          {
-            if(code2()[i][0]=="CALL"){found=true;}
-            i++;
+        let i = line;
+        let found = false;
+        while (
+          !found &&
+          i < getcode().length &&
+          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+            code2()[i][0]
+          )
+        ) {
+          if (code2()[i][0] == "CALL") {
+            found = true;
           }
-          if(found)
-          {
-           pushadrs(getallLeng(getcode().slice(0,i))) 
-          }
-         
+          i++;
+        }
+        if (found) {
+          pushadrs(getallLeng(getcode().slice(0, i)));
+        }
 
         /////we need to clear the queue from old instruction
       },
@@ -5416,9 +6363,10 @@ class InstructionBNE {
     this.stepsNum = 1;
     this.name = "BNE";
     this.steps = [
-      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
+      (animations) => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         if (Alu1.getFlags(0) === "0") {
-          pos=this.addresse1;
+          pos = this.addresse1;
           IP.setvalue(Dec2bin(this.addresse1));
           // console.log(`this is ip ${IP.getvalue()}`)
           /////we need to clear the queue from old instruction
@@ -5431,18 +6379,24 @@ class InstructionBNE {
           queue.fetchInstruction(animations, 2, 1, [], 0);
           queue.fetchInstruction(animations, 0, 0, [], 0);
         }
-        const line=getinst(this.addresse1);
-        let i=line;
-       let found=false;
-        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
-          {
-            if(code2()[i][0]=="CALL"){found=true;}
-            i++;
+        const line = getinst(this.addresse1);
+        let i = line;
+        let found = false;
+        while (
+          !found &&
+          i < getcode().length &&
+          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+            code2()[i][0]
+          )
+        ) {
+          if (code2()[i][0] == "CALL") {
+            found = true;
           }
-          if(found)
-          {
-           pushadrs(getallLeng(getcode().slice(0,i))) 
-          }
+          i++;
+        }
+        if (found) {
+          pushadrs(getallLeng(getcode().slice(0, i)));
+        }
 
         /////we need to clear the queue from old instruction
       },
@@ -5465,9 +6419,10 @@ class InstructionBS {
     this.stepsNum = 1;
     this.name = "BS";
     this.steps = [
-      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
+      (animations) => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         if (Alu1.Acc.getvalue().toString().charAt(0) == "0") {
-          pos=this.addresse1;
+          pos = this.addresse1;
           IP.setvalue(Dec2bin(this.addresse1));
           // console.log(`this is ip ${IP.getvalue()}`)
           /////we need to clear the queue from old instruction
@@ -5480,18 +6435,24 @@ class InstructionBS {
           queue.fetchInstruction(animations, 2, 1, [], 0);
           queue.fetchInstruction(animations, 0, 0, [], 0);
         }
-        const line=getinst(this.addresse1);
-        let i=line;
-       let found=false;
-        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
-          {
-            if(code2()[i][0]=="CALL"){found=true;}
-            i++;
+        const line = getinst(this.addresse1);
+        let i = line;
+        let found = false;
+        while (
+          !found &&
+          i < getcode().length &&
+          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+            code2()[i][0]
+          )
+        ) {
+          if (code2()[i][0] == "CALL") {
+            found = true;
           }
-          if(found)
-          {
-           pushadrs(getallLeng(getcode().slice(0,i))) 
-          }
+          i++;
+        }
+        if (found) {
+          pushadrs(getallLeng(getcode().slice(0, i)));
+        }
 
         /////we need to clear the queue from old instruction
       },
@@ -5514,9 +6475,10 @@ class InstructionBI {
     this.stepsNum = 1;
     this.name = "BI";
     this.steps = [
-      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
+      (animations) => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         if (Alu1.Acc.getvalue().toString().charAt(0) === "1") {
-          pos=this.addresse1;
+          pos = this.addresse1;
           IP.setvalue(Dec2bin(this.addresse1));
           // console.log(`this is ip ${IP.getvalue()}`)
           /////we need to clear the queue from old instruction
@@ -5529,18 +6491,24 @@ class InstructionBI {
           queue.fetchInstruction(animations, 2, 1, [], 0);
           queue.fetchInstruction(animations, 0, 0, [], 0);
         }
-        const line=getinst(this.addresse1);
-        let i=line;
-       let found=false;
-        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
-          {
-            if(code2()[i][0]=="CALL"){found=true;}
-            i++;
+        const line = getinst(this.addresse1);
+        let i = line;
+        let found = false;
+        while (
+          !found &&
+          i < getcode().length &&
+          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+            code2()[i][0]
+          )
+        ) {
+          if (code2()[i][0] == "CALL") {
+            found = true;
           }
-          if(found)
-          {
-           pushadrs(getallLeng(getcode().slice(0,i))) 
-          }
+          i++;
+        }
+        if (found) {
+          pushadrs(getallLeng(getcode().slice(0, i)));
+        }
 
         /////we need to clear the queue from old instruction
       },
@@ -5563,11 +6531,13 @@ class InstructionBIE {
     this.stepsNum = 1;
     this.name = "BIE";
     this.steps = [
-      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
+      (animations) => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         if (
           (Alu1.Acc.getvalue().toString().charAt(0) === "1") |
           (Alu1.getFlags(0) === "1")
-        ) {          pos=this.addresse1;
+        ) {
+          pos = this.addresse1;
           IP.setvalue(Dec2bin(this.addresse1));
           // console.log(`this is ip ${IP.getvalue()}`)
           /////we need to clear the queue from old instruction
@@ -5580,18 +6550,24 @@ class InstructionBIE {
           queue.fetchInstruction(animations, 2, 1, [], 0);
           queue.fetchInstruction(animations, 0, 0, [], 0);
         }
-        const line=getinst(this.addresse1);
-        let i=line;
-       let found=false;
-        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
-          {
-            if(code2()[i][0]=="CALL"){found=true;}
-            i++;
+        const line = getinst(this.addresse1);
+        let i = line;
+        let found = false;
+        while (
+          !found &&
+          i < getcode().length &&
+          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+            code2()[i][0]
+          )
+        ) {
+          if (code2()[i][0] == "CALL") {
+            found = true;
           }
-          if(found)
-          {
-           pushadrs(getallLeng(getcode().slice(0,i))) 
-          }
+          i++;
+        }
+        if (found) {
+          pushadrs(getallLeng(getcode().slice(0, i)));
+        }
 
         /////we need to clear the queue from old instruction
       },
@@ -5614,11 +6590,13 @@ class InstructionBSE {
     this.stepsNum = 1;
     this.name = "BSE";
     this.steps = [
-      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
+      (animations) => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         if (
           (Alu1.Acc.getvalue().toString().charAt(0) === "0") |
           (Alu1.getFlags(0) === "1")
-        ) {          pos=this.addresse1;
+        ) {
+          pos = this.addresse1;
           IP.setvalue(Dec2bin(this.addresse1));
           // console.log(`this is ip ${IP.getvalue()}`)
           /////we need to clear the queue from old instruction
@@ -5631,18 +6609,24 @@ class InstructionBSE {
           queue.fetchInstruction(animations, 2, 1, [], 0);
           queue.fetchInstruction(animations, 0, 0, [], 0);
         }
-        const line=getinst(this.addresse1);
-         let i=line;
-       let found=false;
-        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
-          {
-            if(code2()[i][0]=="CALL"){found=true;}
-            i++;
+        const line = getinst(this.addresse1);
+        let i = line;
+        let found = false;
+        while (
+          !found &&
+          i < getcode().length &&
+          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+            code2()[i][0]
+          )
+        ) {
+          if (code2()[i][0] == "CALL") {
+            found = true;
           }
-          if(found)
-          {
-           pushadrs(getallLeng(getcode().slice(0,i))) 
-          }
+          i++;
+        }
+        if (found) {
+          pushadrs(getallLeng(getcode().slice(0, i)));
+        }
         /////we need to clear the queue from old instruction
       },
     ];
@@ -5664,7 +6648,8 @@ class InstructionSHL {
     this.stepsNum = 1;
     this.name = "SHL";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -5733,7 +6718,7 @@ class InstructionSHL {
           target: "",
           time: 0,
           anim: () => {},
-        }
+        },
       ];
     };
   }
@@ -5751,7 +6736,8 @@ class InstructionSHR {
     this.stepsNum = 1;
     this.name = "SHR";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -5820,7 +6806,7 @@ class InstructionSHR {
           target: "",
           time: 0,
           anim: () => {},
-        }
+        },
       ];
     };
   }
@@ -5838,7 +6824,8 @@ class InstructionROR {
     this.stepsNum = 1;
     this.name = "ROR";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -5907,7 +6894,7 @@ class InstructionROR {
           target: "",
           time: 0,
           anim: () => {},
-        }
+        },
       ];
     };
   }
@@ -5925,7 +6912,8 @@ class InstructionROL {
     this.stepsNum = 1;
     this.name = "ROL";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -5994,7 +6982,7 @@ class InstructionROL {
           target: "",
           time: 0,
           anim: () => {},
-        }
+        },
       ];
     };
   }
@@ -6012,7 +7000,8 @@ class InstructionNOT {
     this.stepsNum = 1;
     this.name = "NOT";
     this.steps = [
-      () => { pos+=getInstLeng(getcode()[getinst(pos)])
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -6081,935 +7070,956 @@ class InstructionNOT {
           target: "",
           time: 0,
           anim: () => {},
-        }
+        },
       ];
     };
   }
 }
 
-class InstructionNEG{
-    constructor(){
-        this.value1=0;
-        this.value2=0;
-        this.addresse1=0;
-        this.register1=0;
-        this.addresse2=0;
-        this.register2=0;
-        this.taille=0;
-        this.stepsNum=1;
-        this.name="NEG";
-        this.steps=[()=>{ pos+=getInstLeng(getcode()[getinst(pos)])
-            // let res=this.value1+this.value2;
-            // Registers[4].setvalue(res.toString(2));
-            if(this.taille===0){
-                Alu1.Rual1.setright(TwosComplement(this.value1,8));
-                Alu1.NEG(8);
-            }else{
-                Alu1.Rual1.setvalue(TwosComplement(this.value1,16));
-                Alu1.NEG(16);
-            }
-            return Alu1.Acc.getvalue();
+class InstructionNEG {
+  constructor() {
+    this.value1 = 0;
+    this.value2 = 0;
+    this.addresse1 = 0;
+    this.register1 = 0;
+    this.addresse2 = 0;
+    this.register2 = 0;
+    this.taille = 0;
+    this.stepsNum = 1;
+    this.name = "NEG";
+    this.steps = [
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
+        // let res=this.value1+this.value2;
+        // Registers[4].setvalue(res.toString(2));
+        if (this.taille === 0) {
+          Alu1.Rual1.setright(TwosComplement(this.value1, 8));
+          Alu1.NEG(8);
+        } else {
+          Alu1.Rual1.setvalue(TwosComplement(this.value1, 16));
+          Alu1.NEG(16);
         }
-        ];
-        this.buildanim=function(){
-          const flags = Alu1.getAllFlags();
-            return[{
-                value:"NEG",
-                target:addanim.target,
-                time:addanim.time,
-                anim:addanim.anim,
-            },
-            {
-                value:"",
-                target:AluToAcc.target,
-                time:AluToAcc.time,
-                anim:AluToAcc.anim,
-            },
-            {
-                nom: "ACC",
-                value:"res",
-                target:fitToAcc.target,
-                time:fitToAcc.time,
-                anim:fitToAcc.anim,
-            },
-            {
-              value: "",
-              flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
-              target: "",
-              time: 0,
-              anim: () => {},
-            },
-            {
-              value: "",
-              flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
-              target: "",
-              time: 0,
-              anim: () => {},
-            },
-            {
-              value: "",
-              flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
-              target: "",
-              time: 0,
-              anim: () => {},
-            },
-            {
-              value: "",
-              flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
-              target: "",
-              time: 0,
-              anim: () => {},
-            },
-            {
-              value: "",
-              flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
-              target: "",
-              time: 0,
-              anim: () => {},
-            },
-        ];
-        }
-    }
-    
+        return Alu1.Acc.getvalue();
+      },
+    ];
+    this.buildanim = function () {
+      const flags = Alu1.getAllFlags();
+      return [
+        {
+          value: "NEG",
+          target: addanim.target,
+          time: addanim.time,
+          anim: addanim.anim,
+        },
+        {
+          value: "",
+          target: AluToAcc.target,
+          time: AluToAcc.time,
+          anim: AluToAcc.anim,
+        },
+        {
+          nom: "ACC",
+          value: "res",
+          target: fitToAcc.target,
+          time: fitToAcc.time,
+          anim: fitToAcc.anim,
+        },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[4] === "1" ? "1-PAIRIMPAIR" : "0-PAIRIMPAIR",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+      ];
+    };
+  }
 }
 
-class InstructionPUSHA{
-    constructor(){
-        this.value1=0;
-        this.value2=0;
-        this.addresse1=0;
-        this.register1=0;
-        this.addresse2=0;
-        this.register2=0;
-        this.taille=0;
-        this.stepsNum=1;
-        this.name="PUSHA";
-        this.steps=[()=>{ pos+=getInstLeng(getcode()[getinst(pos)])
-            memory.setRim(binaryToHex(Registers[0].getvalue()).slice(0,2));
-            memory.pushval();
-{memory.setRim(binaryToHex(Registers[0].getvalue()).slice(-2));}
-            memory.pushval();
-            memory.setRim(binaryToHex(Registers[1].getvalue()).slice(0,2));
-            memory.pushval();
-{memory.setRim(binaryToHex(Registers[1].getvalue()).slice(-2));}
-            memory.pushval();
-            memory.setRim(binaryToHex(Registers[2].getvalue()).slice(0,2));
-            memory.pushval();
-{memory.setRim(binaryToHex(Registers[2].getvalue()).slice(-2));}
-            memory.pushval();
-            memory.setRim(binaryToHex(Registers[3].getvalue()).slice(0,2));
-            memory.pushval();
- {memory.setRim(binaryToHex(Registers[3].getvalue()).slice(-2));}
-            memory.pushval();
-            memory.setRim(binaryToHex(Registers[4].getvalue()).slice(0,2));
-            memory.pushval();
-{memory.setRim(binaryToHex(Registers[4].getvalue()).slice(-2));}
-            memory.pushval();
-            memory.setRim(binaryToHex(Registers[5].getvalue()).slice(0,2));
-            memory.pushval();
-{memory.setRim(binaryToHex(Registers[5].getvalue()).slice(-2));}
-            memory.pushval();
-            memory.setRim(binaryToHex(Registers[6].getvalue()).slice(0,2));
-            memory.pushval();
-{memory.setRim(binaryToHex(Registers[6].getvalue()).slice(-2));}
-            memory.pushval();
-            memory.setRim(binaryToHex(Registers[7].getvalue()).slice(0,2));
-            memory.pushval();
- {memory.setRim(binaryToHex(Registers[7].getvalue()).slice(-2));}
-            memory.pushval();
+class InstructionPUSHA {
+  constructor() {
+    this.value1 = 0;
+    this.value2 = 0;
+    this.addresse1 = 0;
+    this.register1 = 0;
+    this.addresse2 = 0;
+    this.register2 = 0;
+    this.taille = 0;
+    this.stepsNum = 1;
+    this.name = "PUSHA";
+    this.steps = [
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
+        memory.setRim(binaryToHex(Registers[0].getvalue()).slice(0, 2));
+        memory.pushval();
+        {
+          memory.setRim(binaryToHex(Registers[0].getvalue()).slice(-2));
         }
-        ];
-        this.buildanim=function(){
-
-
-                return[
-                {
-                    nom: "R1",
-                    value:this.value1,
-                    target:fitToR1.target,
-                    time:fitToR1.time,
-                    anim:fitToR1.anim,
-                },
-                {
-                    nom: "R1",
-                    value:this.value1,
-                    target:infitToR1.target,
-                    time:infitToR1.time,
-                    anim:infitToR1.anim,
-                },
-                {
-                    value:this.value1,
-                    target:RegToMdr.target,
-                    time:RegToMdr.time,
-                    anim:RegToMdr.anim,
-                },
-                {
-                    value:"",
-                    target:BusToMdr.target,
-                    time:BusToMdr.time,
-                    anim:BusToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:"PUSH",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                }
- ,{
-                    nom: "R2",
-                    value:this.value1,
-                    target:fitToR2.target,
-                    time:fitToR2.time,
-                    anim:fitToR2.anim,
-                },
-                {
-                    nom: "R2",
-                    value:this.value1,
-                    target:infitToR2.target,
-                    time:infitToR2.time,
-                    anim:infitToR2.anim,
-                },
-                {
-                    value:this.value1,
-                    target:RegToMdr.target,
-                    time:RegToMdr.time,
-                    anim:RegToMdr.anim,
-                },
-                {
-                    value:"",
-                    target:BusToMdr.target,
-                    time:BusToMdr.time,
-                    anim:BusToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:"PUSH",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                }
-  ,{
-                    nom: "R3",
-                    value:this.value1,
-                    target:fitToR3.target,
-                    time:fitToR3.time,
-                    anim:fitToR3.anim,
-                },
-                {
-                    nom: "R3",
-                    value:this.value1,
-                    target:infitToR3.target,
-                    time:infitToR3.time,
-                    anim:infitToR3.anim,
-                },
-                {
-                    value:this.value1,
-                    target:RegToMdr.target,
-                    time:RegToMdr.time,
-                    anim:RegToMdr.anim,
-                },
-                {
-                    value:"",
-                    target:BusToMdr.target,
-                    time:BusToMdr.time,
-                    anim:BusToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:"PUSH",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                }
- ,{
-                    nom: "R4",
-                    value:this.value1,
-                    target:fitToR4.target,
-                    time:fitToR4.time,
-                    anim:fitToR4.anim,
-                },
-                {
-                    nom: "R4",
-                    value:this.value1,
-                    target:infitToR4.target,
-                    time:infitToR4.time,
-                    anim:infitToR4.anim,
-                },
-                {
-                    value:this.value1,
-                    target:RegToMdr.target,
-                    time:RegToMdr.time,
-                    anim:RegToMdr.anim,
-                },
-                {
-                    value:"",
-                    target:BusToMdr.target,
-                    time:BusToMdr.time,
-                    anim:BusToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:"PUSH",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                }
- ,{
-                    nom: "ACC",
-                    value:this.value1,
-                    target:fitToAcc.target,
-                    time:fitToAcc.time,
-                    anim:fitToAcc.anim,
-                },
-                {
-                    nom: "ACC",
-                    value:this.value1,
-                    target:infitToAcc.target,
-                    time:infitToAcc.time,
-                    anim:infitToAcc.anim,
-                },
-                {
-                    value:this.value1,
-                    target:AccToBus.target,
-                    time:AccToBus.time,
-                    anim:AccToBus.anim,
-                },
-                {
-                    value:this.value1,
-                    target:AccToMDR.target,
-                    time:AccToMDR.time,
-                    anim:AccToMDR.anim,
-                },
-                {
-                    value:"",
-                    target:BusToMdr.target,
-                    time:BusToMdr.time,
-                    anim:BusToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:"PUSH",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                }
-,{
-                    nom: "BR",
-                    value:this.value1,
-                    target:fitToBr.target,
-                    time:fitToBr.time,
-                    anim:fitToBr.anim,
-                },
-                {
-                    nom: "BR",
-                    value:this.value1,
-                    target:infitToBr.target,
-                    time:infitToBr.time,
-                    anim:infitToBr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:RegToMdr.target,
-                    time:RegToMdr.time,
-                    anim:RegToMdr.anim,
-                },
-                {
-                    value:"",
-                    target:BusToMdr.target,
-                    time:BusToMdr.time,
-                    anim:BusToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:"PUSH",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                }
-,{
-                    nom: "IDR",
-                    value:this.value1,
-                    target:fitToIdr.target,
-                    time:fitToIdr.time,
-                    anim:fitToIdr.anim,
-                },
-                {
-                    nom: "IDR",
-                    value:this.value1,
-                    target:infitToIdr.target,
-                    time:infitToIdr.time,
-                    anim:infitToIdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:RegToMdr.target,
-                    time:RegToMdr.time,
-                    anim:RegToMdr.anim,
-                },
-                {
-                    value:"",
-                    target:BusToMdr.target,
-                    time:BusToMdr.time,
-                    anim:BusToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:"PUSH",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                }
-,{
-                    nom: "SR",
-                    value:this.value1,
-                    target:fitToSr.target,
-                    time:fitToSr.time,
-                    anim:fitToSr.anim,
-                },
-                {
-                    nom: "SR",
-                    value:this.value1,
-                    target:infitToSR.target,
-                    time:infitToSR.time,
-                    anim:infitToSR.anim,
-                },
-                {
-                    value:this.value1,
-                    target:RegToMdr.target,
-                    time:RegToMdr.time,
-                    anim:RegToMdr.anim,
-                },
-                {
-                    value:"",
-                    target:BusToMdr.target,
-                    time:BusToMdr.time,
-                    anim:BusToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:"PUSH",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                }
-            ];
-            }
-            
+        memory.pushval();
+        memory.setRim(binaryToHex(Registers[1].getvalue()).slice(0, 2));
+        memory.pushval();
+        {
+          memory.setRim(binaryToHex(Registers[1].getvalue()).slice(-2));
         }
-    }
-
-
-class InstructionPOPA{
-    constructor(){
-        this.value1=0;
-        this.value2=0;
-        this.addresse1=0;
-        this.register1=0;
-        this.addresse2=0;
-        this.register2=0;
-        this.taille=0;
-        this.stepsNum=1;
-        this.name="POPA";
-        let reg; 
-        this.steps=[()=>{
-          pos+=getInstLeng(getcode()[getinst(pos)])
-            memory.popval();
-            reg=memory.getRim();
-            memory.popval();
-            reg=memory.getRim()+reg;
-            Registers[7].setvalue(hex2bin(reg));
-            memory.popval();
-            reg=memory.getRim();
-            memory.popval();
-            reg=memory.getRim()+reg;
-            Registers[6].setvalue(hex2bin(reg));
-            memory.popval();
-            reg=memory.getRim();
-            memory.popval();
-            reg=memory.getRim()+reg;
-            Registers[5].setvalue(hex2bin(reg));
-            memory.popval();
-            reg=memory.getRim();
-            memory.popval();
-            reg=memory.getRim()+reg;
-            Registers[4].setvalue(hex2bin(reg));
-            memory.popval();
-            reg=memory.getRim();
-            memory.popval();
-            reg=memory.getRim()+reg;
-            Registers[3].setvalue(hex2bin(reg));
-            memory.popval();
-            reg=memory.getRim();
-            memory.popval();
-            reg=memory.getRim()+reg;
-            Registers[2].setvalue(hex2bin(reg));
-            memory.popval();          
-              reg=memory.getRim();
-            memory.popval();
-            reg=memory.getRim()+reg;
-            Registers[1].setvalue(hex2bin(reg));
-            memory.popval();
-            reg=memory.getRim();
-            memory.popval();
-            reg=memory.getRim()+reg;
-            Registers[0].setvalue(hex2bin(reg));
+        memory.pushval();
+        memory.setRim(binaryToHex(Registers[2].getvalue()).slice(0, 2));
+        memory.pushval();
+        {
+          memory.setRim(binaryToHex(Registers[2].getvalue()).slice(-2));
         }
-        ];
-        this.buildanim=function(){
-
-                return[{
-                    value:"POP",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                },
-                {
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:MdrToBus.target,
-                    time:MdrToBus.time,
-                    anim:MdrToBus.anim,
-                },
-                {
-                    value:"",
-                    target:MdrToReg.target,
-                    time:MdrToReg.time,
-                    anim:MdrToReg.anim,
-                },
-                {
-                    nom: "R1",
-                    value:this.value1,
-                    target:fitToR1.target,
-                    time:fitToR1.time,
-                    anim:fitToR1.anim,
-                },
-                {
-                    nom: "R1",
-                    value:this.value1,
-                    target:infitToR1.target,
-                    time:infitToR1.time,
-                    anim:infitToR1.anim,
-                },
-{
-                    value:"POP",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                },
-                {//////animation pf pop in MC
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:MdrToBus.target,
-                    time:MdrToBus.time,
-                    anim:MdrToBus.anim,
-                },
-                {
-                    value:"",
-                    target:MdrToReg.target,
-                    time:MdrToReg.time,
-                    anim:MdrToReg.anim,
-                },
-                {
-                    nom: "R2",
-                    value:this.value1,
-                    target:fitToR2.target,
-                    time:fitToR2.time,
-                    anim:fitToR2.anim,
-                },
-                {
-                    nom: "R2",
-                    value:this.value1,
-                    target:infitToR2.target,
-                    time:infitToR2.time,
-                    anim:infitToR2.anim,
-                },
-{
-                    value:"POP",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                },
-                {//////animation pf pop in MC
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:MdrToBus.target,
-                    time:MdrToBus.time,
-                    anim:MdrToBus.anim,
-                },
-                {
-                    value:"",
-                    target:MdrToReg.target,
-                    time:MdrToReg.time,
-                    anim:MdrToReg.anim,
-                },
-                {
-                    nom: "R3",
-                    value:this.value1,
-                    target:fitToR3.target,
-                    time:fitToR3.time,
-                    anim:fitToR3.anim,
-                },
-                {
-                    nom: "R3",
-                    value:this.value1,
-                    target:infitToR3.target,
-                    time:infitToR3.time,
-                    anim:infitToR3.anim,
-                },
-{
-                    value:"POP",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                },
-                {//////animation pf pop in MC
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:MdrToBus.target,
-                    time:MdrToBus.time,
-                    anim:MdrToBus.anim,
-                },
-                {
-                    value:"",
-                    target:MdrToReg.target,
-                    time:MdrToReg.time,
-                    anim:MdrToReg.anim,
-                },
-                {
-                    nom: "R4",
-                    value:this.value1,
-                    target:fitToR4.target,
-                    time:fitToR4.time,
-                    anim:fitToR4.anim,
-                },
-                {
-                    nom: "R4",
-                    value:this.value1,
-                    target:infitToR4.target,
-                    time:infitToR4.time,
-                    anim:infitToR4.anim,
-                },
- {
-                    value:"POP",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                },
-                {//////animation pf pop in MC
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:MdrToBus.target,
-                    time:MdrToBus.time,
-                    anim:MdrToBus.anim,
-                },
-                {
-                    value:"",
-                    target:MDRToAcc.target,
-                    time:MDRToAcc.time,
-                    anim:MDRToAcc.anim,
-                },
-                {
-                    value:"",
-                    target:BusToAcc.target,
-                    time:BusToAcc.time,
-                    anim:BusToAcc.anim,
-                },
-                {
-                    nom: "ACC",
-                    value:this.value1,
-                    target:fitToAcc.target,
-                    time:fitToAcc.time,
-                    anim:fitToAcc.anim,
-                },
-                {
-                    nom: "ACC",
-                    value:this.value1,
-                    target:infitToAcc.target,
-                    time:infitToAcc.time,
-                    anim:infitToAcc.anim,
-                },
- {
-                    value:"POP",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                },
-                {//////animation pf pop in MC
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:MdrToBus.target,
-                    time:MdrToBus.time,
-                    anim:MdrToBus.anim,
-                },
-                {
-                    value:"",
-                    target:MdrToReg.target,
-                    time:MdrToReg.time,
-                    anim:MdrToReg.anim,
-                },
-                {
-                    nom: "BR",
-                    value:this.value1,
-                    target:fitToBr.target,
-                    time:fitToBr.time,
-                    anim:fitToBr.anim,
-                },
-                {
-                    nom: "BR",
-                    value:this.value1,
-                    target:infitToBr.target,
-                    time:infitToBr.time,
-                    anim:infitToBr.anim,
-                },
- {
-                    value:"POP",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                },
-                {//////animation of pop in MC
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:MdrToBus.target,
-                    time:MdrToBus.time,
-                    anim:MdrToBus.anim,
-                },
-                {
-                    value:"",
-                    target:MdrToReg.target,
-                    time:MdrToReg.time,
-                    anim:MdrToReg.anim,
-                },
-                {
-                    nom: "IDR",
-                    value:this.value1,
-                    target:fitToIdr.target,
-                    time:fitToIdr.time,
-                    anim:fitToIdr.anim,
-                },
-                {
-                    nom: "IDR",
-                    value:this.value1,
-                    target:infitToIdr.target,
-                    time:infitToIdr.time,
-                    anim:infitToIdr.anim,
-                },
-{
-                    value:"POP",
-                    target:MCanim.target,
-                    time:MCanim.time,
-                    anim:MCanim.anim,
-                },
-                {//////animation pf pop in MC
-                    value:this.value1,
-                    target:fitToMdr.target,
-                    time:fitToMdr.time,
-                    anim:fitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:infitToMdr.target,
-                    time:infitToMdr.time,
-                    anim:infitToMdr.anim,
-                },
-                {
-                    value:this.value1,
-                    target:MdrToBus.target,
-                    time:MdrToBus.time,
-                    anim:MdrToBus.anim,
-                },
-                {
-                    value:"",
-                    target:MdrToReg.target,
-                    time:MdrToReg.time,
-                    anim:MdrToReg.anim,
-                },
-                {
-                    nom: "SR",
-                    value:this.value1,
-                    target:fitToSr.target,
-                    time:fitToSr.time,
-                    anim:fitToSr.anim,
-                },
-                {
-                    nom: "SR",
-                    value:this.value1,
-                    target:infitToSR.target,
-                    time:infitToSR.time,
-                    anim:infitToSR.anim,
-                },
-              
-            ];
-            
-            
+        memory.pushval();
+        memory.setRim(binaryToHex(Registers[3].getvalue()).slice(0, 2));
+        memory.pushval();
+        {
+          memory.setRim(binaryToHex(Registers[3].getvalue()).slice(-2));
         }
-    }
+        memory.pushval();
+        memory.setRim(binaryToHex(Registers[4].getvalue()).slice(0, 2));
+        memory.pushval();
+        {
+          memory.setRim(binaryToHex(Registers[4].getvalue()).slice(-2));
+        }
+        memory.pushval();
+        memory.setRim(binaryToHex(Registers[5].getvalue()).slice(0, 2));
+        memory.pushval();
+        {
+          memory.setRim(binaryToHex(Registers[5].getvalue()).slice(-2));
+        }
+        memory.pushval();
+        memory.setRim(binaryToHex(Registers[6].getvalue()).slice(0, 2));
+        memory.pushval();
+        {
+          memory.setRim(binaryToHex(Registers[6].getvalue()).slice(-2));
+        }
+        memory.pushval();
+        memory.setRim(binaryToHex(Registers[7].getvalue()).slice(0, 2));
+        memory.pushval();
+        {
+          memory.setRim(binaryToHex(Registers[7].getvalue()).slice(-2));
+        }
+        memory.pushval();
+      },
+    ];
+    this.buildanim = function () {
+      return [
+        {
+          nom: "R1",
+          value: this.value1,
+          target: fitToR1.target,
+          time: fitToR1.time,
+          anim: fitToR1.anim,
+        },
+        {
+          nom: "R1",
+          value: this.value1,
+          target: infitToR1.target,
+          time: infitToR1.time,
+          anim: infitToR1.anim,
+        },
+        {
+          value: this.value1,
+          target: RegToMdr.target,
+          time: RegToMdr.time,
+          anim: RegToMdr.anim,
+        },
+        {
+          value: "",
+          target: BusToMdr.target,
+          time: BusToMdr.time,
+          anim: BusToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: "PUSH",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          nom: "R2",
+          value: this.value1,
+          target: fitToR2.target,
+          time: fitToR2.time,
+          anim: fitToR2.anim,
+        },
+        {
+          nom: "R2",
+          value: this.value1,
+          target: infitToR2.target,
+          time: infitToR2.time,
+          anim: infitToR2.anim,
+        },
+        {
+          value: this.value1,
+          target: RegToMdr.target,
+          time: RegToMdr.time,
+          anim: RegToMdr.anim,
+        },
+        {
+          value: "",
+          target: BusToMdr.target,
+          time: BusToMdr.time,
+          anim: BusToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: "PUSH",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          nom: "R3",
+          value: this.value1,
+          target: fitToR3.target,
+          time: fitToR3.time,
+          anim: fitToR3.anim,
+        },
+        {
+          nom: "R3",
+          value: this.value1,
+          target: infitToR3.target,
+          time: infitToR3.time,
+          anim: infitToR3.anim,
+        },
+        {
+          value: this.value1,
+          target: RegToMdr.target,
+          time: RegToMdr.time,
+          anim: RegToMdr.anim,
+        },
+        {
+          value: "",
+          target: BusToMdr.target,
+          time: BusToMdr.time,
+          anim: BusToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: "PUSH",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          nom: "R4",
+          value: this.value1,
+          target: fitToR4.target,
+          time: fitToR4.time,
+          anim: fitToR4.anim,
+        },
+        {
+          nom: "R4",
+          value: this.value1,
+          target: infitToR4.target,
+          time: infitToR4.time,
+          anim: infitToR4.anim,
+        },
+        {
+          value: this.value1,
+          target: RegToMdr.target,
+          time: RegToMdr.time,
+          anim: RegToMdr.anim,
+        },
+        {
+          value: "",
+          target: BusToMdr.target,
+          time: BusToMdr.time,
+          anim: BusToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: "PUSH",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          nom: "ACC",
+          value: this.value1,
+          target: fitToAcc.target,
+          time: fitToAcc.time,
+          anim: fitToAcc.anim,
+        },
+        {
+          nom: "ACC",
+          value: this.value1,
+          target: infitToAcc.target,
+          time: infitToAcc.time,
+          anim: infitToAcc.anim,
+        },
+        {
+          value: this.value1,
+          target: AccToBus.target,
+          time: AccToBus.time,
+          anim: AccToBus.anim,
+        },
+        {
+          value: this.value1,
+          target: AccToMDR.target,
+          time: AccToMDR.time,
+          anim: AccToMDR.anim,
+        },
+        {
+          value: "",
+          target: BusToMdr.target,
+          time: BusToMdr.time,
+          anim: BusToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: "PUSH",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          nom: "BR",
+          value: this.value1,
+          target: fitToBr.target,
+          time: fitToBr.time,
+          anim: fitToBr.anim,
+        },
+        {
+          nom: "BR",
+          value: this.value1,
+          target: infitToBr.target,
+          time: infitToBr.time,
+          anim: infitToBr.anim,
+        },
+        {
+          value: this.value1,
+          target: RegToMdr.target,
+          time: RegToMdr.time,
+          anim: RegToMdr.anim,
+        },
+        {
+          value: "",
+          target: BusToMdr.target,
+          time: BusToMdr.time,
+          anim: BusToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: "PUSH",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          nom: "IDR",
+          value: this.value1,
+          target: fitToIdr.target,
+          time: fitToIdr.time,
+          anim: fitToIdr.anim,
+        },
+        {
+          nom: "IDR",
+          value: this.value1,
+          target: infitToIdr.target,
+          time: infitToIdr.time,
+          anim: infitToIdr.anim,
+        },
+        {
+          value: this.value1,
+          target: RegToMdr.target,
+          time: RegToMdr.time,
+          anim: RegToMdr.anim,
+        },
+        {
+          value: "",
+          target: BusToMdr.target,
+          time: BusToMdr.time,
+          anim: BusToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: "PUSH",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          nom: "SR",
+          value: this.value1,
+          target: fitToSr.target,
+          time: fitToSr.time,
+          anim: fitToSr.anim,
+        },
+        {
+          nom: "SR",
+          value: this.value1,
+          target: infitToSR.target,
+          time: infitToSR.time,
+          anim: infitToSR.anim,
+        },
+        {
+          value: this.value1,
+          target: RegToMdr.target,
+          time: RegToMdr.time,
+          anim: RegToMdr.anim,
+        },
+        {
+          value: "",
+          target: BusToMdr.target,
+          time: BusToMdr.time,
+          anim: BusToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: "PUSH",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+      ];
+    };
+  }
+}
+
+class InstructionPOPA {
+  constructor() {
+    this.value1 = 0;
+    this.value2 = 0;
+    this.addresse1 = 0;
+    this.register1 = 0;
+    this.addresse2 = 0;
+    this.register2 = 0;
+    this.taille = 0;
+    this.stepsNum = 1;
+    this.name = "POPA";
+    let reg;
+    this.steps = [
+      () => {
+        pos += getInstLeng(getcode()[getinst(pos)]);
+        memory.popval();
+        reg = memory.getRim();
+        memory.popval();
+        reg = memory.getRim() + reg;
+        Registers[7].setvalue(hex2bin(reg));
+        memory.popval();
+        reg = memory.getRim();
+        memory.popval();
+        reg = memory.getRim() + reg;
+        Registers[6].setvalue(hex2bin(reg));
+        memory.popval();
+        reg = memory.getRim();
+        memory.popval();
+        reg = memory.getRim() + reg;
+        Registers[5].setvalue(hex2bin(reg));
+        memory.popval();
+        reg = memory.getRim();
+        memory.popval();
+        reg = memory.getRim() + reg;
+        Registers[4].setvalue(hex2bin(reg));
+        memory.popval();
+        reg = memory.getRim();
+        memory.popval();
+        reg = memory.getRim() + reg;
+        Registers[3].setvalue(hex2bin(reg));
+        memory.popval();
+        reg = memory.getRim();
+        memory.popval();
+        reg = memory.getRim() + reg;
+        Registers[2].setvalue(hex2bin(reg));
+        memory.popval();
+        reg = memory.getRim();
+        memory.popval();
+        reg = memory.getRim() + reg;
+        Registers[1].setvalue(hex2bin(reg));
+        memory.popval();
+        reg = memory.getRim();
+        memory.popval();
+        reg = memory.getRim() + reg;
+        Registers[0].setvalue(hex2bin(reg));
+      },
+    ];
+    this.buildanim = function () {
+      return [
+        {
+          value: "POP",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: MdrToBus.target,
+          time: MdrToBus.time,
+          anim: MdrToBus.anim,
+        },
+        {
+          value: "",
+          target: MdrToReg.target,
+          time: MdrToReg.time,
+          anim: MdrToReg.anim,
+        },
+        {
+          nom: "R1",
+          value: this.value1,
+          target: fitToR1.target,
+          time: fitToR1.time,
+          anim: fitToR1.anim,
+        },
+        {
+          nom: "R1",
+          value: this.value1,
+          target: infitToR1.target,
+          time: infitToR1.time,
+          anim: infitToR1.anim,
+        },
+        {
+          value: "POP",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          //////animation pf pop in MC
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: MdrToBus.target,
+          time: MdrToBus.time,
+          anim: MdrToBus.anim,
+        },
+        {
+          value: "",
+          target: MdrToReg.target,
+          time: MdrToReg.time,
+          anim: MdrToReg.anim,
+        },
+        {
+          nom: "R2",
+          value: this.value1,
+          target: fitToR2.target,
+          time: fitToR2.time,
+          anim: fitToR2.anim,
+        },
+        {
+          nom: "R2",
+          value: this.value1,
+          target: infitToR2.target,
+          time: infitToR2.time,
+          anim: infitToR2.anim,
+        },
+        {
+          value: "POP",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          //////animation pf pop in MC
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: MdrToBus.target,
+          time: MdrToBus.time,
+          anim: MdrToBus.anim,
+        },
+        {
+          value: "",
+          target: MdrToReg.target,
+          time: MdrToReg.time,
+          anim: MdrToReg.anim,
+        },
+        {
+          nom: "R3",
+          value: this.value1,
+          target: fitToR3.target,
+          time: fitToR3.time,
+          anim: fitToR3.anim,
+        },
+        {
+          nom: "R3",
+          value: this.value1,
+          target: infitToR3.target,
+          time: infitToR3.time,
+          anim: infitToR3.anim,
+        },
+        {
+          value: "POP",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          //////animation pf pop in MC
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: MdrToBus.target,
+          time: MdrToBus.time,
+          anim: MdrToBus.anim,
+        },
+        {
+          value: "",
+          target: MdrToReg.target,
+          time: MdrToReg.time,
+          anim: MdrToReg.anim,
+        },
+        {
+          nom: "R4",
+          value: this.value1,
+          target: fitToR4.target,
+          time: fitToR4.time,
+          anim: fitToR4.anim,
+        },
+        {
+          nom: "R4",
+          value: this.value1,
+          target: infitToR4.target,
+          time: infitToR4.time,
+          anim: infitToR4.anim,
+        },
+        {
+          value: "POP",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          //////animation pf pop in MC
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: MdrToBus.target,
+          time: MdrToBus.time,
+          anim: MdrToBus.anim,
+        },
+        {
+          value: "",
+          target: MDRToAcc.target,
+          time: MDRToAcc.time,
+          anim: MDRToAcc.anim,
+        },
+        {
+          value: "",
+          target: BusToAcc.target,
+          time: BusToAcc.time,
+          anim: BusToAcc.anim,
+        },
+        {
+          nom: "ACC",
+          value: this.value1,
+          target: fitToAcc.target,
+          time: fitToAcc.time,
+          anim: fitToAcc.anim,
+        },
+        {
+          nom: "ACC",
+          value: this.value1,
+          target: infitToAcc.target,
+          time: infitToAcc.time,
+          anim: infitToAcc.anim,
+        },
+        {
+          value: "POP",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          //////animation pf pop in MC
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: MdrToBus.target,
+          time: MdrToBus.time,
+          anim: MdrToBus.anim,
+        },
+        {
+          value: "",
+          target: MdrToReg.target,
+          time: MdrToReg.time,
+          anim: MdrToReg.anim,
+        },
+        {
+          nom: "BR",
+          value: this.value1,
+          target: fitToBr.target,
+          time: fitToBr.time,
+          anim: fitToBr.anim,
+        },
+        {
+          nom: "BR",
+          value: this.value1,
+          target: infitToBr.target,
+          time: infitToBr.time,
+          anim: infitToBr.anim,
+        },
+        {
+          value: "POP",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          //////animation of pop in MC
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: MdrToBus.target,
+          time: MdrToBus.time,
+          anim: MdrToBus.anim,
+        },
+        {
+          value: "",
+          target: MdrToReg.target,
+          time: MdrToReg.time,
+          anim: MdrToReg.anim,
+        },
+        {
+          nom: "IDR",
+          value: this.value1,
+          target: fitToIdr.target,
+          time: fitToIdr.time,
+          anim: fitToIdr.anim,
+        },
+        {
+          nom: "IDR",
+          value: this.value1,
+          target: infitToIdr.target,
+          time: infitToIdr.time,
+          anim: infitToIdr.anim,
+        },
+        {
+          value: "POP",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          //////animation pf pop in MC
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: MdrToBus.target,
+          time: MdrToBus.time,
+          anim: MdrToBus.anim,
+        },
+        {
+          value: "",
+          target: MdrToReg.target,
+          time: MdrToReg.time,
+          anim: MdrToReg.anim,
+        },
+        {
+          nom: "SR",
+          value: this.value1,
+          target: fitToSr.target,
+          time: fitToSr.time,
+          anim: fitToSr.anim,
+        },
+        {
+          nom: "SR",
+          value: this.value1,
+          target: infitToSR.target,
+          time: infitToSR.time,
+          anim: infitToSR.anim,
+        },
+      ];
+    };
+  }
 }
 
 class InstructionREAD {
@@ -7025,8 +8035,7 @@ class InstructionREAD {
     this.name = "RD";
     this.steps = [
       () => {
-
-        pos+=getInstLeng(getcode()[getinst(pos)])
+        pos += getInstLeng(getcode()[getinst(pos)]);
 
         Alu1.Flags[7] = "1";
 
@@ -7085,7 +8094,7 @@ class InstructionREAD {
     };
   }
 }
-let txt = '';
+let txt = "";
 class InstructionWRITE {
   constructor() {
     this.value1 = 0;
@@ -7099,8 +8108,7 @@ class InstructionWRITE {
     this.name = "WRT";
     this.steps = [
       () => {
-
-        pos+=getInstLeng(getcode()[getinst(pos)])
+        pos += getInstLeng(getcode()[getinst(pos)]);
 
         Alu1.Flags[7] = "1";
 
@@ -7172,8 +8180,7 @@ class InstructionREADS {
     this.name = "RDS";
     this.steps = [
       () => {
-
-        pos+=getInstLeng(getcode()[getinst(pos)])
+        pos += getInstLeng(getcode()[getinst(pos)]);
 
         Alu1.Flags[7] = "1";
 
@@ -7411,14 +8418,14 @@ class InstructionWRITES {
     // Core steps remain unchanged, animation logic adapts dynamically
     this.steps = [
       () => {
-        pos+=getInstLeng(getcode()[getinst(pos)])
+        pos += getInstLeng(getcode()[getinst(pos)]);
         Alu1.Flags[7] = "1";
         let adr = this.addresse1;
         let result = "";
         let char = "";
         let ascii = "";
         let count = 0;
-      
+
         while (char !== "$" && count < 256) {
           memory.setRam(Dec2bin(adr));
           memory.read(false);
@@ -7438,7 +8445,7 @@ class InstructionWRITES {
         }
         txt += result;
         Alu1.Flags[7] = "0";
-        
+
         settext(txt);
       },
     ];
@@ -7671,7 +8678,6 @@ class InstructionWRITES {
             anim: infitToIO.anim,
           }
         );
-
         address++;
         address++;
         i++;
@@ -7688,7 +8694,7 @@ class InstructionWRITES {
   }
 }
 
-class InstructionMOVS{
+class InstructionMOVS {
   constructor() {
     this.value1 = 0;
     this.value2 = 0;
@@ -7702,91 +8708,147 @@ class InstructionMOVS{
     this.name = "MOVS";
     this.steps = [
       () => {
-        let temp ;
-        let res ;
-        memory.setRam(Registers[3].getvalue());
-        memory.read(false);
-        temp = memory.getRim() ;
-        memory.setRam(Registers[4].getvalue());
+        memory.setRam(Registers[6].getvalue());
         memory.read(false);
         memory.setRim(memory.getRim());
-        memory.setRam(Registers[3].getvalue());
+        memory.setRam(Registers[5].getvalue());
         memory.write();
-        memory.setRim( temp);
-        memory.setRam(Registers[4].getvalue());
-        memory.write();
-      }
+        Registers[6].setvalue(
+          (parseInt(Registers[6].getvalue(), 2) + 2)
+            .toString(2)
+            .padStart(16, "0")
+        );
+        Registers[5].setvalue(
+          (parseInt(Registers[5].getvalue(), 2) + 2)
+            .toString(2)
+            .padStart(16, "0")
+        );
+      },
     ];
     this.buildanim = function () {
-      if (this.isimmed == false) {
-        return [
-          {
-            nom: "ACC",
-            value: "addresse1",
-            target: infitToAcc.target,
-            time: infitToAcc.time,
-            anim: infitToAcc.anim,
-          },
-          {
-            value: "",
-            target: AccToBus.target,
-            time: AccToBus.time,
-            anim: AccToBus.anim,
-          },
-          {
-            value: "addresse1",
-            target: AccToADR.target,
-            time: AccToADR.time,
-            anim: AccToADR.anim,
-          },
-          {
-            value: "addresse1",
-            target: ADRToMAR.target,
-            time: ADRToMAR.time,
-            anim: ADRToMAR.anim,
-          },
-          {
-            value: "addresse1",
-            target: fitToMar.target,
-            time: fitToMar.time,
-            anim: fitToMar.anim,
-          },
-          {
-            name: "mainMem",
-            value: "WRITE",
-            taille: "taille",
-            address: "addresse1",
-            content: "value2",
-            target: MCanim.target,
-            time: MCanim.time,
-            anim: MCanim.anim,
-          },
-        ];
-      } else {
-        return [
-          {
-            value: "value2",
-            target: infitToMdr.target,
-            time: infitToMdr.time,
-            anim: infitToMdr.anim,
-          },
-          {
-            name: "mainMem",
-            value: "WRITE",
-            taille: "taille",
-            address: "addresse1",
-            content: "value2",
-            target: MCanim.target,
-            time: MCanim.time,
-            anim: MCanim.anim,
-          },
-        ]; ///animation of writing in MC/___________________________
-      }
+      return [
+        {
+          nom: "IDR",
+          value: this.value2,
+          target: fitToIdr.target,
+          time: fitToIdr.time,
+          anim: fitToIdr.anim,
+        },
+        {
+          nom: "IDR",
+          value: this.value2,
+          target: infitToIdr.target,
+          time: infitToIdr.time,
+          anim: infitToIdr.anim,
+        },
+        {
+          value: this.value2,
+          target: RegToUnderIP.target,
+          time: RegToUnderIP.time,
+          anim: RegToUnderIP.anim,
+        },
+        {
+          value: "",
+          target: UnderIpToAddBus.target,
+          time: UnderIpToAddBus.time,
+          anim: UnderIpToAddBus.anim,
+        },
+        {
+          value: this.value2,
+          target: UnderIPToMar.target,
+          time: UnderIPToMar.time,
+          anim: UnderIPToMar.anim,
+        },
+        {
+          value: this.value2,
+          target: fitToMar.target,
+          time: fitToMar.time,
+          anim: fitToMar.anim,
+        },
+        {
+          value: this.value2,
+          target: infitToMar.target,
+          time: infitToMar.time,
+          anim: infitToMar.anim,
+        },
+        {
+          value: "READ",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          value: "00" + String(this.register2) + "h",
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: "00" + String(this.register2) + "h",
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          nom: "BR",
+          value: this.value1,
+          target: fitToBr.target,
+          time: fitToBr.time,
+          anim: fitToBr.anim,
+        },
+        {
+          nom: "BR",
+          value: this.value1,
+          target: infitToBr.target,
+          time: infitToBr.time,
+          anim: infitToBr.anim,
+        },
+        {
+          value: this.value1,
+          target: RegToUnderIP.target,
+          time: RegToUnderIP.time,
+          anim: RegToUnderIP.anim,
+        },
+        {
+          value: "",
+          target: UnderIpToAddBus.target,
+          time: UnderIpToAddBus.time,
+          anim: UnderIpToAddBus.anim,
+        },
+        {
+          value: this.value1,
+          target: UnderIPToMar.target,
+          time: UnderIPToMar.time,
+          anim: UnderIPToMar.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToMar.target,
+          time: fitToMar.time,
+          anim: fitToMar.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMar.target,
+          time: infitToMar.time,
+          anim: infitToMar.anim,
+        },
+        {
+          name: "mainMem",
+          value: "WRITE",
+          taille: "taille",
+          address: "addresse1",
+          content: String(this.register2),
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+      ];
     };
   }
 }
 
-class InstructionLODS{
+class InstructionLODS {
   constructor() {
     this.value1 = 0;
     this.value2 = 0;
@@ -7800,84 +8862,113 @@ class InstructionLODS{
     this.name = "LODS";
     this.steps = [
       () => {
-       let res ;
-        memory.setRam(Registers[4].getvalue());
+        let res;
+        memory.setRam(Registers[6].getvalue());
         memory.read(false);
         res = memory.getRim();
-        Registers[3].setvalue( hex2bin(res));
-      
-        
-      }
+        Registers[3].setvalue(hex2bin(res));
+        Registers[6].setvalue(
+          (parseInt(Registers[6].getvalue(), 2) + 2)
+            .toString(2)
+            .padStart(16, "0")
+        );
+      },
     ];
     this.buildanim = function () {
-      if (this.isimmed == false) {
-        return [
-          {
-            nom: "ACC",
-            value: "addresse1",
-            target: infitToAcc.target,
-            time: infitToAcc.time,
-            anim: infitToAcc.anim,
-          },
-          {
-            value: "",
-            target: AccToBus.target,
-            time: AccToBus.time,
-            anim: AccToBus.anim,
-          },
-          {
-            value: "addresse1",
-            target: AccToADR.target,
-            time: AccToADR.time,
-            anim: AccToADR.anim,
-          },
-          {
-            value: "addresse1",
-            target: ADRToMAR.target,
-            time: ADRToMAR.time,
-            anim: ADRToMAR.anim,
-          },
-          {
-            value: "addresse1",
-            target: fitToMar.target,
-            time: fitToMar.time,
-            anim: fitToMar.anim,
-          },
-          {
-            name: "mainMem",
-            value: "WRITE",
-            taille: "taille",
-            address: "addresse1",
-            content: "value2",
-            target: MCanim.target,
-            time: MCanim.time,
-            anim: MCanim.anim,
-          },
-        ];
-      } else {
-        return [
-          {
-            value: "value2",
-            target: infitToMdr.target,
-            time: infitToMdr.time,
-            anim: infitToMdr.anim,
-          },
-          {
-            name: "mainMem",
-            value: "WRITE",
-            taille: "taille",
-            address: "addresse1",
-            content: "value2",
-            target: MCanim.target,
-            time: MCanim.time,
-            anim: MCanim.anim,
-          },
-        ]; ///animation of writing in MC/___________________________
-      }
+      return [
+        {
+          nom: "IDR",
+          value: this.value2,
+          target: fitToIdr.target,
+          time: fitToIdr.time,
+          anim: fitToIdr.anim,
+        },
+        {
+          nom: "IDR",
+          value: this.value2,
+          target: infitToIdr.target,
+          time: infitToIdr.time,
+          anim: infitToIdr.anim,
+        },
+        {
+          value: this.value2,
+          target: RegToUnderIP.target,
+          time: RegToUnderIP.time,
+          anim: RegToUnderIP.anim,
+        },
+        {
+          value: "",
+          target: UnderIpToAddBus.target,
+          time: UnderIpToAddBus.time,
+          anim: UnderIpToAddBus.anim,
+        },
+        {
+          value: this.value2,
+          target: UnderIPToMar.target,
+          time: UnderIPToMar.time,
+          anim: UnderIPToMar.anim,
+        },
+        {
+          value: this.value2,
+          target: fitToMar.target,
+          time: fitToMar.time,
+          anim: fitToMar.anim,
+        },
+        {
+          value: this.value2,
+          target: infitToMar.target,
+          time: infitToMar.time,
+          anim: infitToMar.anim,
+        },
+        {
+          value: "READ",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          value: this.register1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.register1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: "",
+          target: MdrToBus.target,
+          time: MdrToBus.time,
+          anim: MdrToBus.anim,
+        },
+        {
+          value: this.register1,
+          target: MdrToReg.target,
+          time: MdrToReg.time,
+          anim: MdrToReg.anim,
+        },
+        {
+          nom: "R4",
+          value: this.register1,
+          target: fitToR4.target,
+          time: fitToR4.time,
+          anim: fitToR4.anim,
+        },
+        {
+          nom: "R4",
+          value: this.register1,
+          target: infitToR4.target,
+          time: infitToR4.time,
+          anim: infitToR4.anim,
+        },
+      ];
     };
   }
 }
-class InstructionCMPS{
+class InstructionCMPS {
   constructor() {
     this.value1 = 0;
     this.value2 = 0;
@@ -7891,87 +8982,24 @@ class InstructionCMPS{
     this.name = "CMPS";
     this.steps = [
       () => {
-        let temp ;
-        let res ;
+        let temp;
+        let res;
         memory.setRam(Registers[3].getvalue());
         memory.read(false);
-        temp = memory.getRim() ;
+        temp = memory.getRim();
         memory.setRam(Registers[4].getvalue());
         memory.read(false);
-        res = memory.getRim() ;
+        res = memory.getRim();
         console.log("here is CMPS");
-        Alu1.Flags[0] ='1';
-        Alu1.Flags[1] ='1';
-        Alu1.Flags[2] ='1';
-        Alu1.Flags[3] ='1';
-        Alu1.Flags[4] ='1';
-      }
+        Alu1.Flags[0] = "1";
+        Alu1.Flags[1] = "1";
+        Alu1.Flags[2] = "1";
+        Alu1.Flags[3] = "1";
+        Alu1.Flags[4] = "1";
+      },
     ];
     this.buildanim = function () {
-      if (this.isimmed == false) {
-        return [
-          {
-            nom: "ACC",
-            value: "addresse1",
-            target: infitToAcc.target,
-            time: infitToAcc.time,
-            anim: infitToAcc.anim,
-          },
-          {
-            value: "",
-            target: AccToBus.target,
-            time: AccToBus.time,
-            anim: AccToBus.anim,
-          },
-          {
-            value: "addresse1",
-            target: AccToADR.target,
-            time: AccToADR.time,
-            anim: AccToADR.anim,
-          },
-          {
-            value: "addresse1",
-            target: ADRToMAR.target,
-            time: ADRToMAR.time,
-            anim: ADRToMAR.anim,
-          },
-          {
-            value: "addresse1",
-            target: fitToMar.target,
-            time: fitToMar.time,
-            anim: fitToMar.anim,
-          },
-          {
-            name: "mainMem",
-            value: "WRITE",
-            taille: "taille",
-            address: "addresse1",
-            content: "value2",
-            target: MCanim.target,
-            time: MCanim.time,
-            anim: MCanim.anim,
-          },
-        ];
-      } else {
-        return [
-          {
-            value: "value2",
-            target: infitToMdr.target,
-            time: infitToMdr.time,
-            anim: infitToMdr.anim,
-          },
-          {
-            name: "mainMem",
-            value: "WRITE",
-            taille: "taille",
-            address: "addresse1",
-            content: "value2",
-            target: MCanim.target,
-            time: MCanim.time,
-            anim: MCanim.anim,
-          },
-        ]; ///animation of writing in MC/___________________________
-      }
+      return [];
     };
   }
 }
