@@ -1,21 +1,78 @@
 import {
-  BR,
-  IR,
   memory,
-  mess,
   Registers,
   queue,
-  addressingModes,
   Alu1,
   IP,
   ioUnit,
-  sequenceur,
 } from "../pages/Ide";
 import { settext } from "./setgettxt.js";
 import { TwosComplement } from "./ALU.js";
 import { gsap } from "gsap";
+import { pushadrs,getcode,nsp,code2} from "./speed.js";
 // import { Register } from "./Register.js";
 ////////////////////////////////////////////////
+
+let pos=0;
+function getinst(nu){
+  let v=0;
+  let i=0;
+  while (v!==nu) {
+    v+=getInstLeng(getcode()[i]);
+    i++;
+  }
+return i;
+}
+
+function getallLeng(co){
+  const c=[...co]
+  let num=0;
+  for (let i = 0; i < c.length; i++) {
+num+=getInstLeng(c[i])
+  }
+  return num;
+}
+
+function getInstLeng(instruction) {
+  if(!instruction) return 0;
+  const tokens = instruction.trim().split(/[\s,]+/).filter(token => token.length > 0);
+  if (tokens.length === 0) return 0;
+  const inst = tokens[0].toUpperCase();
+  const registers = new Set(["R1", "R2", "R3", "R4", "ACC", "BR", "IDR", "IR", "SR", "MAR", "MDR", "IP"]);
+  function isImmediate(token) {
+    if (/^(\d+|0x[0-9a-fA-F]+)$/.test(token)) return true;
+    if (token.startsWith('[') && token.endsWith(']')) return false;
+    return !registers.has(token.toUpperCase());
+  }
+  const branchInst = new Set(['BNE', 'BE', 'BS', 'BI', 'BIE', 'BSE', 'BRI']);
+  if (branchInst.has(inst)) return 3;
+  if (inst === 'MOV') {
+    if (tokens.length < 3) return 0;
+    return isImmediate(tokens[2]) ? 4 : 2;
+  }
+  if (inst === 'RDS' || inst === 'WRTS') {
+    if (tokens.length < 2) return 0;
+    return 3;
+  }
+  const twoOpInst = new Set(['ADD', 'SUB', 'MUL', 'DIV', 'AND', 'OR', 'XOR', 'NOR', 'NAND', 'CMP']);
+  if (twoOpInst.has(inst)) {
+    if (tokens.length < 3) return 0;
+    return isImmediate(tokens[2]) ? 4 : 2;
+  }
+  if (inst === 'CALL') return 3;
+  const noOpInst = new Set(['RET', 'PUSHA', 'POPA']);
+  if (noOpInst.has(inst)) return 1;
+  const reducedInst = new Set(['NOT', 'NEG', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL']);
+  if (reducedInst.has(inst)) {
+    if (inst === 'RD' || inst === 'WRT') return 1;
+    if (tokens.length < 2) return 1;
+    const operand = tokens[1];
+    return (isImmediate(operand) || (operand.startsWith('[') && operand.endsWith(']'))) ? 2 : 1;
+  }
+  return 0;
+}
+
+
 function Dec2bin(dec) {
   return ("00000000" + parseInt(dec, 10).toString(2)).substr(-8);
 }
@@ -263,11 +320,12 @@ const Bin16ToHexaHigh = (bin) => {
   return hexStr;
 };
 /////////////////animations to test////////////////////
-let speed=3;
-let sp2=speed/1.5;
-export const setSpeed=(val)=>{speed=val;}
-export const getSpeed=()=>{return speed;}
-let nsp=1/(sp2*1.1);
+
+
+
+
+
+
 function binaryToHex(binaryString) {
   const decimalValue = parseInt(binaryString, 2);
   let hexString = decimalValue.toString(16).toUpperCase();
@@ -284,293 +342,293 @@ function binaryToHex(binaryString) {
 
 
 const IounitToBus = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.221, y: h * 0.39, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.221, y: h * 0.39 }, { y: h * 0.46, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.221, y: h * 0.39, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.221, y: h * 0.39 }, { y: h * 0.46, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const BusToRual1 = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.143, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.143, y: h * 0.56 }, { y: h * 0.625, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.143, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.143, y: h * 0.56 }, { y: h * 0.625, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const Rual1ToBus = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.143, y: h * 0.625, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.143, y: h * 0.625 }, { y: h * 0.56, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.143, y: h * 0.625, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.143, y: h * 0.625 }, { y: h * 0.56, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const BusToRual2 = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.299, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.299, y: h * 0.56 }, { y: h * 0.625, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.299, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.299, y: h * 0.56 }, { y: h * 0.625, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const BusToRegisters = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.481, y: h * 0.555, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.481, y: h * 0.555 }, { y: h * 0.58, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.481, y: h * 0.555, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.481, y: h * 0.555 }, { y: h * 0.58, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const RegistersToBus = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.481, y: h * 0.58, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.481, y: h * 0.58 }, { y: h * 0.555, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.481, y: h * 0.58, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.481, y: h * 0.58 }, { y: h * 0.555, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const IrToDecoder = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.644, y: h * 0.708, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.644, y: h * 0.708 }, { y: h * 0.725, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.644, y: h * 0.708, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.644, y: h * 0.708 }, { y: h * 0.725, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const DecoderToSequencer = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.644, y: h * 0.813, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.644, y: h * 0.813 }, { y: h * 0.827, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.644, y: h * 0.813, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.644, y: h * 0.813 }, { y: h * 0.827, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const QueueToIr = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.726, y: h * 0.6638, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.726, y: h * 0.6638 }, { x: w * 0.711, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.726, y: h * 0.6638, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.726, y: h * 0.6638 }, { x: w * 0.711, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const queueExitToBus = {
-    value: "",
-    target: ".ball",
-    time: 4000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.726, y: h * 0.6638, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.726, y: h * 0.6638 }, { x: w * 0.715, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { y: h * 0.555, duration: 1 * nsp, delay: 2 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 3 * nsp });
-    }
-}
+  value: "",
+  target: ".ball",
+  time:()=>  4000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.726, y: h * 0.6638, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.726, y: h * 0.6638 }, { x: w * 0.715, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { y: h * 0.555, duration: 1 * nsp(), delay: 2 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
+  },
+};
 
 const queueExitToBus2 = {
-    value: "",
-    target: ".ball",
-    time: 500 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.726, y: h * 0.6638, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.726, y: h * 0.6638 }, { x: w * 0.715, duration: 1 * nsp, delay: 1 * nsp });
-    }
-}
+  value: "",
+  target: ".ball",
+  time:()=>  500 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.726, y: h * 0.6638, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.726, y: h * 0.6638 }, { x: w * 0.715, duration: 1 * nsp(), delay: 1 * nsp() });
+  },
+};
 
 const BusToQueue = {
-    value: "",
-    target: ".ball",
-    time: 4000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.931, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.931, y: h * 0.56 }, { y: h * 0.6638, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { x: w * 0.921, duration: 1 * nsp, delay: 2 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 3 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  4000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.931, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.931, y: h * 0.56 }, { y: h * 0.6638, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { x: w * 0.921, duration: 1 * nsp(), delay: 2 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
+  },
+};
 
 const BusToAcc = {
-    value: "",
-    target: ".ball",
-    time: 4000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.361, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.361, y: h * 0.56 }, { y: h * 0.923, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { x: w * 0.282, duration: 1 * nsp, delay: 2 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 3 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  4000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.361, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.361, y: h * 0.56 }, { y: h * 0.923, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { x: w * 0.282, duration: 1 * nsp(), delay: 2 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
+  },
+};
 
 const AccToBus = {
-    value: "",
-    target: ".ball",
-    time: 4000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.282, y: h * 0.923, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.282, y: h * 0.923 }, { x: w * 0.361, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { y: h * 0.56, duration: 1 * nsp, delay: 2 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 3 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  4000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.282, y: h * 0.923, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.282, y: h * 0.923 }, { x: w * 0.361, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { y: h * 0.56, duration: 1 * nsp(), delay: 2 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
+  },
+};
 
 const AluToAcc = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.226, y: h * 0.863, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.226, y: h * 0.863 }, { y: h * 0.877, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.226, y: h * 0.863, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.226, y: h * 0.863 }, { y: h * 0.877, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const MdrToBus = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.539, y: h * 0.445, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.539, y: h * 0.445 }, { y: h * 0.465, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.539, y: h * 0.445, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.539, y: h * 0.445 }, { y: h * 0.465, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const BusToMdr = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.539, y: h * 0.465, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.539, y: h * 0.465 }, { y: h * 0.445, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.539, y: h * 0.465, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.539, y: h * 0.465 }, { y: h * 0.445, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const AdrToBus = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.784, y: h * 0.137, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.784, y: h * 0.137 }, { y: h * 0.18, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.784, y: h * 0.137, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.784, y: h * 0.137 }, { y: h * 0.18, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const IpToAdr = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.746, y: h * 0.26, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.746, y: h * 0.26 }, { y: h * 0.46, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.746, y: h * 0.26, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.746, y: h * 0.26 }, { y: h * 0.46, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const MdrTOQue = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.874, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.874, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const MdrToReg = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.44, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.44, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const RegToMdr = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.497, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.497, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
-let queueExitToReg = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.68, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.68 }, { x: w * 0.44, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    }
-}
+const queueExitToReg = {
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.68, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.68 }, { x: w * 0.44, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const MdrToIO = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.182, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.182, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const IOToMdr = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.182, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.182 }, { x: w * 0.497, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.182, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.182 }, { x: w * 0.497, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const IOToUnderIP = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.182, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.182 }, { x: w * 0.708, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.182, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.182 }, { x: w * 0.708, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const RegToUnderIP = {
     value: "",
@@ -584,646 +642,754 @@ const RegToUnderIP = {
 }
 
 const UnderIPToMar = {
-    value: "",
-    target: ".box-ADR",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-ADR", { x: w * 0.712, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-ADR", { x: w * 0.712 }, { x: w * 0.648, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-ADR", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-ADR",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-ADR", { x: w * 0.712, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-ADR", { x: w * 0.712 }, { x: w * 0.648, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-ADR", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const UnderIpToAddBus = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.745, y: h * 0.465, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.745, y: h * 0.465 }, { y: h * 0.26, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time: ()=> 3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.745, y: h * 0.465, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.745, y: h * 0.465 }, { y: h * 0.26, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const MdrToRual1 = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.262, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.262, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const RegToRual1 = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.262, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.262, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const MdrToRual2 = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.106, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.106, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const RegToRual2 = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.106, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.106, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const AccToMDR = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.321, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.321 }, { x: w * 0.497, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.321, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.321 }, { x: w * 0.497, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const MDRToAcc = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.321, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.321, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const AccToReg = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.321, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.321 }, { x: w * 0.44, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.321, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.321 }, { x: w * 0.44, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const RegToAcc = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.321, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=> 3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.321, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const MdrToADR = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.705, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.497, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.497 }, { x: w * 0.705, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const AccToADR = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.321, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.321 }, { x: w * 0.705, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.321, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.321 }, { x: w * 0.705, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const Rual1ToADR = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.705, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.44, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.44 }, { x: w * 0.705, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const BusToIr = {
-    value: "",
-    target: ".ball",
-    time: 4000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { x: w * 0.931, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.931, y: h * 0.56 }, { y: h * 0.6638, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { x: w * 0.711, duration: 1 * nsp, delay: 2 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 3 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  4000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { x: w * 0.931, y: h * 0.56, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.931, y: h * 0.56 }, { y: h * 0.6638, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { x: w * 0.711, duration: 1 * nsp(), delay: 2 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 3 * nsp() });
+  },
+};
 
 const IPToMAR = {
-    value: "",
-    target: ".box-ADR",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-ADR", { x: w * 0.753, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-ADR", { x: w * 0.753 }, { x: w * 0.648, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-ADR", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-ADR",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-ADR", { x: w * 0.753, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-ADR", { x: w * 0.753 }, { x: w * 0.648, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-ADR", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const ADRToMAR = {
-    value: "",
-    target: ".box-ADR",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-ADR", { x: w * 0.712, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-ADR", { x: w * 0.712 }, { x: w * 0.648, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-ADR", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-ADR",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-ADR", { x: w * 0.712, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-ADR", { x: w * 0.712 }, { x: w * 0.648, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-ADR", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const fitToRual1 = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "20px", width: w * 0.067, height: h * 0.05, x: w * 0.12, y: h * 0.658, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "20px", width: w * 0.067, height: h * 0.05, x: w * 0.12, y: h * 0.658, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const infitToRual1 = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+  },
+};
 
 const fitToRual2 = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "20px", width: w * 0.067, height: h * 0.05, x: w * 0.275, y: h * 0.658, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "20px", width: w * 0.067, height: h * 0.05, x: w * 0.275, y: h * 0.658, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const fitToR2 = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.666, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.666, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const infitToR2 = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+  },
+};
 
 const fitToR1 = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.6105, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.6105, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const infitToR1 = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+  },
+};
 
 const fitToR3 = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.7205, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.7205, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const infitToR3 = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+  },
+};
 
 const fitToR4 = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.7735, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.7735, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const infitToR4 = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+  },
+};
 
 const fitToIdr = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.8277, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.8277, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const infitToIdr = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+  },
+};
 
 const fitToBr = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.8815, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.8815, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const infitToBr = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+  },
+};
 
 const fitToSr = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.9347, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.045, x: w * 0.442, y: h * 0.9347, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const infitToSR = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+  },
+};
 
 const fitToIr = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.055, x: w * 0.6, y: h * 0.6495, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.055, x: w * 0.6, y: h * 0.6495, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const fitToDecode = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.055, x: w * 0.6, y: h * 0.753, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.055, x: w * 0.6, y: h * 0.753, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const fitToSequencer = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.055, x: w * 0.6, y: h * 0.858, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.1, height: h * 0.055, x: w * 0.6, y: h * 0.858, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const fitToAcc = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.07, height: h * 0.055, x: w * 0.1995, y: h * 0.91, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.07, height: h * 0.055, x: w * 0.1995, y: h * 0.91, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const infitToAcc = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+  },
+};
 
 const fitToMdr = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.11, height: h * 0.06, x: w * 0.49, y: h * 0.38, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.11, height: h * 0.06, x: w * 0.49, y: h * 0.38, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const infitToMdr = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+  },
+};
 
 const fitToMar = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.032, height: h * 0.14, x: w * 0.623, y: h * 0.165, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.032, height: h * 0.14, x: w * 0.623, y: h * 0.165, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const infitToMar = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+  },
+};
 
 const addanim = {
-    value: "",
-    target: ".ALU",
-    time: 2000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ALU", { opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ALU", { opacity: "1" }, { opacity: "0", duration: 1 * nsp, delay: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ALU",
+  time:()=>  2000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ALU", { opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ALU", { opacity: "1" }, { opacity: "0", duration: 1 * nsp(), delay: 1 * nsp() });
+  },
+};
 
 const MCanim = {
-    value: "",
-    target: ".MC",
-    time: 2000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".MC", { opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".MC", { opacity: "1" }, { opacity: "0", duration: 1 * nsp, delay: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".MC",
+  time:()=>  2000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".MC", { opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".MC", { opacity: "1" }, { opacity: "0", duration: 1 * nsp(), delay: 1 * nsp() });
+  },
+};
 
 const IOToBus = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.182, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.182 }, { x: w * 0.442, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.182, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.182 }, { x: w * 0.442, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const BusToIO = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.442, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.442 }, { x: w * 0.182, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.442, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.442 }, { x: w * 0.182, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const QueueToIO = {
-    value: "",
-    target: ".box-data",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".box-data", { x: w * 0.68, opacity: "0" }, { opacity: "1", duration: 1 * nsp })
-        gsap.fromTo(".box-data", { x: w * 0.68 }, { x: w * 0.182, duration: 1 * nsp, delay: 1 * nsp })
-        gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".box-data",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".box-data", { x: w * 0.68, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.68 }, { x: w * 0.182, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const BufferToBus = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.221, y: h * 0.39, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.221, y: h * 0.39 }, { y: h * 0.465, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.221, y: h * 0.39, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.221, y: h * 0.39 }, { y: h * 0.465, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const BusToBuffer = {
-    value: "",
-    target: ".ball",
-    time: 3000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.221, y: h * 0.465, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-        gsap.fromTo(".ball", { x: w * 0.221, y: h * 0.465 }, { y: h * 0.39, duration: 1 * nsp, delay: 1 * nsp });
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  3000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { height: "2.812%", width: "1.4%", borderRadius: "50%", x: w * 0.221, y: h * 0.465, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".ball", { x: w * 0.221, y: h * 0.465 }, { y: h * 0.39, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
 
 const fitToIO = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.07, height: h * 0.05, x: w * 0.197, y: h * 0.315, opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.07, height: h * 0.05, x: w * 0.197, y: h * 0.315, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+  },
+};
 
 const infitToIO = {
-    value: "",
-    target: ".ball",
-    time: 1000 * nsp,
-    anim: (val, h, w) => {
-        gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
-    },
-}
+  value: "",
+  target: ".ball",
+  time:()=>  1000 * nsp(),
+  anim: (val, h, w) => {
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
+  },
+};
 
 const fitToCache = {
   value: "",
   target: ".ball",
-  time: 1000 * nsp,
+  time:()=>  1000 * nsp(),
   anim: (val, h, w) => {
-    // console.log("Fitting data into Cache");
-    gsap.fromTo(
-      ".ball",
-      {
-        borderRadius: "10px",
-        width: w * 0.07,
-        height: h * 0.05,
-        x: w * 0.325,
-        y: h * 0.31,
-        opacity: "0",
-      },
-      { opacity: "1", duration: 0.4 * nsp }
-    );
-    gsap.to(".ball", { opacity: "0", duration: 0.4 * nsp, delay: 0.4 * nsp });
+      gsap.fromTo(".ball", { borderRadius: "10px", width: w * 0.07, height: h * 0.05, x: w * 0.325, y: h * 0.31, opacity: "0" }, { opacity: "1", duration: 0.4 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 0.4 * nsp(), delay: 0.4 * nsp() });
   },
 };
 
 const infitToCache = {
   value: "",
   target: ".ball",
-  time: 1000 * nsp,
+  time:()=>  1000 * nsp(),
   anim: (val, h, w) => {
-    // gsap.fromTo(".ball",{x:w*0.442,y:h*0.7735,opacity:"0",height:"2.812%",width:"1.4%"},{borderRadius:"10px",width:w*0.1,height:h*0.045,duration:1,delay:1});
-    // gsap.fromTo(".ball",{x:w*0.442,y:h*0.7735,opacity:"0"},{opacity:"1" ,duration:1,delay:1});
-    // gsap.fromTo(".ball",{borderRadius:"10px",width:w*0.1,height:h*0.045,},{height:"2.812%",width:"1.4%",borderRadius:"50%",duration:1,delay:1});
-    gsap.to(".ball", { opacity: "0", duration: 1 * nsp });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp() });
   },
 };
 
 const CacheToBus = {
   value: "",
   target: ".ball",
-  time: 3000 * nsp,
+  time:()=>  3000 * nsp(),
   anim: (val, h, w) => {
-    console.log("Cache to Bus transfer on Cache Hit");
-    // Coordinates specific to cache location
-    gsap.fromTo(
-      ".ball",
-      {
-        height: "2.7%",
-        width: "1.4%",
-        borderRadius: "50%",
-        x: w * 0.35,
-        y: h * 0.4,
-        opacity: "0",
-      },
-      { opacity: "1", duration: 1 * nsp }
-    );
-    gsap.to(".ball", { y: h * 0.465, duration: 1 * nsp, delay: 1 * nsp }); // Example path to Bus
-    gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
+      gsap.fromTo(".ball", { height: "2.7%", width: "1.4%", borderRadius: "50%", x: w * 0.35, y: h * 0.4, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.to(".ball", { y: h * 0.465, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const BusToCache = {
   value: "",
   target: ".ball",
-  time: 3000 * nsp,
+  time:()=>  3000 * nsp(),
   anim: (val, h, w) => {
-    // Start from the Bus location and move to Cache coordinates
-    gsap.fromTo(
-      ".ball",
-      {
-        height: "2.7%",
-        width: "1.4%",
-        borderRadius: "50%",
-        x: w * 0.35, // Example bus location X
-        y: h * 0.465, // Example bus location Y
-        opacity: "0",
-      },
-      { opacity: "1", duration: 1 * nsp }
-    );
-    gsap.to(
-      ".ball",
-
-      { y: h * 0.4, duration: 1 * nsp, delay: 1 * nsp }
-    ); // Move up to Cache location
-    gsap.to(".ball", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
+      gsap.fromTo(".ball", { height: "2.7%", width: "1.4%", borderRadius: "50%", x: w * 0.35, y: h * 0.465, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.to(".ball", { y: h * 0.4, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const Cacheanim = {
   value: "",
   target: ".Cache",
-  time: 2000 * nsp,
+  time:()=>  2000 * nsp(),
   anim: (val, h, w) => {
-    gsap.fromTo(".Cache", { opacity: "0" }, { opacity: "1", duration: 1 * nsp });
-    gsap.fromTo(
-      ".Cache",
-      { opacity: "1" },
-      { opacity: "0", duration: 1 * nsp, delay: 1 * nsp }
-    );
+      gsap.fromTo(".Cache", { opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".Cache", { opacity: "1" }, { opacity: "0", duration: 1 * nsp(), delay: 1 * nsp() });
   },
 };
 
 const IOToCache = {
   value: "",
   target: ".box-data",
-  time: 3000 * nsp,
+  time:()=>  3000 * nsp(),
   anim: (val, h, w) => {
-    gsap.fromTo(
-      ".box-data",
-      { x: w * 0.182, opacity: "0" },
-      { opacity: "1", duration: 1 * nsp }
-    );
-    gsap.fromTo(
-      ".box-data",
-      { x: w * 0.182 },
-      { x: w * 0.325, duration: 1 * nsp, delay: 1 * nsp }
-    );
-    gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
+      gsap.fromTo(".box-data", { x: w * 0.182, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.182 }, { x: w * 0.325, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
 const BusCacheToIO = {
   value: "",
   target: ".box-data",
-  time: 3000 * nsp,
+  time:()=>  3000 * nsp(),
   anim: (val, h, w) => {
-    gsap.fromTo(
-      ".box-data",
-      { x: w * 0.325, opacity: "0" },
-      { opacity: "1", duration: 1 * nsp }
-    );
-    gsap.fromTo(
-      ".box-data",
-      { x: w * 0.325 },
-      { x: w * 0.182, duration: 1 * nsp, delay: 1 * nsp }
-    );
-    gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
+      gsap.fromTo(".box-data", { x: w * 0.325, opacity: "0" }, { opacity: "1", duration: 1 * nsp() });
+      gsap.fromTo(".box-data", { x: w * 0.325 }, { x: w * 0.182, duration: 1 * nsp(), delay: 1 * nsp() });
+      gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
-////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+class InstructionCALL {
+  constructor() {
+    this.value1 = 0;
+    this.value2 = 0;
+    this.addresse1 = 0;
+    this.register1 = 0;
+    this.addresse2 = 0;
+    this.register2 = 0;
+    this.taille = 0;
+    this.stepsNum = 1;
+    this.res = 0;
+    this.name = "CALL"; 
+    this.steps = [
+
+          (animations) => {
+            IP.setvalue(Dec2bin(this.addresse2));
+            pos=this.addresse2;
+            queue.clear(animations);
+            queue.fetchInstruction(animations, 0, 1, [], 0);
+            queue.fetchInstruction(animations, 0, 0, [], 0);
+            queue.fetchInstruction(animations, 1, 1, [], 0);
+            queue.fetchInstruction(animations, 0, 0, [], 0);
+            queue.fetchInstruction(animations, 2, 1, [], 0);
+            queue.fetchInstruction(animations, 0, 0, [], 0);
+              memory.setRim(
+                binaryToHex(
+                  Dec2bin(this.addresse1)
+                ).slice(0, 2)
+              );
+              memory.pushval();
+              memory.setRim(
+                binaryToHex(
+                  Dec2bin(this.addresse1)
+                ).slice(-2)
+              );
+              memory.pushval();
+              const line= getinst(this.addresse2);
+              let i=line;
+             let found=false;
+              while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
+                {
+                  if(code2()[i][0]=="CALL"){found=true;}
+                  i++;
+                }
+                if(found)
+                {
+                 pushadrs(getallLeng(getcode().slice(0,i))) 
+                }
+
+            }
+
+      
+    ];
+    this.buildanim = function () {
+      return [
+       
+        {
+          value: this.value1,
+          target: RegToMdr.target,
+          time: RegToMdr.time,
+          anim: RegToMdr.anim,
+        },
+        {
+          value: "",
+          target: BusToMdr.target,
+          time: BusToMdr.time,
+          anim: BusToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: "PUSH",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+      ];
+    };
+  }
+}
+
+class InstructionRET {
+  constructor() {
+    this.value1 = 0;
+    this.value2 = 0;
+    this.addresse1 = 0;
+    this.register1 = 0;
+    this.addresse2 = 0;
+    this.register2 = 0;
+    this.taille = 0;
+    this.stepsNum = 1;
+    this.res = 0;
+    this.name = "RET";
+    this.steps = [
+
+          (animations) => { 
+            let reg;
+            memory.popval();
+            reg = memory.getRim();
+            memory.popval();
+            reg = memory.getRim() + reg;
+            reg=parseInt(reg,16)
+            IP.setvalue(Dec2bin(reg.toString()));
+            pos=reg;
+            queue.clear(animations);
+            queue.fetchInstruction(animations, 0, 1, [], 0);
+            queue.fetchInstruction(animations, 0, 0, [], 0);
+            queue.fetchInstruction(animations, 1, 1, [], 0);
+            queue.fetchInstruction(animations, 0, 0, [], 0);
+            queue.fetchInstruction(animations, 2, 1, [], 0);
+            queue.fetchInstruction(animations, 0, 0, [], 0);
+
+            const line=getinst(reg); 
+            let i=line;
+
+           let found=false;
+            while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
+              {
+                if(code2()[i][0]=="CALL"){found=true;}
+                i++;
+              }
+              if(found)
+              {
+               pushadrs(getallLeng(getcode().slice(0,i))) 
+              }
+
+          }, 
+      
+    ];
+    this.buildanim = function () {
+      return [
+        {
+          value: "RET",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: this.value1,
+          target: MdrToBus.target,
+          time: MdrToBus.time,
+          anim: MdrToBus.anim,
+        },
+        //add here the rest of pop animation
+        
+
+      ];
+    };
+  }
+}
 
 
 class InstructionCMP {
@@ -1239,7 +1405,7 @@ class InstructionCMP {
     this.res = 0;
     this.name = "CMP";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         if (this.taille === 0) {
           Alu1.Rual1.setright(TwosComplement(this.value1, 8));
           Alu1.Rual2.setleft(TwosComplement(this.value2, 8));
@@ -1249,6 +1415,8 @@ class InstructionCMP {
           Alu1.Rual2.setvalue(TwosComplement(this.value2, 16));
           Alu1.compareBinary(16);
         }
+       
+
       },
     ];
     this.buildanim = function () {
@@ -1302,6 +1470,7 @@ class InstructionCMP {
           time: 0,
           anim: () => {},
         },
+
       ];
     };
   }
@@ -1320,7 +1489,7 @@ class InstructionADD {
     this.res = 0;
     this.name = "ADD";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // this.res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -1415,7 +1584,7 @@ class InstructionMOV00 {
     this.stepsNum = 1;
     this.name = "MOV-RR";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         Registers[this.register1].setvalue(TwosComplement(this.value2, 16));
       },
     ];
@@ -2709,7 +2878,7 @@ class InstructionMOV01 {
     this.isimmed = 0;
     this.name = "MOV-RM";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         Registers[this.register1].setvalue(TwosComplement(this.value2, 16));
       },
     ];
@@ -3062,7 +3231,7 @@ class InstructionMOV10 {
     this.stepsNum = 1;
     this.name = "MOV-MR";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         if (this.taille == 1) {
           let hexval = this.value2.toString(16);
           while (hexval.length < 4) {
@@ -3452,7 +3621,7 @@ class InstructionMOV11 {
     this.isimmed = true;
     this.name = "MOV-MM";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         if (this.taille == 1) {
           let hexval = this.value2.toString(16);
           while (hexval.length < 4) {
@@ -3552,7 +3721,7 @@ class InstructionSUB {
     this.stepsNum = 1;
     this.name = "SUB";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -3648,7 +3817,7 @@ class InstructionMUL {
     this.stepsNum = 1;
     this.name = "MUL";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -3747,7 +3916,7 @@ class InstructionDIV {
     this.stepsNum = 1;
     this.name = "DIV";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -3844,7 +4013,7 @@ class InstructionAND {
     this.stepsNum = 1;
     this.name = "AND";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -3932,7 +4101,7 @@ class InstructionOR {
     this.stepsNum = 1;
     this.name = "OR";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -4021,7 +4190,7 @@ class InstructionXOR {
     this.stepsNum = 1;
     this.name = "XOR";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -4110,7 +4279,7 @@ class InstructionNOR {
     this.stepsNum = 1;
     this.name = "NOR";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -4199,7 +4368,7 @@ class InstructionNAND {
     this.stepsNum = 1;
     this.name = "NAND";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -4288,7 +4457,7 @@ class InstructionPUSH {
     this.stepsNum = 1;
     this.name = "PUSH";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         if (this.taille == 1) {
           memory.setRim(
             binaryToHex(
@@ -4708,7 +4877,7 @@ class InstructionPOP {
     this.stepsNum = 1;
     this.name = "POP";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         if (this.taille == 1) {
           let reg;
           memory.popval();
@@ -5162,18 +5331,31 @@ class InstructionBR {
     this.stepsNum = 1;
     this.name = "BR";
     this.steps = [
-      (animations) => {
+      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
+        pos=this.addresse1;
         IP.setvalue(Dec2bin(this.addresse1));
-        // console.log(`this is ip ${IP.getvalue()}`)
-        /////we need to clear the queue from old instruction
         queue.clear(animations);
         queue.fetchInstruction(animations, 0, 1, [], 0);
-        // console.log(`this is the queue ${queue.log()}`);
         queue.fetchInstruction(animations, 0, 0, [], 0);
         queue.fetchInstruction(animations, 1, 1, [], 0);
         queue.fetchInstruction(animations, 0, 0, [], 0);
         queue.fetchInstruction(animations, 2, 1, [], 0);
         queue.fetchInstruction(animations, 0, 0, [], 0);
+
+        const line=getinst(this.addresse1);
+        let i=line;
+       let found=false;
+       console.log("abdou ",code2()[0]," ",this.addresse1)
+        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
+          {
+            if(code2()[i][0]=="CALL"){found=true;}
+            i++;
+          }
+          if(found)
+          {
+           pushadrs(getallLeng(getcode().slice(0,i))) 
+          }
+
       },
     ];
     this.buildanim = function () {
@@ -5194,9 +5376,10 @@ class InstructionBE {
     this.stepsNum = 1;
     this.name = "BE";
     this.steps = [
-      (animations) => {
+      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
         if (Alu1.getFlags(0) === "1") {
           IP.setvalue(Dec2bin(this.addresse1));
+          pos=this.addresse1;
           // console.log(`this is ip ${IP.getvalue()}`)
           /////we need to clear the queue from old instruction
           queue.clear(animations);
@@ -5208,6 +5391,21 @@ class InstructionBE {
           queue.fetchInstruction(animations, 2, 1, [], 0);
           queue.fetchInstruction(animations, 0, 0, [], 0);
         }
+        const line=getinst(pos);
+
+        let i=line;
+       let found=false;
+        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
+          {
+            if(code2()[i][0]=="CALL"){found=true;}
+            i++;
+          }
+          if(found)
+          {
+           pushadrs(getallLeng(getcode().slice(0,i))) 
+          }
+         
+
         /////we need to clear the queue from old instruction
       },
     ];
@@ -5229,8 +5427,9 @@ class InstructionBNE {
     this.stepsNum = 1;
     this.name = "BNE";
     this.steps = [
-      (animations) => {
+      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
         if (Alu1.getFlags(0) === "0") {
+          pos=this.addresse1;
           IP.setvalue(Dec2bin(this.addresse1));
           // console.log(`this is ip ${IP.getvalue()}`)
           /////we need to clear the queue from old instruction
@@ -5243,6 +5442,19 @@ class InstructionBNE {
           queue.fetchInstruction(animations, 2, 1, [], 0);
           queue.fetchInstruction(animations, 0, 0, [], 0);
         }
+        const line=getinst(this.addresse1);
+        let i=line;
+       let found=false;
+        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
+          {
+            if(code2()[i][0]=="CALL"){found=true;}
+            i++;
+          }
+          if(found)
+          {
+           pushadrs(getallLeng(getcode().slice(0,i))) 
+          }
+
         /////we need to clear the queue from old instruction
       },
     ];
@@ -5264,8 +5476,9 @@ class InstructionBS {
     this.stepsNum = 1;
     this.name = "BS";
     this.steps = [
-      (animations) => {
+      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
         if (Alu1.Acc.getvalue().toString().charAt(0) == "0") {
+          pos=this.addresse1;
           IP.setvalue(Dec2bin(this.addresse1));
           // console.log(`this is ip ${IP.getvalue()}`)
           /////we need to clear the queue from old instruction
@@ -5278,6 +5491,19 @@ class InstructionBS {
           queue.fetchInstruction(animations, 2, 1, [], 0);
           queue.fetchInstruction(animations, 0, 0, [], 0);
         }
+        const line=getinst(this.addresse1);
+        let i=line;
+       let found=false;
+        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
+          {
+            if(code2()[i][0]=="CALL"){found=true;}
+            i++;
+          }
+          if(found)
+          {
+           pushadrs(getallLeng(getcode().slice(0,i))) 
+          }
+
         /////we need to clear the queue from old instruction
       },
     ];
@@ -5299,8 +5525,9 @@ class InstructionBI {
     this.stepsNum = 1;
     this.name = "BI";
     this.steps = [
-      (animations) => {
+      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
         if (Alu1.Acc.getvalue().toString().charAt(0) === "1") {
+          pos=this.addresse1;
           IP.setvalue(Dec2bin(this.addresse1));
           // console.log(`this is ip ${IP.getvalue()}`)
           /////we need to clear the queue from old instruction
@@ -5313,6 +5540,19 @@ class InstructionBI {
           queue.fetchInstruction(animations, 2, 1, [], 0);
           queue.fetchInstruction(animations, 0, 0, [], 0);
         }
+        const line=getinst(this.addresse1);
+        let i=line;
+       let found=false;
+        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
+          {
+            if(code2()[i][0]=="CALL"){found=true;}
+            i++;
+          }
+          if(found)
+          {
+           pushadrs(getallLeng(getcode().slice(0,i))) 
+          }
+
         /////we need to clear the queue from old instruction
       },
     ];
@@ -5334,11 +5574,11 @@ class InstructionBIE {
     this.stepsNum = 1;
     this.name = "BIE";
     this.steps = [
-      (animations) => {
+      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
         if (
           (Alu1.Acc.getvalue().toString().charAt(0) === "1") |
           (Alu1.getFlags(0) === "1")
-        ) {
+        ) {          pos=this.addresse1;
           IP.setvalue(Dec2bin(this.addresse1));
           // console.log(`this is ip ${IP.getvalue()}`)
           /////we need to clear the queue from old instruction
@@ -5351,6 +5591,19 @@ class InstructionBIE {
           queue.fetchInstruction(animations, 2, 1, [], 0);
           queue.fetchInstruction(animations, 0, 0, [], 0);
         }
+        const line=getinst(this.addresse1);
+        let i=line;
+       let found=false;
+        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
+          {
+            if(code2()[i][0]=="CALL"){found=true;}
+            i++;
+          }
+          if(found)
+          {
+           pushadrs(getallLeng(getcode().slice(0,i))) 
+          }
+
         /////we need to clear the queue from old instruction
       },
     ];
@@ -5372,11 +5625,11 @@ class InstructionBSE {
     this.stepsNum = 1;
     this.name = "BSE";
     this.steps = [
-      (animations) => {
+      (animations) => { pos+=getInstLeng(getcode()[getinst(pos)])
         if (
           (Alu1.Acc.getvalue().toString().charAt(0) === "0") |
           (Alu1.getFlags(0) === "1")
-        ) {
+        ) {          pos=this.addresse1;
           IP.setvalue(Dec2bin(this.addresse1));
           // console.log(`this is ip ${IP.getvalue()}`)
           /////we need to clear the queue from old instruction
@@ -5389,6 +5642,18 @@ class InstructionBSE {
           queue.fetchInstruction(animations, 2, 1, [], 0);
           queue.fetchInstruction(animations, 0, 0, [], 0);
         }
+        const line=getinst(this.addresse1);
+         let i=line;
+       let found=false;
+        while(!found && i<getcode().length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code2()[i][0]))
+          {
+            if(code2()[i][0]=="CALL"){found=true;}
+            i++;
+          }
+          if(found)
+          {
+           pushadrs(getallLeng(getcode().slice(0,i))) 
+          }
         /////we need to clear the queue from old instruction
       },
     ];
@@ -5410,7 +5675,7 @@ class InstructionSHL {
     this.stepsNum = 1;
     this.name = "SHL";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -5497,7 +5762,7 @@ class InstructionSHR {
     this.stepsNum = 1;
     this.name = "SHR";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -5584,7 +5849,7 @@ class InstructionROR {
     this.stepsNum = 1;
     this.name = "ROR";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -5671,7 +5936,7 @@ class InstructionROL {
     this.stepsNum = 1;
     this.name = "ROL";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -5758,7 +6023,7 @@ class InstructionNOT {
     this.stepsNum = 1;
     this.name = "NOT";
     this.steps = [
-      () => {
+      () => { pos+=getInstLeng(getcode()[getinst(pos)])
         // let res=this.value1+this.value2;
         // Registers[4].setvalue(res.toString(2));
         if (this.taille === 0) {
@@ -5844,7 +6109,7 @@ class InstructionNEG{
         this.taille=0;
         this.stepsNum=1;
         this.name="NEG";
-        this.steps=[()=>{
+        this.steps=[()=>{ pos+=getInstLeng(getcode()[getinst(pos)])
             // let res=this.value1+this.value2;
             // Registers[4].setvalue(res.toString(2));
             if(this.taille===0){
@@ -5930,7 +6195,7 @@ class InstructionPUSHA{
         this.taille=0;
         this.stepsNum=1;
         this.name="PUSHA";
-        this.steps=[()=>{
+        this.steps=[()=>{ pos+=getInstLeng(getcode()[getinst(pos)])
             memory.setRim(binaryToHex(Registers[0].getvalue()).slice(0,2));
             memory.pushval();
 {memory.setRim(binaryToHex(Registers[0].getvalue()).slice(-2));}
@@ -6347,6 +6612,7 @@ class InstructionPOPA{
         this.name="POPA";
         let reg; 
         this.steps=[()=>{
+          pos+=getInstLeng(getcode()[getinst(pos)])
             memory.popval();
             reg=memory.getRim();
             memory.popval();
@@ -6770,7 +7036,11 @@ class InstructionREAD {
     this.name = "RD";
     this.steps = [
       () => {
+
+        pos+=getInstLeng(getcode()[getinst(pos)])
+
         Alu1.Flags[7] = "1";
+
         let chr = this.value1.charCodeAt(0);
 
         ioUnit.buffer.setvalue("0".repeat(8) + Dec2bin(chr));
@@ -6840,7 +7110,11 @@ class InstructionWRITE {
     this.name = "WRT";
     this.steps = [
       () => {
+
+        pos+=getInstLeng(getcode()[getinst(pos)])
+
         Alu1.Flags[7] = "1";
+
         ioUnit.buffer.setvalue(Registers[3].getvalue());
         let chr = ioUnit.buffer.getvalue();
         const result = String.fromCharCode(parseInt(chr, 2));
@@ -6909,7 +7183,11 @@ class InstructionREADS {
     this.name = "RDS";
     this.steps = [
       () => {
+
+        pos+=getInstLeng(getcode()[getinst(pos)])
+
         Alu1.Flags[7] = "1";
+
         let string = this.value1;
         let address = this.addresse1;
         let i = 0;
@@ -7144,6 +7422,7 @@ class InstructionWRITES {
     // Core steps remain unchanged, animation logic adapts dynamically
     this.steps = [
       () => {
+        pos+=getInstLeng(getcode()[getinst(pos)])
         Alu1.Flags[7] = "1";
         let adr = this.addresse1;
         let result = "";
@@ -7231,7 +7510,6 @@ class InstructionWRITES {
         let cachedData = memory.cache.get(address);
 
         if (cachedData) {
-          console.log("Cache hit at address:", address);
           animationSteps.push(
             {
               value: address,
@@ -7759,5 +8037,6 @@ export {
   InstructionSHR,
   InstructionPOPA,
   InstructionPUSHA,
+  InstructionRET,
+  InstructionCALL,
 };
-

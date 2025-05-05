@@ -117,6 +117,44 @@ export class SemanticAnalysis {
                                 } else {
                                     this.Semanticlist.push([{type:lexicalList[i][0].type, value: lexicalList[i][0].value, adrmode:0 }]);
                                 }
+                            }else if( lexicalList[i][0].value=="CALL" ){
+                                  
+                                if (firstparam) {
+                                    switch(firstparam.type){
+                                    case 'NUMBER':
+                                                Errorcalm.SemanticError.push(new Errorcalm("operand can't be a number",null,i))                           
+                                    break;
+                                    
+                                    case 'REGISTER' :
+                                            Errorcalm.SemanticError.push(new Errorcalm("Instruction cannot have register as operand",null,i))
+                                    break;
+                                    
+                                    case 'TEXT' :
+                                            //+ ajouter opp avec labels,  I guess DONE
+                                            // Do the needed operations after transformations and ADD TESTs it's not safe here !
+                                            // add addressing modes direct and indirect for labels
+                                            //check if it's present in label list
+                                          
+        
+                                                if (lexicalList[i].length==2) {
+                                                    
+                                                    if(Lexer.isValidString(lexicalList[i][1].value)){
+
+                                                        this.Semanticlist.push([{type:lexicalList[i][0].type, value:lexicalList[i][0].value, adrmode:0 },{type:FuncInterface.Label_To_Num4(firstparam.value,i,input2).type, value:FuncInterface.Label_To_Num4(firstparam.value,i,input2).value}]);
+
+                                                }else{ Errorcalm.SemanticError.push(new Errorcalm("LABEL name is not valid",null,i)) }
+
+                                                 
+                                            }else{
+                                                 Errorcalm.SemanticError.push(new Errorcalm("wrong number of parameter",null,i))}
+                                        
+                                    }
+                                } else {
+                                    Errorcalm.SemanticError.push(new Errorcalm("INST1 must have an operand",null,i))
+                                }
+                            
+                              
+                                
                             }else{
                             // use it as function
                             // funcnum(lexicalList[i],i)

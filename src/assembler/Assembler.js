@@ -242,6 +242,31 @@ while (hexString.length < size) {
             //return the address
             return {type: 'NUMBER', value: labelobj.begin}; 
     }},
+
+
+
+
+    
+    Label_To_Num4 : (labelname,linenumber)=>{
+        var labelobj = null ;
+      
+
+        Assembler.PROClist.forEach(element => { 
+            if(element.name === labelname){
+                labelobj = element
+            }
+        });
+
+        if (labelobj === null)
+        {
+            //error
+            Errorcalm.SemanticError.push(new Errorcalm("Procedure not found",null,linenumber));
+            return {type: 'ERROR', value: null};
+        }else{
+            //return the address
+            return {type: 'NUMBER', value: labelobj.adr}; 
+    }},
+
     
     Label_To_Num2 : (labelname,linenumber,labels)=>{
         var labelobj = null ;
@@ -480,7 +505,7 @@ export class  Assembler{
     static MAXNUM = 65535;
     static Labellist =[];
     static STRlist =[];
-    
+    static PROClist =[];
     // List of strings to exclude
     
 

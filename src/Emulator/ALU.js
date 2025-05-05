@@ -1,6 +1,4 @@
 import { generalPurposeRegister } from "./Register.js";
-import { getSpeed } from "./Instruction";
-
 
 function TwosComplement(num,size) { //a is a string 
     let a=num.toString(2);
