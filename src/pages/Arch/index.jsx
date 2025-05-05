@@ -1,105 +1,110 @@
 import "./style.css";
-import { useState, useRef,useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import Archi2 from "../../assets/newarchi.png";
 import gsap from "gsap";
 import queuearrow from "../../assets/images/icons/fleche.png";
-import { getSpeed,nsp  } from "../../Emulator/speed.js";
+import { getSpeed, nsp } from "../../Emulator/speed.js";
 import { components } from "react-select";
 import { Registers, memory } from "../Ide";
 
 //////////////////////////////////////
 
 const decimalToBinary = (dec) => {
-  return dec.toString(2).padStart(16, '0')
-}
+  return dec.toString(2).padStart(16, "0");
+};
 
 const decimalToHexa = (dec) => {
   return Number(dec).toString(16);
-}
+};
 
 const hexadecimalToBinary = (hex) => {
-  return hex.split('')
-            .map(char => parseInt(char, 16).toString(2).padStart(4, '0'))
-            .join('')
-            .padStart(16, "0");
-}
+  return hex
+    .split("")
+    .map((char) => parseInt(char, 16).toString(2).padStart(4, "0"))
+    .join("")
+    .padStart(16, "0");
+};
 
 const isBinary = (str) => {
   return /^[01]+$/.test(str);
-}
+};
 
 let tablec = [];
 let MCen = memory.getData();
 
 const initialization = () => {
-  const code = JSON.parse(localStorage.getItem('restoreCode'));
-  const codeArray = code.replace(/\n{2,}/g, "\n").trim().split('\n');
+  const code = JSON.parse(localStorage.getItem("restoreCode"));
+  const codeArray = code
+    .replace(/\n{2,}/g, "\n")
+    .trim()
+    .split("\n");
   let result = [];
-  codeArray.forEach(element => {
+  codeArray.forEach((element) => {
     result.push(element.trim().split(""));
   });
   let strings = "";
-  if (result && result[0][0]+result[0][1]+result[0][2]) {
-    if ((result[0][0]+result[0][1]+result[0][2]).toLowerCase() === "str") {
+  if (result && result[0][0] + result[0][1] + result[0][2]) {
+    if ((result[0][0] + result[0][1] + result[0][2]).toLowerCase() === "str") {
       for (let i = 0; i < result.length; i++) {
-        if ((result[i][0]+result[i][1]+result[i][2]).toLowerCase() === "str") {
+        if (
+          (result[i][0] + result[i][1] + result[i][2]).toLowerCase() === "str"
+        ) {
           let line = "";
-          result[i].forEach(element => {
+          result[i].forEach((element) => {
             line += element;
           });
-          strings += line.slice(line.indexOf("\"")+1, line.length-1);
+          strings += line.slice(line.indexOf('"') + 1, line.length - 1);
         }
       }
-        let j = 0;
-        MCen.forEach((element, index) => {
-          if (strings[index-1]) {
-            j = 2*index;
-            tablec.push(
-              <tr>
-                <td>{j-1}</td>
-                <td>{decimalToHexa(strings[index-1].charCodeAt(0))}</td>
-              </tr>
-            );
-            tablec.push(
-              <tr>
-                <td>{j}</td>
-                <td>00</td>
-              </tr>
-            );
-          } else {
-            j++;
-            tablec.push(
-              <tr>
-                <td>{j}</td>
-                <td>00000000</td>
-              </tr>
-            );
-          }
-        });
-    } else {
+      let j = 0;
       MCen.forEach((element, index) => {
-        tablec.push(
+        if (strings[index - 1]) {
+          j = 2 * index;
+          tablec.push(
             <tr>
-              <td>{index - 1}</td>
+              <td>{j - 1}</td>
+              <td>{decimalToHexa(strings[index - 1].charCodeAt(0))}</td>
+            </tr>
+          );
+          tablec.push(
+            <tr>
+              <td>{j}</td>
+              <td>00</td>
+            </tr>
+          );
+        } else {
+          j++;
+          tablec.push(
+            <tr>
+              <td>{j}</td>
               <td>00000000</td>
             </tr>
           );
+        }
       });
-    }
-  } else {
-    MCen.forEach((element, index) => {
-      tablec.push(
+    } else {
+      MCen.forEach((element, index) => {
+        tablec.push(
           <tr>
             <td>{index - 1}</td>
             <td>00000000</td>
           </tr>
         );
+      });
+    }
+  } else {
+    MCen.forEach((element, index) => {
+      tablec.push(
+        <tr>
+          <td>{index - 1}</td>
+          <td>00000000</td>
+        </tr>
+      );
     });
   }
-}
+};
 
 const Arch = (props) => {
-
   initialization();
 
   let [dataBusText, setDataBusText] = useState("");
@@ -129,7 +134,10 @@ const Arch = (props) => {
   let [AluVal, setAluVal] = useState("");
   let [MCVal, setMCVal] = useState("");
   let [CacheVal, setCacheVal] = useState("");
-  useEffect(()=>{console.log("yep it working");stop();},[getSpeed()])
+  useEffect(() => {
+    console.log("yep it working");
+    stop();
+  }, [getSpeed()]);
   ///////////////to add delay////////////////////////
   let thecontext = [...props.theCTX];
   console.log("the context : " + thecontext);
@@ -137,12 +145,12 @@ const Arch = (props) => {
   let done = 0;
 
   const updateElementAtIndex = (index, newElement) => {
-    setMemoryContent(prevElements => {
+    setMemoryContent((prevElements) => {
       const updated = [...prevElements];
       updated[index] = newElement;
       return updated;
-    })
-  }
+    });
+  };
 
   const animate = (i, animation, h, w, dl, chaine) => {
     setTimeout(function () {
@@ -179,52 +187,80 @@ const Arch = (props) => {
       if (animation.flag) {
         switch (animation.flag) {
           case "0-ZERO":
-            setZeroFlag(prev => { return 0 });
+            setZeroFlag((prev) => {
+              return 0;
+            });
             break;
           case "1-ZERO":
-            setZeroFlag(prev => { return 1 });
+            setZeroFlag((prev) => {
+              return 1;
+            });
             break;
           case "0-SIGN":
-            setSignFlag(prev => { return 0 });
+            setSignFlag((prev) => {
+              return 0;
+            });
             break;
           case "1-SIGN":
-            setSignFlag(prev => { return 1 });
+            setSignFlag((prev) => {
+              return 1;
+            });
             break;
           case "0-CARRY":
-            setCarryFlag(prev => { return 0 });
+            setCarryFlag((prev) => {
+              return 0;
+            });
             break;
           case "1-CARRY":
-            setCarryFlag(prev => { return 1 });
+            setCarryFlag((prev) => {
+              return 1;
+            });
             break;
           case "0-PARITY":
-            setParityFlag(prev => { return 0 });
+            setParityFlag((prev) => {
+              return 0;
+            });
             break;
           case "1-PARITY":
-            setParityFlag(prev => { return 1 });
+            setParityFlag((prev) => {
+              return 1;
+            });
             break;
           case "0-PAIRIMPAIR":
-            setPairImpairFlag(prev => { return 0 });
+            setPairImpairFlag((prev) => {
+              return 0;
+            });
             break;
           case "1-PAIRIMPAIR":
-            setPairImpairFlag(prev => { return 1 });
+            setPairImpairFlag((prev) => {
+              return 1;
+            });
             break;
           case "0-OVERFLOW":
-            setOverflowFlag(prev => { return 0 });
+            setOverflowFlag((prev) => {
+              return 0;
+            });
             break;
           case "1-OVERFLOW":
-            setOverflowFlag(prev => { return 1 });
+            setOverflowFlag((prev) => {
+              return 1;
+            });
             break;
           case "0-INTERRUPT":
-            setInterruptFlag(prev => { return 0 });
+            setInterruptFlag((prev) => {
+              return 0;
+            });
             break;
           case "1-INTERRUPT":
-            setInterruptFlag(prev => { return 1 });
+            setInterruptFlag((prev) => {
+              return 1;
+            });
             break;
           case "IO":
-            setIoFlag(prev => prev + 1);
+            setIoFlag((prev) => prev + 1);
             break;
           case "END-IO":
-            setIoFlag(prev => prev - 1);
+            setIoFlag((prev) => prev - 1);
             break;
           default:
             break;
@@ -233,76 +269,105 @@ const Arch = (props) => {
 
       if (animation.nom && animation.value !== "") {
         switch (animation.nom) {
-          case 'R1':
-            setReg1(prev => {return decimalToBinary(animation.value)})
-          break;
-          case 'R2':
-            setReg2(prev => {return decimalToBinary(animation.value)})
-          break;
-          case 'R3':
-            setReg3(prev => {return decimalToBinary(animation.value)})
-          break;
-          case 'R4':
-            setReg4(prev => {return decimalToBinary(animation.value)})
-          break;
-          case 'IDR':
-            setRegIdr(prev => {return decimalToBinary(animation.value)})
-          break;
-          case 'SR':
-            setRegSr(prev => {return decimalToBinary(animation.value)})
-          break;
-          case 'BR':
-            setRegBr(prev => {return decimalToBinary(animation.value)})
-          break;
-          case 'ACC':
-            setRegAcc(prev => {return decimalToBinary(animation.value)})
-          break;
+          case "R1":
+            setReg1((prev) => {
+              return decimalToBinary(animation.value);
+            });
+            break;
+          case "R2":
+            setReg2((prev) => {
+              return decimalToBinary(animation.value);
+            });
+            break;
+          case "R3":
+            setReg3((prev) => {
+              return decimalToBinary(animation.value);
+            });
+            break;
+          case "R4":
+            setReg4((prev) => {
+              return decimalToBinary(animation.value);
+            });
+            break;
+          case "IDR":
+            setRegIdr((prev) => {
+              return decimalToBinary(animation.value);
+            });
+            break;
+          case "SR":
+            setRegSr((prev) => {
+              return decimalToBinary(animation.value);
+            });
+            break;
+          case "BR":
+            setRegBr((prev) => {
+              return decimalToBinary(animation.value);
+            });
+            break;
+          case "ACC":
+            setRegAcc((prev) => {
+              return decimalToBinary(animation.value);
+            });
+            break;
           default:
             break;
         }
       }
 
-      if (animation.name && animation.name === 'IR') {
+      if (animation.name && animation.name === "IR") {
         if (isBinary(animation.value)) {
-          setRegIr(prev => {return animation.value.padStart(16, '0')})
+          setRegIr((prev) => {
+            return animation.value.padStart(16, "0");
+          });
         } else {
-          setRegIr(prev => {return hexadecimalToBinary(animation.value)})
+          setRegIr((prev) => {
+            return hexadecimalToBinary(animation.value);
+          });
         }
       }
 
-      if (animation.value === 'WRITE' && animation.name !== "cacheMem") {
+      if (animation.value === "WRITE" && animation.name !== "cacheMem") {
         if (animation.taille) {
           if (animation.taille == 0) {
-            const element = <tr>
-                              <td>{animation.address + 1}</td>
-                              <td>{animation.content[0] + animation.content[1]}</td>
-                            </tr>;
+            const element = (
+              <tr>
+                <td>{animation.address + 1}</td>
+                <td>{animation.content[0] + animation.content[1]}</td>
+              </tr>
+            );
             updateElementAtIndex(animation.address + 2, element);
           } else {
-            const element = <tr>
-                              <td>{animation.address + 1}</td>
-                              <td>{animation.content[0] + animation.content[1]}</td>
-                            </tr>;
-            const element1 =  <tr>
-                                <td>{animation.address}</td>
-                                <td>{animation.content[2] + animation.content[3]}</td>
-                              </tr>;
+            const element = (
+              <tr>
+                <td>{animation.address + 1}</td>
+                <td>{animation.content[0] + animation.content[1]}</td>
+              </tr>
+            );
+            const element1 = (
+              <tr>
+                <td>{animation.address}</td>
+                <td>{animation.content[2] + animation.content[3]}</td>
+              </tr>
+            );
             updateElementAtIndex(animation.address + 1, element1);
             updateElementAtIndex(animation.address + 2, element);
           }
         } else {
-          const element = <tr>
-                            <td>{animation.address + 1}</td>
-                            <td>{animation.content[0] + animation.content[1]}</td>
-                          </tr>;
-          const element1 =  <tr>
-                              <td>{animation.address}</td>
-                              <td>{animation.content[2] + animation.content[3]}</td>
-                            </tr>;
+          const element = (
+            <tr>
+              <td>{animation.address + 1}</td>
+              <td>{animation.content[0] + animation.content[1]}</td>
+            </tr>
+          );
+          const element1 = (
+            <tr>
+              <td>{animation.address}</td>
+              <td>{animation.content[2] + animation.content[3]}</td>
+            </tr>
+          );
           updateElementAtIndex(animation.address + 1, element1);
           updateElementAtIndex(animation.address + 2, element);
         }
-        
       }
 
       if (
@@ -313,51 +378,55 @@ const Arch = (props) => {
         gsap.fromTo(
           ".queuearrow",
           { top: "60%", left: "83%", opacity: "0" },
-          { top: "60%", left: "73%", opacity: "1", duration: 0.3*nsp() }
+          { top: "60%", left: "73%", opacity: "1", duration: 0.3 * nsp() }
         );
-        gsap.to(".queuearrow", { opacity: "0", duration: 0.1*nsp(), delay: 0.3*nsp() });
+        gsap.to(".queuearrow", {
+          opacity: "0",
+          duration: 0.1 * nsp(),
+          delay: 0.3 * nsp(),
+        });
         if (animqueuelen() == 6) {
-          gsap.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue5", { opacity: "1", duration: 0.4*nsp() });
-          gsap.to(".queue4", { opacity: "1", duration: 0.4*nsp() });
-          gsap.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
-          gsap.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
-          gsap.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue6", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue5", { opacity: "1", duration: 0.4 * nsp() });
+          gsap.to(".queue4", { opacity: "1", duration: 0.4 * nsp() });
+          gsap.to(".queue3", { opacity: "1", duration: 0.4 * nsp() });
+          gsap.to(".queue2", { opacity: "1", duration: 0.4 * nsp() });
+          gsap.to(".queue1", { opacity: "1", duration: 0.4 * nsp() });
         } else if (animqueuelen() == 5) {
-          gsap.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue4", { opacity: "1", duration: 0.4*nsp() });
-          gsap.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
-          gsap.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
-          gsap.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue6", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue5", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue4", { opacity: "1", duration: 0.4 * nsp() });
+          gsap.to(".queue3", { opacity: "1", duration: 0.4 * nsp() });
+          gsap.to(".queue2", { opacity: "1", duration: 0.4 * nsp() });
+          gsap.to(".queue1", { opacity: "1", duration: 0.4 * nsp() });
         } else if (animqueuelen() == 4) {
-          gsap.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue4", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
-          gsap.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
-          gsap.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue6", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue5", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue4", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue3", { opacity: "1", duration: 0.4 * nsp() });
+          gsap.to(".queue2", { opacity: "1", duration: 0.4 * nsp() });
+          gsap.to(".queue1", { opacity: "1", duration: 0.4 * nsp() });
         } else if (animqueuelen() == 3) {
-          gsap.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue4", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue3", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
-          gsap.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue6", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue5", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue4", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue3", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue2", { opacity: "1", duration: 0.4 * nsp() });
+          gsap.to(".queue1", { opacity: "1", duration: 0.4 * nsp() });
         } else if (animqueuelen() == 2) {
-          gsap.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue4", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue3", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue2", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
+          gsap.to(".queue6", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue5", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue4", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue3", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue2", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue1", { opacity: "1", duration: 0.4 * nsp() });
         } else if (animqueuelen() == 1) {
-          gsap.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue4", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue3", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue2", { opacity: "0", duration: 0.4*nsp() });
-          gsap.to(".queue1", { opacity: "0", duration: 0.4*nsp() });
+          gsap.to(".queue6", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue5", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue4", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue3", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue2", { opacity: "0", duration: 0.4 * nsp() });
+          gsap.to(".queue1", { opacity: "0", duration: 0.4 * nsp() });
         }
       }
       animation.anim(animation.value, h, w);
@@ -380,14 +449,14 @@ const Arch = (props) => {
                 y: h * 0.14,
                 opacity: "0",
               },
-              { opacity: "1", duration: 0.5*nsp() }
+              { opacity: "1", duration: 0.5 * nsp() }
             )
             .fromTo(
               ".ball2",
               { x: w * 0.782, y: h * 0.14 },
-              { y: h * 0.18, duration: 0.8*nsp() }
+              { y: h * 0.18, duration: 0.8 * nsp() }
             )
-            .to(".ball2", { opacity: "0", duration: 0.5*nsp() })
+            .to(".ball2", { opacity: "0", duration: 0.5 * nsp() })
             .add(() => {
               setAdrBusText(thecontext[tmpctx]);
               IPval = IPval + 2;
@@ -396,14 +465,14 @@ const Arch = (props) => {
             .fromTo(
               ".box-ADR",
               { x: w * 0.753, opacity: "0" },
-              { opacity: "1", duration: 0.5*nsp() }
+              { opacity: "1", duration: 0.5 * nsp() }
             )
             .fromTo(
               ".box-ADR",
               { x: w * 0.753 },
-              { x: w * 0.648, duration: 0.8*nsp() }
+              { x: w * 0.648, duration: 0.8 * nsp() }
             )
-            .to(".box-ADR", { opacity: "0", duration: 0.5*nsp() })
+            .to(".box-ADR", { opacity: "0", duration: 0.5 * nsp() })
             .add(() => {
               setball2Text(thecontext[tmpctx]);
               tmpctx++;
@@ -418,9 +487,9 @@ const Arch = (props) => {
                 y: h * 0.165,
                 opacity: "0",
               },
-              { opacity: "1", duration: 0.5*nsp() }
+              { opacity: "1", duration: 0.5 * nsp() }
             )
-            .to(".ball2", { opacity: "0", duration: 0.5*nsp() })
+            .to(".ball2", { opacity: "0", duration: 0.5 * nsp() })
             .add(() => {
               setball2Text(thecontext[tmpctx]);
             })
@@ -434,9 +503,9 @@ const Arch = (props) => {
                 y: h * 0.38,
                 opacity: "0",
               },
-              { opacity: "1", duration: 0.5*nsp() }
+              { opacity: "1", duration: 0.5 * nsp() }
             )
-            .to(".ball2", { opacity: "0", duration: 0.5*nsp() })
+            .to(".ball2", { opacity: "0", duration: 0.5 * nsp() })
             .fromTo(
               ".ball2",
               {
@@ -447,14 +516,14 @@ const Arch = (props) => {
                 y: h * 0.445,
                 opacity: "0",
               },
-              { opacity: "1", duration: 0.5*nsp() }
+              { opacity: "1", duration: 0.5 * nsp() }
             )
             .fromTo(
               ".ball2",
               { x: w * 0.539, y: h * 0.445 },
-              { y: h * 0.465, duration: 0.8*nsp() }
+              { y: h * 0.465, duration: 0.8 * nsp() }
             )
-            .to(".ball2", { opacity: "0", duration: 0.5*nsp() })
+            .to(".ball2", { opacity: "0", duration: 0.5 * nsp() })
             .add(() => {
               setDataBusText(thecontext[tmpctx]);
               tmpctx++;
@@ -462,14 +531,14 @@ const Arch = (props) => {
             .fromTo(
               ".box-data",
               { x: w * 0.497, opacity: "0" },
-              { opacity: "1", duration: 0.5*nsp() }
+              { opacity: "1", duration: 0.5 * nsp() }
             )
             .fromTo(
               ".box-data",
               { x: w * 0.497 },
-              { x: w * 0.874, duration: 0.8*nsp() }
+              { x: w * 0.874, duration: 0.8 * nsp() }
             )
-            .to(".box-data", { opacity: "0", duration: 0.5*nsp() })
+            .to(".box-data", { opacity: "0", duration: 0.5 * nsp() })
             .fromTo(
               ".ball2",
               {
@@ -480,66 +549,65 @@ const Arch = (props) => {
                 y: h * 0.56,
                 opacity: "0",
               },
-              { opacity: "1", duration: 0.5*nsp() }
+              { opacity: "1", duration: 0.5 * nsp() }
             )
             .fromTo(
               ".ball2",
               { x: w * 0.931, y: h * 0.56 },
-              { y: h * 0.6638, duration: 0.5*nsp() }
+              { y: h * 0.6638, duration: 0.5 * nsp() }
             )
-            .to(".ball2", { x: w * 0.921, duration: 0.5*nsp() })
-            .to(".ball2", { opacity: "0", duration: 0.3*nsp() });
+            .to(".ball2", { x: w * 0.921, duration: 0.5 * nsp() })
+            .to(".ball2", { opacity: "0", duration: 0.3 * nsp() });
           if (animqueuelen() === 5) {
-            tl.to(".queue6", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue5", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue4", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue6", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue5", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue4", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue3", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue2", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue1", { opacity: "1", duration: 0.4 * nsp() });
           } else if (animqueuelen() === 4) {
-            tl.to(".queue6", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue5", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue4", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue6", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue5", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue4", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue3", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue2", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue1", { opacity: "1", duration: 0.4 * nsp() });
           } else if (animqueuelen() === 3) {
-            tl.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
-            tl.to(".queue5", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue4", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue6", { opacity: "0", duration: 0.4 * nsp() });
+            tl.to(".queue5", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue4", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue3", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue2", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue1", { opacity: "1", duration: 0.4 * nsp() });
           } else if (animqueuelen() === 2) {
-            tl.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
-            tl.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
-            tl.to(".queue4", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue6", { opacity: "0", duration: 0.4 * nsp() });
+            tl.to(".queue5", { opacity: "0", duration: 0.4 * nsp() });
+            tl.to(".queue4", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue3", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue2", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue1", { opacity: "1", duration: 0.4 * nsp() });
           } else if (animqueuelen() === 1) {
-            tl.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
-            tl.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
-            tl.to(".queue4", { opacity: "0", duration: 0.4*nsp() });
-            tl.to(".queue3", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue6", { opacity: "0", duration: 0.4 * nsp() });
+            tl.to(".queue5", { opacity: "0", duration: 0.4 * nsp() });
+            tl.to(".queue4", { opacity: "0", duration: 0.4 * nsp() });
+            tl.to(".queue3", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue2", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue1", { opacity: "1", duration: 0.4 * nsp() });
           } else if (animqueuelen() === 0) {
-            tl.to(".queue6", { opacity: "0", duration: 0.4*nsp() });
-            tl.to(".queue5", { opacity: "0", duration: 0.4*nsp() });
-            tl.to(".queue4", { opacity: "0", duration: 0.4*nsp() });
-            tl.to(".queue3", { opacity: "0", duration: 0.4*nsp() });
-            tl.to(".queue2", { opacity: "1", duration: 0.4*nsp() });
-            tl.to(".queue1", { opacity: "1", duration: 0.4*nsp() });
+            tl.to(".queue6", { opacity: "0", duration: 0.4 * nsp() });
+            tl.to(".queue5", { opacity: "0", duration: 0.4 * nsp() });
+            tl.to(".queue4", { opacity: "0", duration: 0.4 * nsp() });
+            tl.to(".queue3", { opacity: "0", duration: 0.4 * nsp() });
+            tl.to(".queue2", { opacity: "1", duration: 0.4 * nsp() });
+            tl.to(".queue1", { opacity: "1", duration: 0.4 * nsp() });
           }
         }
       }
     }, dl);
-
-  }; 
-  const [len,setlen] =useState(0);
+  };
+  const [len, setlen] = useState(0);
   const animqueuelen = () => {
-     let len = 0;
+    let len = 0;
     if (q6.current.style.opacity == 1) {
       len = len + 1;
     }
@@ -558,7 +626,7 @@ const Arch = (props) => {
     if (q1.current.style.opacity == 1) {
       len = len + 1;
     }
-    setlen(len)
+    setlen(len);
     return len;
   };
   let myref = useRef();
@@ -569,7 +637,7 @@ const Arch = (props) => {
   let q5 = useRef();
   let q6 = useRef();
   const [inanim, incanim] = useState(0);
-  const [cont,setcont] = useState("start"); 
+  const [cont, setcont] = useState("start");
   const next = () => {
     setcont("continue");
     document.getElementById("next").disabled = true;
@@ -587,17 +655,17 @@ const Arch = (props) => {
   };
   const reload = () => {
     stop();
-     incanim(0);
-     setipval(0);
-     setcont("start");
-     setlen(0);
+    incanim(0);
+    setipval(0);
+    setcont("start");
+    setlen(0);
 
-     q1.current.style.opacity = 0;
-     q2.current.style.opacity = 0;
-     q3.current.style.opacity = 0;
-     q4.current.style.opacity = 0;
-     q5.current.style.opacity = 0;
-     q6.current.style.opacity = 0; 
+    q1.current.style.opacity = 0;
+    q2.current.style.opacity = 0;
+    q3.current.style.opacity = 0;
+    q4.current.style.opacity = 0;
+    q5.current.style.opacity = 0;
+    q6.current.style.opacity = 0;
   };
   const stopan = useRef(true);
   const curtime = useRef(null);
@@ -618,86 +686,91 @@ const Arch = (props) => {
 
       const cfg = props.anim[currentIndex];
       simulate(currentIndex);
-      const timeValue = typeof cfg.time === 'function' 
-      ? cfg.time() 
-      : cfg.time ?? 1000; 
-  
-  dl2.current = timeValue * (nsp() || 1); 
-      
+      const timeValue =
+        typeof cfg.time === "function" ? cfg.time() : cfg.time ?? 1000;
+
+      dl2.current = timeValue * (nsp() || 1);
 
       currentIndex++;
       incanim(currentIndex);
-      curtime.current = setTimeout(runAnimation, dl2.current*0.5);
+      curtime.current = setTimeout(runAnimation, dl2.current * 0.5);
     };
 
     runAnimation();
   };
 
   const stop = () => {
-   const compon=[".ball",".box-ADR",".box-data",".MC",".IP",".Cache",".ball2"]
+    const compon = [
+      ".ball",
+      ".box-ADR",
+      ".box-data",
+      ".MC",
+      ".IP",
+      ".Cache",
+      ".ball2",
+    ];
     stopan.current = true;
 
-    compon.forEach(selector => {
+    compon.forEach((selector) => {
       const elements = document.querySelectorAll(selector);
-      elements.forEach(element => {
+      elements.forEach((element) => {
         gsap.killTweensOf(element);
       });
     });
 
-      clearTimeout(curtime.current);
-    dl.current=0;
-    dl2.current=0;
+    clearTimeout(curtime.current);
+    dl.current = 0;
+    dl2.current = 0;
     allow.current = false;
     allowtmp.current = 0;
-    
+
     document.getElementById("next").disabled = false;
     document.getElementById("continue").disabled = false;
   };
-    const allow = useRef(false);
-      const allowtmp = useRef(0);
-      const dl = useRef(0);
-    const simulate = (j) => {
-console.log(props.anim)
+  const allow = useRef(false);
+  const allowtmp = useRef(0);
+  const dl = useRef(0);
+  const simulate = (j) => {
+    console.log(props.anim);
 
-      const cfg = props.anim[j];
-      if (!cfg) return null;
+    const cfg = props.anim[j];
+    if (!cfg) return null;
 
-      const h = myref.current.clientHeight ;
-      const w = myref.current.clientWidth ;
+    const h = myref.current.clientHeight;
+    const w = myref.current.clientWidth;
 
-      let k = 0;
-      let stop = false;
-      let chaine = false;
-  
-      
-      allowtmp.current++;
-      if (allowtmp.current >= 10) {
-        allow.current = true;
+    let k = 0;
+    let stop = false;
+    let chaine = false;
+
+    allowtmp.current++;
+    if (allowtmp.current >= 10) {
+      allow.current = true;
+    }
+
+    while (k < 10 && !stop && j + k < props.anim.length) {
+      const checkIndex = Math.max(j + k - 4, 0);
+      const animItem = props.anim[checkIndex];
+
+      if (animItem?.target !== ".box-data" && animItem?.target !== ".box-ADR") {
+        k++;
+      } else {
+        stop = true;
       }
+    }
 
-      while (k < 10 && !stop && (j + k) < props.anim.length) {
-        const checkIndex = Math.max(j + k - 4, 0);
-        const animItem = props.anim[checkIndex];
-        
-        if (animItem?.target !== ".box-data" && animItem?.target !== ".box-ADR") {
-          k++;
-        } else {
-          stop = true;
-        }
-      }
+    if (k === 10 && animqueuelen() <= 4 && allow.current) {
+      chaine = true;
+      allow.current = false;
+      allowtmp.current = 0;
+    }
 
-      if (k === 10 && animqueuelen() <= 4 && allow.current) {
-        chaine = true;
-        allow.current = false;
-        allowtmp.current = 0;
-      }
+    const timeValue =
+      typeof cfg.time === "function" ? cfg.time() : 1000 * nsp();
 
-      const timeValue = typeof cfg.time === 'function' ? cfg.time() : 1000 * nsp();
-
-      animate(0, cfg, h, w, dl.current, chaine);
-      dl.current += timeValue*0.8 + 1;
-
-    };
+    animate(0, cfg, h, w, dl.current, chaine);
+    dl.current += timeValue * 0.8 + 1;
+  };
   ///////////////////////////////
   // useEffect(() => {
   // let i=0;
@@ -923,8 +996,8 @@ console.log(props.anim)
             height: "4%",
             width: "8%",
             position: "absolute",
-            top: "26%",
-            left: "31%",
+            top: "25%",
+            left: "31.5%",
             opacity: "0",
             color: "#1BE988",
             fontSize: "25px",
@@ -1097,17 +1170,31 @@ console.log(props.anim)
             </table>
           </div>
         </div>
-        <button className="returnBtn" onClick={()=>{
-                window.location.reload(false);
-        }}>return</button>
-        <br /><br />
-            <div>
-                <button className="control" onClick={reload} id="reload">reload</button>
-                <button className="control" onClick={next} id="next" >next</button>
-                <button className="control" onClick={continu} id="continue">{cont}</button>
-                <button className="control" onClick={stop} id="stop" >stop</button>
-            </div>
-    </div>
+        <button
+          className="returnBtn"
+          onClick={() => {
+            window.location.reload(false);
+          }}
+        >
+          return
+        </button>
+        <br />
+        <br />
+        <div>
+          <button className="control" onClick={reload} id="reload">
+            reload
+          </button>
+          <button className="control" onClick={next} id="next">
+            next
+          </button>
+          <button className="control" onClick={continu} id="continue">
+            {cont}
+          </button>
+          <button className="control" onClick={stop} id="stop">
+            stop
+          </button>
+        </div>
+      </div>
     </>
   );
 };
