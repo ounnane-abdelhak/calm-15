@@ -1026,6 +1026,25 @@ const IOToUnderIP = {
   },
 };
 
+const RegToUnderIP = {
+  value: "",
+  target: ".box-data",
+  time: 3000 * nsp,
+  anim: (val, h, w) => {
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.44 },
+      { x: w * 0.708, duration: 1 * nsp, delay: 1 * nsp }
+    );
+    gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
+  },
+};
+
 const UnderIPToMar = {
   value: "",
   target: ".box-ADR",
@@ -8659,7 +8678,6 @@ class InstructionWRITES {
             anim: infitToIO.anim,
           }
         );
-
         address++;
         address++;
         i++;
@@ -8690,86 +8708,142 @@ class InstructionMOVS {
     this.name = "MOVS";
     this.steps = [
       () => {
-        let temp;
-        let res;
-        memory.setRam(Registers[3].getvalue());
-        memory.read(false);
-        temp = memory.getRim();
-        memory.setRam(Registers[4].getvalue());
+        memory.setRam(Registers[6].getvalue());
         memory.read(false);
         memory.setRim(memory.getRim());
-        memory.setRam(Registers[3].getvalue());
+        memory.setRam(Registers[5].getvalue());
         memory.write();
-        memory.setRim(temp);
-        memory.setRam(Registers[4].getvalue());
-        memory.write();
+        Registers[6].setvalue(
+          (parseInt(Registers[6].getvalue(), 2) + 2)
+            .toString(2)
+            .padStart(16, "0")
+        );
+        Registers[5].setvalue(
+          (parseInt(Registers[5].getvalue(), 2) + 2)
+            .toString(2)
+            .padStart(16, "0")
+        );
       },
     ];
     this.buildanim = function () {
-      if (this.isimmed == false) {
-        return [
-          {
-            nom: "ACC",
-            value: "addresse1",
-            target: infitToAcc.target,
-            time: infitToAcc.time,
-            anim: infitToAcc.anim,
-          },
-          {
-            value: "",
-            target: AccToBus.target,
-            time: AccToBus.time,
-            anim: AccToBus.anim,
-          },
-          {
-            value: "addresse1",
-            target: AccToADR.target,
-            time: AccToADR.time,
-            anim: AccToADR.anim,
-          },
-          {
-            value: "addresse1",
-            target: ADRToMAR.target,
-            time: ADRToMAR.time,
-            anim: ADRToMAR.anim,
-          },
-          {
-            value: "addresse1",
-            target: fitToMar.target,
-            time: fitToMar.time,
-            anim: fitToMar.anim,
-          },
-          {
-            name: "mainMem",
-            value: "WRITE",
-            taille: "taille",
-            address: "addresse1",
-            content: "value2",
-            target: MCanim.target,
-            time: MCanim.time,
-            anim: MCanim.anim,
-          },
-        ];
-      } else {
-        return [
-          {
-            value: "value2",
-            target: infitToMdr.target,
-            time: infitToMdr.time,
-            anim: infitToMdr.anim,
-          },
-          {
-            name: "mainMem",
-            value: "WRITE",
-            taille: "taille",
-            address: "addresse1",
-            content: "value2",
-            target: MCanim.target,
-            time: MCanim.time,
-            anim: MCanim.anim,
-          },
-        ]; ///animation of writing in MC/___________________________
-      }
+      return [
+        {
+          nom: "IDR",
+          value: this.value2,
+          target: fitToIdr.target,
+          time: fitToIdr.time,
+          anim: fitToIdr.anim,
+        },
+        {
+          nom: "IDR",
+          value: this.value2,
+          target: infitToIdr.target,
+          time: infitToIdr.time,
+          anim: infitToIdr.anim,
+        },
+        {
+          value: this.value2,
+          target: RegToUnderIP.target,
+          time: RegToUnderIP.time,
+          anim: RegToUnderIP.anim,
+        },
+        {
+          value: "",
+          target: UnderIpToAddBus.target,
+          time: UnderIpToAddBus.time,
+          anim: UnderIpToAddBus.anim,
+        },
+        {
+          value: this.value2,
+          target: UnderIPToMar.target,
+          time: UnderIPToMar.time,
+          anim: UnderIPToMar.anim,
+        },
+        {
+          value: this.value2,
+          target: fitToMar.target,
+          time: fitToMar.time,
+          anim: fitToMar.anim,
+        },
+        {
+          value: this.value2,
+          target: infitToMar.target,
+          time: infitToMar.time,
+          anim: infitToMar.anim,
+        },
+        {
+          value: "READ",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          value: "00" + String(this.register2) + "h",
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: "00" + String(this.register2) + "h",
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          nom: "BR",
+          value: this.value1,
+          target: fitToBr.target,
+          time: fitToBr.time,
+          anim: fitToBr.anim,
+        },
+        {
+          nom: "BR",
+          value: this.value1,
+          target: infitToBr.target,
+          time: infitToBr.time,
+          anim: infitToBr.anim,
+        },
+        {
+          value: this.value1,
+          target: RegToUnderIP.target,
+          time: RegToUnderIP.time,
+          anim: RegToUnderIP.anim,
+        },
+        {
+          value: "",
+          target: UnderIpToAddBus.target,
+          time: UnderIpToAddBus.time,
+          anim: UnderIpToAddBus.anim,
+        },
+        {
+          value: this.value1,
+          target: UnderIPToMar.target,
+          time: UnderIPToMar.time,
+          anim: UnderIPToMar.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToMar.target,
+          time: fitToMar.time,
+          anim: fitToMar.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToMar.target,
+          time: infitToMar.time,
+          anim: infitToMar.anim,
+        },
+        {
+          name: "mainMem",
+          value: "WRITE",
+          taille: "taille",
+          address: "addresse1",
+          content: String(this.register2),
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+      ];
     };
   }
 }
@@ -8789,77 +8863,108 @@ class InstructionLODS {
     this.steps = [
       () => {
         let res;
-        memory.setRam(Registers[4].getvalue());
+        memory.setRam(Registers[6].getvalue());
         memory.read(false);
         res = memory.getRim();
         Registers[3].setvalue(hex2bin(res));
+        Registers[6].setvalue(
+          (parseInt(Registers[6].getvalue(), 2) + 2)
+            .toString(2)
+            .padStart(16, "0")
+        );
       },
     ];
     this.buildanim = function () {
-      if (this.isimmed == false) {
-        return [
-          {
-            nom: "ACC",
-            value: "addresse1",
-            target: infitToAcc.target,
-            time: infitToAcc.time,
-            anim: infitToAcc.anim,
-          },
-          {
-            value: "",
-            target: AccToBus.target,
-            time: AccToBus.time,
-            anim: AccToBus.anim,
-          },
-          {
-            value: "addresse1",
-            target: AccToADR.target,
-            time: AccToADR.time,
-            anim: AccToADR.anim,
-          },
-          {
-            value: "addresse1",
-            target: ADRToMAR.target,
-            time: ADRToMAR.time,
-            anim: ADRToMAR.anim,
-          },
-          {
-            value: "addresse1",
-            target: fitToMar.target,
-            time: fitToMar.time,
-            anim: fitToMar.anim,
-          },
-          {
-            name: "mainMem",
-            value: "WRITE",
-            taille: "taille",
-            address: "addresse1",
-            content: "value2",
-            target: MCanim.target,
-            time: MCanim.time,
-            anim: MCanim.anim,
-          },
-        ];
-      } else {
-        return [
-          {
-            value: "value2",
-            target: infitToMdr.target,
-            time: infitToMdr.time,
-            anim: infitToMdr.anim,
-          },
-          {
-            name: "mainMem",
-            value: "WRITE",
-            taille: "taille",
-            address: "addresse1",
-            content: "value2",
-            target: MCanim.target,
-            time: MCanim.time,
-            anim: MCanim.anim,
-          },
-        ]; ///animation of writing in MC/___________________________
-      }
+      return [
+        {
+          nom: "IDR",
+          value: this.value2,
+          target: fitToIdr.target,
+          time: fitToIdr.time,
+          anim: fitToIdr.anim,
+        },
+        {
+          nom: "IDR",
+          value: this.value2,
+          target: infitToIdr.target,
+          time: infitToIdr.time,
+          anim: infitToIdr.anim,
+        },
+        {
+          value: this.value2,
+          target: RegToUnderIP.target,
+          time: RegToUnderIP.time,
+          anim: RegToUnderIP.anim,
+        },
+        {
+          value: "",
+          target: UnderIpToAddBus.target,
+          time: UnderIpToAddBus.time,
+          anim: UnderIpToAddBus.anim,
+        },
+        {
+          value: this.value2,
+          target: UnderIPToMar.target,
+          time: UnderIPToMar.time,
+          anim: UnderIPToMar.anim,
+        },
+        {
+          value: this.value2,
+          target: fitToMar.target,
+          time: fitToMar.time,
+          anim: fitToMar.anim,
+        },
+        {
+          value: this.value2,
+          target: infitToMar.target,
+          time: infitToMar.time,
+          anim: infitToMar.anim,
+        },
+        {
+          value: "READ",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          value: this.register1,
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: this.register1,
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: "",
+          target: MdrToBus.target,
+          time: MdrToBus.time,
+          anim: MdrToBus.anim,
+        },
+        {
+          value: this.register1,
+          target: MdrToReg.target,
+          time: MdrToReg.time,
+          anim: MdrToReg.anim,
+        },
+        {
+          nom: "R4",
+          value: this.register1,
+          target: fitToR4.target,
+          time: fitToR4.time,
+          anim: fitToR4.anim,
+        },
+        {
+          nom: "R4",
+          value: this.register1,
+          target: infitToR4.target,
+          time: infitToR4.time,
+          anim: infitToR4.anim,
+        },
+      ];
     };
   }
 }
@@ -8894,70 +8999,7 @@ class InstructionCMPS {
       },
     ];
     this.buildanim = function () {
-      if (this.isimmed == false) {
-        return [
-          {
-            nom: "ACC",
-            value: "addresse1",
-            target: infitToAcc.target,
-            time: infitToAcc.time,
-            anim: infitToAcc.anim,
-          },
-          {
-            value: "",
-            target: AccToBus.target,
-            time: AccToBus.time,
-            anim: AccToBus.anim,
-          },
-          {
-            value: "addresse1",
-            target: AccToADR.target,
-            time: AccToADR.time,
-            anim: AccToADR.anim,
-          },
-          {
-            value: "addresse1",
-            target: ADRToMAR.target,
-            time: ADRToMAR.time,
-            anim: ADRToMAR.anim,
-          },
-          {
-            value: "addresse1",
-            target: fitToMar.target,
-            time: fitToMar.time,
-            anim: fitToMar.anim,
-          },
-          {
-            name: "mainMem",
-            value: "WRITE",
-            taille: "taille",
-            address: "addresse1",
-            content: "value2",
-            target: MCanim.target,
-            time: MCanim.time,
-            anim: MCanim.anim,
-          },
-        ];
-      } else {
-        return [
-          {
-            value: "value2",
-            target: infitToMdr.target,
-            time: infitToMdr.time,
-            anim: infitToMdr.anim,
-          },
-          {
-            name: "mainMem",
-            value: "WRITE",
-            taille: "taille",
-            address: "addresse1",
-            content: "value2",
-            target: MCanim.target,
-            time: MCanim.time,
-            anim: MCanim.anim,
-          },
-        ]; ///animation of writing in MC/___________________________
-      }
+      return [];
     };
   }
 }

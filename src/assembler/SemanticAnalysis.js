@@ -206,11 +206,7 @@ export class SemanticAnalysis {
                                                 } else {
                                                     Errorcalm.SemanticError.push(new Errorcalm("Label or Str doesn't exist",null,i))
                                                 }
-                                            } else if (lexicalList[i].length !== 1) {
-                                    Errorcalm.LexicalError.push(new Errorcalm(`${lexicalList[i][0].value} Instruction can't have operands`,null,i));
-                                } else {
-                                    this.Semanticlist.push([{type:lexicalList[i][0].type, value: lexicalList[i][0].value, adrmode:0 }]);
-                                }{
+                                            } else {
                                                 Errorcalm.SemanticError.push(new Errorcalm("Wrong Number of operands",null,i))
                                             }
                                         } else {
