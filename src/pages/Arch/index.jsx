@@ -54,24 +54,24 @@ const initialization = () => {
             j = 2*index;
             tablec.push(
               <tr>
-                <td>{j-1}</td>
+                <td>{j-2}</td>
                 <td>{decimalToHexa(strings[index-1].charCodeAt(0))}</td>
               </tr>
             );
             tablec.push(
               <tr>
-                <td>{j}</td>
+                <td>{j-1}</td>
                 <td>00</td>
               </tr>
             );
           } else {
-            j++;
             tablec.push(
               <tr>
                 <td>{j}</td>
                 <td>00000000</td>
               </tr>
             );
+            j++;
           }
         });
     } else {
@@ -120,7 +120,7 @@ const Arch = (props) => {
   let [overflowFlag, setOverflowFlag] = useState(0);
   let [interruptFlag, setInterruptFlag] = useState(0);
   let [ioFlag, setIoFlag] = useState(0);
-  let [memoryContent, setMemoryContent] = useState(tablec);
+  let [memoryContent, setMemoryContent] = useState([...new Set(tablec)]);
   let [ballText, setballText] = useState("");
   let [ball2Text, setball2Text] = useState(0);
   let [IPval, setipval] = useState(0);
@@ -269,13 +269,13 @@ const Arch = (props) => {
       }
 
       if (animation.value === 'WRITE' && animation.name !== "cacheMem") {
-        if (animation.taille) {
+        if ("taille" in animation) {
           if (animation.taille == 0) {
             const element = <tr>
                               <td>{animation.address + 1}</td>
                               <td>{animation.content[0] + animation.content[1]}</td>
                             </tr>;
-            updateElementAtIndex(animation.address + 2, element);
+            updateElementAtIndex(animation.address + 1, element);
           } else {
             const element = <tr>
                               <td>{animation.address + 1}</td>
@@ -1060,16 +1060,16 @@ const Arch = (props) => {
           <h2 className="contentTableText">MC</h2>
           <div className="contentTableDivMC">
             <div className="MChead">
-              <p>adresse</p>
+              <p>address</p>
               <p>content</p>
             </div>
             <table className="contentTableMC">
               <tbody>
                 <tr>
-                  <td>adresse</td>
+                  <td>address</td>
                   <td>content</td>
                 </tr>
-                {memoryContent.slice(0, 51)}
+                {memoryContent}
               </tbody>
             </table>
           </div>

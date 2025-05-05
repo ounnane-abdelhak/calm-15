@@ -512,6 +512,16 @@ function hex2bin2(hex){
 function Dec2bin(dec){
     return ("00000000" + (parseInt(dec, 10)).toString(2)).substr(-8);
 }
+const binToHex = (bin) => {
+    const a = bin.substring(0, 4);
+    const b = bin.substring(4, 8);
+    const c = bin.substring(8, 12);
+    const d = bin.substring(12, 16);
+    return  ( parseInt(a, 2).toString(16) 
+            + parseInt(b, 2).toString(16)
+            + parseInt(c, 2).toString(16)
+            + parseInt(d, 2).toString(16) + "h")
+  }
 
 function animateDecoderSequencer(animations,InsName){
     animations.push({
@@ -2573,25 +2583,37 @@ class Sequenceur{
         for (let i = 0; i < instrObject.stepsNum ; i++) {
             res = instrObject.steps[i](animations);
         }
+        if(instrObject.name === "LODS" || instrObject.name === "MOVS") {
+            instrObject.value1 = parseInt(Registers[5].getvalue(), 2) - 2;
+            instrObject.value2 = parseInt(Registers[6].getvalue(), 2) - 2;
+            instrObject.register1 = binToHex(Registers[3].getvalue());
+            instrObject.register2 = memory.getRim();
+            instrObject.taille = 0;
+            instrObject.addresse1 = instrObject.value1;
+        }
         let animationSteps= instrObject.buildanim();
         if(is_animated===1 && animationSteps.length>0){
             for (let i = 0; i < animationSteps.length; i++) {
                 let tempobj={...animationSteps[i]};
+                console.log("tempobj", tempobj)
                 if(tempobj.value==="value2"){
                     tempobj.value=instrObject.value2;
                 }else if(tempobj.value==="res"){
                     tempobj.value=res;
                 }else if(tempobj.value==="addresse1"){
                     tempobj.value=instrObject.addresse1;
-                }else if(tempobj.address) {
+                }
+                if(tempobj.address) {
                     if (tempobj.address==="addresse1") {
                         tempobj.address=instrObject.addresse1;
                     }
-                }else if(tempobj.content) {
+                }
+                if(tempobj.content) {
                     if (tempobj.content==="value2") {
                         tempobj.content=instrObject.value2;
                     }
-                }else if(tempobj.taille) {
+                }
+                if(tempobj.taille) {
                     if (tempobj.taille==="taille") {
                         tempobj.taille=instrObject.taille;
                     }
