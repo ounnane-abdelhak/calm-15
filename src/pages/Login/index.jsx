@@ -1,10 +1,10 @@
-import React from 'react'
-import {AuthForm} from '../../components/'
+import React from 'react';
+import { AuthForm } from '../../components/';  // Make sure the import path is correct
 
-const Login = ({updateCurrentUser}) => {
+const Login = ({ updateCurrentUser }) => {
     return (
-        <AuthForm currentRoute='/login' redirectRoute='/register' updateCurrentUser={updateCurrentUser}/>
-    )
-}
+        <AuthForm currentRoute='/login' updateCurrentUser={updateCurrentUser} />
+    );
+};
 
-export default Login
+export default Login;
