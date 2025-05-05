@@ -12,8 +12,7 @@ const HelpOverlay = ({children, close}) => {
             <motion.div className="helpOverlay" onClick={(e) => e.stopPropagation()}
                         variants={variants} initial={"closed"} exit={"closed"}
                         animate={"open"} key={"overlay"}>
-                {children}<
-                /motion.div>
+                {children}</motion.div>
         </>
     );
 

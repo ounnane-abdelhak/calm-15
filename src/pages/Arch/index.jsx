@@ -601,7 +601,7 @@ const Arch = (props) => {
   };
   const stopan = useRef(true);
   const curtime = useRef(null);
-  const dl2 = useRef(0);
+  const dl2 = useRef(1000);
   const continu = () => {
     setcont("continue");
     document.getElementById("next").disabled = true;
@@ -624,32 +624,18 @@ const Arch = (props) => {
   
   dl2.current = timeValue * (nsp() || 1); 
       
-
-      currentIndex++;
       incanim(currentIndex);
-      curtime.current = setTimeout(runAnimation, dl2.current*0.5);
+      currentIndex++;
+      curtime.current = setTimeout(runAnimation, dl2.current*0.8);
     };
 
     runAnimation();
   };
 
   const stop = () => {
-   const compon=[".ball",".box-ADR",".box-data",".MC",".IP",".Cache",".ball2"]
-    stopan.current = true;
-
-    compon.forEach(selector => {
-      const elements = document.querySelectorAll(selector);
-      elements.forEach(element => {
-        gsap.killTweensOf(element);
-      });
-    });
-
-      clearTimeout(curtime.current);
-    dl.current=0;
+    stopan.current = true;  
     dl2.current=0;
-    allow.current = false;
-    allowtmp.current = 0;
-    
+    clearTimeout(curtime.current);
     document.getElementById("next").disabled = false;
     document.getElementById("continue").disabled = false;
   };
@@ -695,7 +681,7 @@ console.log(props.anim)
       const timeValue = typeof cfg.time === 'function' ? cfg.time() : 1000 * nsp();
 
       animate(0, cfg, h, w, dl.current, chaine);
-      dl.current += timeValue*0.8 + 1;
+      dl.current =dl.current+timeValue*0.8 + 1;
 
     };
   ///////////////////////////////

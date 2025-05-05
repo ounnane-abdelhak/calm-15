@@ -968,7 +968,6 @@ export class  Assembler{
         }   
         static assemblecode(input1,input2,input3){
      
-            for(let i=0;i<input3.length;i++){ if(input3[i]){Errorcalm.SemanticError.push(new Errorcalm(input3[i].error,null,input3[i].line));}}
             let output = new Assembler(input1,input2) ;
             var assembledcode = [];
             var toassmb = (output && output.toAssemble && output.toAssemble.Semanticlist) ? output.toAssemble.Semanticlist : "Semanticlist is undefined";

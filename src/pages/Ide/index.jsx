@@ -434,19 +434,25 @@ function getLineNumber(text, charIndex) {
   
     const exist = [];
     for (let i = 0; i < macros.length ; i++) {
-      for (let j = i; j < macros.length; j++) {
-        if (macros[i].name === macros[j].name && i !== j) {
-          if (exist.every(item => item.line !== j)) {
+      for (let j = i+1; j < macros.length; j++) {
+        if (macros[i].name == macros[j].name ) {
+         
             exist.push({ error: "MACRO name already used", line: j });
-          }
+          
         }
       }
     }
-  
-    if (nb === 2) {
-      return exist;
-    }
-   
+let i=0;
+if(exist && i==0){i++;
+  let ss=exist.pop()
+  console.log("error",ss)
+  while(ss?.error){
+      Errorcalm.SemanticError.push(new Errorcalm(ss.error, null, ss.line));
+    ss=exist.pop();
+  }
+}
+console.log("error2",Errorcalm.SemanticError)
+
     let codeWithoutMacros = lines.replace(macroRegex, '');
     codeWithoutMacros = codeWithoutMacros.split('\n').filter(line => line.trim() !== '');
 
@@ -583,11 +589,17 @@ function getLineNumber(text, charIndex) {
 let codearray2=[]
 
 codeArray.forEach((line)=>{
-  const reg=/^\s*STR\s+/
-  if(!reg.test(line)){codearray2.push(line)}
-}) 
+ codearray2.push(line.toUpperCase())
+})
+
 codeArray.length=0;
- codearray2.forEach((line)=>{codeArray.push(line)})
+codearray2.forEach((line)=>{
+  const reg=/^\s*STR\s+/
+  if(!reg.test(line)){codeArray.push(line)}
+})
+console.log("ffffggggg "+codeArray);
+
+
   let num=0;
 
 let cd=codeArray.join('\n')
@@ -613,6 +625,25 @@ for (let i = 0; i < procs.procedures.length; i++) {
     ss1+=getInstLeng(procs.procedures[i].body[j])  ;
   }
 
+}
+
+const existproc = [];
+for (let i = 0; i < Assembler.PROClist.length ; i++) {
+  for (let j = i; j < Assembler.PROClist.length; j++) {
+    if (Assembler.PROClist[i].name === Assembler.PROClist[j].name && i !== j) {
+     
+        existproc.push({ error: "procedure name already used", line: j });
+      
+    }
+  }
+}
+
+if(existproc){
+let ss=existproc.pop()
+while(existproc.length>0){
+  Errorcalm.SemanticError.push(new Errorcalm(ss.error, null, ss.line));
+ss=existproc.pop();
+}
 }
 
 let line;
@@ -731,7 +762,6 @@ if (nb === 0) {
     for (let index = 0; index < codeArray.length; index++) {
 code[index]=hexaArray[index]+"//"+codeArray[index]   
     }    
-  
     code = code.join('\n');
     return code;
   };
