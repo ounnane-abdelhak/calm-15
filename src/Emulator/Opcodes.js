@@ -72,7 +72,7 @@ function hash(key){
         return 33;
     }else if(key=="0011101"){//WRTS
         return 34;
-    }else if(key=="0011010"){//RET
+    }else if(key=="0011110"){//RET
         return 35;
     }else if(key=="0011001"){ //CALL
         return 36
@@ -264,7 +264,7 @@ let hashmap=[
     instrObject:WRITESinst
 },
 {
-    key:"35",
+    key:"3d",
     instrObject:RETinst   
 },
 {

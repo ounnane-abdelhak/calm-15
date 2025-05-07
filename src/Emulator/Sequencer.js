@@ -1052,7 +1052,7 @@ class Sequenceur{
                 index=hash(key);
                 instrObject=hashmap[index].instrObject;
                 animateDecoderSequencer(animations,instrObject.name);
-                if(!(key == '0011001'  | key=='0011010'| key =='0010000' | key =='0010001')){
+                if(!(key == '0011001'  | key=='0011010'|key=='0011110'| key =='0010000' | key =='0010001')){
                     if (key == '0011100') { //RDS Instruction
                         let str = prompt('String Input:');
                         if (!str) {
@@ -1077,7 +1077,7 @@ class Sequenceur{
                         }
                         instrObject.value1 = str;
                     }
-                }else if(key =='0011010'){
+                }else if(key =='0011110'){
                 //ret
                 }else if(key=='0011001'){
                     this.getinstrbyte(animations,false,Contextarray);

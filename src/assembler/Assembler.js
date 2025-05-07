@@ -782,7 +782,7 @@ export class  Assembler{
                 case 'INST0':
                     switch(element.value){
                         case 'RET':
-                            return '35';
+                            return '3D';
                         case 'PUSHA':
                             return '21';
                         case 'POPA':
