@@ -328,7 +328,7 @@ switch (speed) {
       }
     }
 
-    let codeLines = lines
+    let codeLines = lines.split(":").join(":\n")
       .replace(procRegex, '') 
       .split('\n')
       .filter(l => l.trim()); 
@@ -597,12 +597,10 @@ codearray2.forEach((line)=>{
   const reg=/^\s*STR\s+/
   if(!reg.test(line)){codeArray.push(line)}
 })
-console.log("ffffggggg "+codeArray);
-
 
   let num=0;
 
-let cd=codeArray.join('\n')
+let cd=codeArray.join('\n').split(':').join(':\n')
 let procs=detproc(cd);
 let ss=0,ss1=0;
 let tab=[];
