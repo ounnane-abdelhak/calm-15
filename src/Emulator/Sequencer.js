@@ -607,7 +607,7 @@ class Sequenceur{
                     anim:QueueToIr.anim,
                 });
                 animations.push({
-                    value:Inshex?.toString()+Inshex2?.toString(),
+                    value:Inshex.toString()+Inshex2.toString(),
                     nom:"fitToIr",
                     name: "IR",
                     target:fitToIr.target,
@@ -2602,7 +2602,6 @@ class Sequenceur{
         if(is_animated===1 && animationSteps.length>0){
             for (let i = 0; i < animationSteps.length; i++) {
                 let tempobj={...animationSteps[i]};
-                console.log("tempobj", tempobj)
                 if(tempobj.value==="value2"){
                     tempobj.value=instrObject.value2;
                 }else if(tempobj.value==="res"){
