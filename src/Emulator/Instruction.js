@@ -95,7 +95,7 @@ function getInstLeng(instruction) {
     "ROL",
   ]);
   if (reducedInst.has(inst)) {
-    if (inst === "RD" || inst === "WRT") return 1;
+    if (inst === "RD" || inst === "WRT"|| inst === 'LODS' || inst === 'MOVS') return 1;
     if (tokens.length < 2) return 1;
     const operand = tokens[1];
     return isImmediate(operand) ||

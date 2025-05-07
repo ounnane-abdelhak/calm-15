@@ -380,7 +380,7 @@ function getLineNumber(text, charIndex) {
     if (noOpInst.has(inst)) return 1;
     const reducedInst = new Set(['NOT', 'NEG', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL']);
     if (reducedInst.has(inst)) {
-      if (inst === 'RD' || inst === 'WRT') return 1;
+      if (inst === 'RD' || inst === 'WRT' || inst === 'LODS' || inst === 'MOVS') return 1;
       if (tokens.length < 2) return 1;
       const operand = tokens[1];
       return (isImmediate(operand) || (operand.startsWith('[') && operand.endsWith(']'))) ? 2 : 1;
@@ -627,24 +627,7 @@ for (let i = 0; i < procs.procedures.length; i++) {
 
 }
 
-const existproc = [];
-for (let i = 0; i < Assembler.PROClist.length ; i++) {
-  for (let j = i; j < Assembler.PROClist.length; j++) {
-    if (Assembler.PROClist[i].name === Assembler.PROClist[j].name && i !== j) {
-     
-        existproc.push({ error: "procedure name already used", line: j });
-      
-    }
-  }
-}
 
-if(existproc){
-let ss=existproc.pop()
-while(existproc.length>0){
-  Errorcalm.SemanticError.push(new Errorcalm(ss.error, null, ss.line));
-ss=existproc.pop();
-}
-}
 
 let line;
 let code3=[];

@@ -782,7 +782,7 @@ export class  Assembler{
                 case 'INST0':
                     switch(element.value){
                         case 'RET':
-                            return '35';
+                            return '3D';
                         case 'PUSHA':
                             return '21';
                         case 'POPA':
@@ -951,12 +951,13 @@ export class  Assembler{
                             case 'LODS':
                             oppcode = '35'
                             break;
+                          
                         default:
                             break;
                     }
                     let instcode;
-                    if ( oppcode === '35'  ) {
-                        instcode=oppcode;  
+                    if ( oppcode === '35' ) {
+                        instcode=oppcode;
                     }else{
                         var adr = FuncInterface.decimalToHex(input[1].value,4);
                         instcode=oppcode+adr;

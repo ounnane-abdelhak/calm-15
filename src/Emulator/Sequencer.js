@@ -561,7 +561,12 @@ class Sequenceur{
         if(is_animated){
             let key=hex2bin(Inshex).substring(0,4);
             console.log("key ",key);
-            if(key>="0010" ){//instructions with 1 general byte
+            if (key === "1110") {
+                console.log("hicham hna movs");  
+            }
+            if(key>="0010"  ){//instructions with 1 general byte
+                console.log("hicham rak fi if");
+                console.log("key ",key);
                 animations.push({
                     value:"",
                     nom:"QueueToIr",
@@ -592,6 +597,7 @@ class Sequenceur{
                 });
             }else{//instruction with 2 general bytes
                 let Inshex2=queue.getinstwithoutshift();
+                console.log("hicham rana fl else");
                 animations.push({
                     value:"",
                     nom:"QueueToIr",
@@ -685,10 +691,11 @@ class Sequenceur{
 
  
         let instruction=this.RI.getvalue();
+        console.log("Instruction",instruction);
         let key=instruction.substring(0,4);
         let index=0;
         let instrObject;
-        if(key=="1111"){
+        if(key=="1111" ){
             animations.push({
                 value:"STOP",
                 target:fitToDecode.target,
@@ -1051,6 +1058,8 @@ class Sequenceur{
                 let taille=instruction.charAt(7);
                 index=hash(key);
                 instrObject=hashmap[index].instrObject;
+                console.log("hicham hhh" )
+                console.log("INSTname",instrObject )
                 animateDecoderSequencer(animations,instrObject.name);
                 if(!(key == '0011001'  | key=='0011010'| key =='0010000' | key =='0010001')){
                     if (key == '0011100') { //RDS Instruction
@@ -1077,7 +1086,7 @@ class Sequenceur{
                         }
                         instrObject.value1 = str;
                     }
-                }else if(key =='0011010'){
+                }else if(key =='0011110'){
                 //ret
                 }else if(key=='0011001'){
                     this.getinstrbyte(animations,false,Contextarray);
@@ -2602,7 +2611,7 @@ class Sequenceur{
         if(is_animated===1 && animationSteps.length>0){
             for (let i = 0; i < animationSteps.length; i++) {
                 let tempobj={...animationSteps[i]};
-                console.log("tempobj", tempobj)
+                //console.log("tempobj", tempobj)
                 if(tempobj.value==="value2"){
                     tempobj.value=instrObject.value2;
                 }else if(tempobj.value==="res"){
