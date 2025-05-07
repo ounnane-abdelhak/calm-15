@@ -53,7 +53,7 @@ function getInstLeng(instruction) {
     if (token.startsWith("[") && token.endsWith("]")) return false;
     return !registers.has(token.toUpperCase());
   }
-  const branchInst = new Set(["BNE", "BE", "BS", "BI", "BIE", "BSE", "BRI"]);
+  const branchInst = new Set(['LODS',"BNE", "BE", "BS", "BI", "BIE", "BSE", "BRI"]);
   if (branchInst.has(inst)) return 3;
   if (inst === "MOV") {
     if (tokens.length < 3) return 0;
@@ -74,6 +74,7 @@ function getInstLeng(instruction) {
     "NOR",
     "NAND",
     "CMP",
+
   ]);
   if (twoOpInst.has(inst)) {
     if (tokens.length < 3) return 0;
@@ -93,6 +94,7 @@ function getInstLeng(instruction) {
     "POP",
     "ROR",
     "ROL",
+    "MOVS"
   ]);
   if (reducedInst.has(inst)) {
     if (inst === "RD" || inst === "WRT") return 1;
@@ -6270,7 +6272,6 @@ class InstructionBR {
         const line = getinst(this.addresse1);
         let i = line;
         let found = false;
-        console.log("abdou ", code2()[0], " ", this.addresse1);
         while (
           !found &&
           i < getcode().length &&

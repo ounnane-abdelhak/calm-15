@@ -360,7 +360,7 @@ function getLineNumber(text, charIndex) {
       if (token.startsWith('[') && token.endsWith(']')) return false;
       return !registers.has(token.toUpperCase());
     }
-    const branchInst = new Set(['BNE', 'BE', 'BS', 'BI', 'BIE', 'BSE', 'BRI']);
+    const branchInst = new Set(['LODS','BNE', 'BE', 'BS', 'BI', 'BIE', 'BSE', 'BRI']);
     if (branchInst.has(inst)) return 3;
     if (inst === 'MOV') {
       if (tokens.length < 3) return 0;
@@ -378,7 +378,7 @@ function getLineNumber(text, charIndex) {
     if (inst === 'CALL') return 3;
     const noOpInst = new Set(['RET', 'PUSHA', 'POPA']);
     if (noOpInst.has(inst)) return 1;
-    const reducedInst = new Set(['NOT', 'NEG', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL']);
+    const reducedInst = new Set(['MOVS','NOT', 'NEG', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL']);
     if (reducedInst.has(inst)) {
       if (inst === 'RD' || inst === 'WRT') return 1;
       if (tokens.length < 2) return 1;
