@@ -53,7 +53,7 @@ function getInstLeng(instruction) {
     if (token.startsWith("[") && token.endsWith("]")) return false;
     return !registers.has(token.toUpperCase());
   }
-  const branchInst = new Set(['LODS',"BNE", "BE", "BS", "BI", "BIE", "BSE", "BRI"]);
+  const branchInst = new Set(["BNE", "BE", "BS", "BI", "BIE", "BSE", "BRI"]);
   if (branchInst.has(inst)) return 3;
   if (inst === "MOV") {
     if (tokens.length < 3) return 0;
@@ -94,7 +94,9 @@ function getInstLeng(instruction) {
     "POP",
     "ROR",
     "ROL",
-    "MOVS"
+    "MOVS",
+    'LODS',
+    "CMPS"
   ]);
   if (reducedInst.has(inst)) {
     if (inst === "RD" || inst === "WRT"|| inst === 'LODS' || inst === 'MOVS') return 1;
@@ -8983,20 +8985,45 @@ class InstructionCMPS {
     this.name = "CMPS";
     this.steps = [
       () => {
-        let temp;
+        let temp1;
+        let temp2;
         let res;
-        memory.setRam(Registers[3].getvalue());
+        //idr 6
+        //br 5
+        memory.setRam(Registers[6].getvalue());
         memory.read(false);
-        temp = memory.getRim();
-        memory.setRam(Registers[4].getvalue());
+        temp1 = memory.getRim();
+        memory.setRam(Registers[5].getvalue());
         memory.read(false);
-        res = memory.getRim();
-        console.log("here is CMPS");
-        Alu1.Flags[0] = "1";
+        temp2 = memory.getRim();
+        
+        res =temp1 - temp2 ;
+
+        if(res == 0){
+          Alu1.Flags[0] = "1";
+        }
+        if(res < 0){
+          Alu1.Flags[0] = "1";
+        }
+        
+
+
+       
         Alu1.Flags[1] = "1";
         Alu1.Flags[2] = "1";
         Alu1.Flags[3] = "1";
         Alu1.Flags[4] = "1";
+
+        Registers[6].setvalue(
+          (parseInt(Registers[6].getvalue(), 2) + 2)
+            .toString(2)
+            .padStart(16, "0")
+        );
+        Registers[5].setvalue(
+          (parseInt(Registers[5].getvalue(), 2) + 2)
+            .toString(2)
+            .padStart(16, "0")
+        );
       },
     ];
     this.buildanim = function () {
