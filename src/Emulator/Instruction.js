@@ -2135,6 +2135,78 @@ const BusCacheToIO = {
     });
   },
 };
+const AdrToIp = {
+  value: "",
+  target: ".ball",
+  time: () => 3000 * nsp(),
+  anim: (val, h, w) => {
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.7%",
+        width: "1.5%",
+        borderRadius: "50%",
+        x: w * 0.77,
+        y: h * 0.25,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.to(".ball", { y: h * 0.136, duration: 1 * nsp(), delay: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
+const MdrToUnderIp = {
+  value: "",
+  target: ".box-data",
+  time: () => 3000 * nsp(),
+  anim: (val, h, w) => {
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497 },
+      { x: w * 0.708, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
+  },
+};
+const AdrBusToAdr = {
+  value: "",
+  target: ".box-ADR",
+  time: () => 3000 * nsp(),
+  anim: (val, h, w) => {
+    const startX = w * 0.746;
+    const endX = w * 0.76;
+
+    gsap.fromTo(
+      ".box-ADR",
+      { x: startX, opacity: "0" },
+      { x: startX, opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.to(".box-ADR", {
+      x: endX,
+
+      duration: 1 * nsp(),
+      delay: 1 * nsp(),
+    });
+    gsap.to(".box-ADR", {
+      x: endX,
+
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
+  },
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 class InstructionCALL {
   constructor() {
@@ -2298,6 +2370,30 @@ class InstructionRET {
           anim: MdrToBus.anim,
         },
         //add here the rest of pop animation
+        {
+          value: "",
+          target: MdrToUnderIp.target,
+          time: MdrToUnderIp.time,
+          anim: MdrToUnderIp.anim,
+        },
+        {
+          value: "",
+          target: UnderIpToAddBus.target,
+          time: UnderIpToAddBus.time,
+          anim: UnderIpToAddBus.anim,
+        },
+        {
+          value: "adr",
+          target: AdrBusToAdr.target,
+          time: AdrBusToAdr.time,
+          anim: AdrBusToAdr.anim,
+        },
+        {
+          value: "",
+          target: AdrToIp.target,
+          time: AdrToIp.time,
+          anim: AdrToIp.anim,
+        },
       ];
     };
   }
@@ -7703,7 +7799,7 @@ class InstructionPOPA {
           anim: MCanim.anim,
         },
         {
-          //////animation pf pop in MC
+          //////animation of pop in MC
           value: this.value1,
           target: fitToMdr.target,
           time: fitToMdr.time,
