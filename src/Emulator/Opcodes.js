@@ -1,5 +1,5 @@
 
-import {InstructionCALL,InstructionRET,InstructionLODS, InstructionMOVS, InstructionCMP,InstructionREAD,InstructionWRITE,InstructionADD,InstructionMOV00,InstructionMOV01,InstructionMOV10,InstructionMOV11,InstructionSUB,InstructionMUL,InstructionDIV, InstructionPUSH, InstructionBR, InstructionNOR, InstructionNEG, InstructionROR, InstructionROL, InstructionSHL, InstructionSHR, InstructionBE, InstructionBS, InstructionBSE, InstructionBI, InstructionBIE, InstructionBNE, InstructionNOT, InstructionOR, InstructionAND, InstructionNAND, InstructionXOR,InstructionPUSHA,InstructionPOPA, InstructionPOP, InstructionREADS, InstructionWRITES } from "./Instruction.js";
+import {InstructionCMPS,InstructionCALL,InstructionRET,InstructionLODS, InstructionMOVS, InstructionCMP,InstructionREAD,InstructionWRITE,InstructionADD,InstructionMOV00,InstructionMOV01,InstructionMOV10,InstructionMOV11,InstructionSUB,InstructionMUL,InstructionDIV, InstructionPUSH, InstructionBR, InstructionNOR, InstructionNEG, InstructionROR, InstructionROL, InstructionSHL, InstructionSHR, InstructionBE, InstructionBS, InstructionBSE, InstructionBI, InstructionBIE, InstructionBNE, InstructionNOT, InstructionOR, InstructionAND, InstructionNAND, InstructionXOR,InstructionPUSHA,InstructionPOPA, InstructionPOP, InstructionREADS, InstructionWRITES } from "./Instruction.js";
 
 function hash(key){
     if(key=="0000000"){
@@ -72,7 +72,7 @@ function hash(key){
         return 33;
     }else if(key=="0011101"){//WRTS
         return 34;
-    }else if(key=="0011010"){//RET
+    }else if(key=="0011110"){//RET
         return 35;
     }else if(key=="0011001"){ //CALL
         return 36
@@ -80,7 +80,10 @@ function hash(key){
         return 37;
     }else if(key=="0011010"){//LODS
         return 38;
+    }else if(key=="0011011"){//CMPS
+        return 39;
     }
+
 
 }
 let CALLinst= new InstructionCALL();
@@ -122,6 +125,7 @@ let READSinst=new InstructionREADS();
 let WRITESinst=new InstructionWRITES();
 let MOVSinst=new InstructionMOVS();
 let LODSinst=new InstructionLODS();
+let CMPSinst=new InstructionCMPS();
 let hashmap=[
 {
     key:"00",
@@ -264,7 +268,7 @@ let hashmap=[
     instrObject:WRITESinst
 },
 {
-    key:"35",
+    key:"3d",
     instrObject:RETinst   
 },
 {
@@ -278,6 +282,10 @@ let hashmap=[
 {
     key:"35",
     instrObject:LODSinst
+},
+{
+    key:"37",
+    instrObject:CMPSinst
 }
 
 ];

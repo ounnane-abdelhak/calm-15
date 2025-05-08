@@ -74,6 +74,7 @@ function getInstLeng(instruction) {
     "NOR",
     "NAND",
     "CMP",
+
   ]);
   if (twoOpInst.has(inst)) {
     if (tokens.length < 3) return 0;
@@ -93,9 +94,12 @@ function getInstLeng(instruction) {
     "POP",
     "ROR",
     "ROL",
+    "MOVS",
+    'LODS',
+    "CMPS"
   ]);
   if (reducedInst.has(inst)) {
-    if (inst === "RD" || inst === "WRT") return 1;
+    if (inst === "RD" || inst === "WRT"|| inst === 'LODS' || inst === 'MOVS') return 1;
     if (tokens.length < 2) return 1;
     const operand = tokens[1];
     return isImmediate(operand) ||
@@ -6366,7 +6370,6 @@ class InstructionBR {
         const line = getinst(this.addresse1);
         let i = line;
         let found = false;
-        console.log("abdou ", code2()[0], " ", this.addresse1);
         while (
           !found &&
           i < getcode().length &&
@@ -9078,20 +9081,45 @@ class InstructionCMPS {
     this.name = "CMPS";
     this.steps = [
       () => {
-        let temp;
+        let temp1;
+        let temp2;
         let res;
-        memory.setRam(Registers[3].getvalue());
+        //idr 6
+        //br 5
+        memory.setRam(Registers[6].getvalue());
         memory.read(false);
-        temp = memory.getRim();
-        memory.setRam(Registers[4].getvalue());
+        temp1 = memory.getRim();
+        memory.setRam(Registers[5].getvalue());
         memory.read(false);
-        res = memory.getRim();
-        console.log("here is CMPS");
-        Alu1.Flags[0] = "1";
+        temp2 = memory.getRim();
+        
+        res =temp1 - temp2 ;
+
+        if(res == 0){
+          Alu1.Flags[0] = "1";
+        }
+        if(res < 0){
+          Alu1.Flags[0] = "1";
+        }
+        
+
+
+       
         Alu1.Flags[1] = "1";
         Alu1.Flags[2] = "1";
         Alu1.Flags[3] = "1";
         Alu1.Flags[4] = "1";
+
+        Registers[6].setvalue(
+          (parseInt(Registers[6].getvalue(), 2) + 2)
+            .toString(2)
+            .padStart(16, "0")
+        );
+        Registers[5].setvalue(
+          (parseInt(Registers[5].getvalue(), 2) + 2)
+            .toString(2)
+            .padStart(16, "0")
+        );
       },
     ];
     this.buildanim = function () {

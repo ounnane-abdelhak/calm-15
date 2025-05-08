@@ -59,7 +59,8 @@ export class Lexer {
           } else if (
             t === 'RET' ||
             t === 'PUSHA' ||
-            t === 'POPA'
+            t === 'POPA' ||
+            t==='STOP'
           ) {
             return {
               type: 'INST0',

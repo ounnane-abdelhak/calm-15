@@ -782,11 +782,13 @@ export class  Assembler{
                 case 'INST0':
                     switch(element.value){
                         case 'RET':
-                            return '35';
+                            return '3D';
                         case 'PUSHA':
                             return '21';
                         case 'POPA':
                             return '23';
+                            case 'STOP':
+                             return 'F';                        
                             
                     }
                 case 'INST1':
@@ -951,12 +953,16 @@ export class  Assembler{
                             case 'LODS':
                             oppcode = '35'
                             break;
+                            case 'CMPS':
+                            oppcode = '37'
+                            break;
+                          
                         default:
                             break;
                     }
                     let instcode;
-                    if ( oppcode === '35'  ) {
-                        instcode=oppcode;  
+                    if ( oppcode === '35' ||  oppcode === '37') {
+                        instcode=oppcode;
                     }else{
                         var adr = FuncInterface.decimalToHex(input[1].value,4);
                         instcode=oppcode+adr;
@@ -968,7 +974,6 @@ export class  Assembler{
         }   
         static assemblecode(input1,input2,input3){
      
-            for(let i=0;i<input3.length;i++){ if(input3[i]){Errorcalm.SemanticError.push(new Errorcalm(input3[i].error,null,input3[i].line));}}
             let output = new Assembler(input1,input2) ;
             var assembledcode = [];
             var toassmb = (output && output.toAssemble && output.toAssemble.Semanticlist) ? output.toAssemble.Semanticlist : "Semanticlist is undefined";

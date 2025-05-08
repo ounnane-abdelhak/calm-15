@@ -328,7 +328,7 @@ switch (speed) {
       }
     }
 
-    let codeLines = lines
+    let codeLines = lines.split(":").join(":\n")
       .replace(procRegex, '') 
       .split('\n')
       .filter(l => l.trim()); 
@@ -378,9 +378,9 @@ function getLineNumber(text, charIndex) {
     if (inst === 'CALL') return 3;
     const noOpInst = new Set(['RET', 'PUSHA', 'POPA']);
     if (noOpInst.has(inst)) return 1;
-    const reducedInst = new Set(['NOT', 'NEG', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL']);
+    const reducedInst = new Set(["CMPS",'LODS','MOVS','NOT', 'NEG', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL']);
     if (reducedInst.has(inst)) {
-      if (inst === 'RD' || inst === 'WRT') return 1;
+      if (inst === 'RD' || inst === 'WRT' || inst === 'LODS'|| inst === 'CMPS' || inst === 'MOVS') return 1;
       if (tokens.length < 2) return 1;
       const operand = tokens[1];
       return (isImmediate(operand) || (operand.startsWith('[') && operand.endsWith(']'))) ? 2 : 1;
@@ -434,19 +434,25 @@ function getLineNumber(text, charIndex) {
   
     const exist = [];
     for (let i = 0; i < macros.length ; i++) {
-      for (let j = i; j < macros.length; j++) {
-        if (macros[i].name === macros[j].name && i !== j) {
-          if (exist.every(item => item.line !== j)) {
+      for (let j = i+1; j < macros.length; j++) {
+        if (macros[i].name == macros[j].name ) {
+         
             exist.push({ error: "MACRO name already used", line: j });
-          }
+          
         }
       }
     }
-  
-    if (nb === 2) {
-      return exist;
-    }
-   
+let i=0;
+if(exist && i==0){i++;
+  let ss=exist.pop()
+  console.log("error",ss)
+  while(ss?.error){
+      Errorcalm.SemanticError.push(new Errorcalm(ss.error, null, ss.line));
+    ss=exist.pop();
+  }
+}
+console.log("error2",Errorcalm.SemanticError)
+
     let codeWithoutMacros = lines.replace(macroRegex, '');
     codeWithoutMacros = codeWithoutMacros.split('\n').filter(line => line.trim() !== '');
 
@@ -583,14 +589,18 @@ function getLineNumber(text, charIndex) {
 let codearray2=[]
 
 codeArray.forEach((line)=>{
-  const reg=/^\s*STR\s+/
-  if(!reg.test(line)){codearray2.push(line)}
-}) 
+ codearray2.push(line.toUpperCase())
+})
+
 codeArray.length=0;
- codearray2.forEach((line)=>{codeArray.push(line)})
+codearray2.forEach((line)=>{
+  const reg=/^\s*STR\s+/
+  if(!reg.test(line)){codeArray.push(line)}
+})
+
   let num=0;
 
-let cd=codeArray.join('\n')
+let cd=codeArray.join('\n').split(':').join(':\n')
 let procs=detproc(cd);
 let ss=0,ss1=0;
 let tab=[];
@@ -614,6 +624,7 @@ for (let i = 0; i < procs.procedures.length; i++) {
   }
 
 }
+
 
 let line;
 let code3=[];
@@ -731,7 +742,6 @@ if (nb === 0) {
     for (let index = 0; index < codeArray.length; index++) {
 code[index]=hexaArray[index]+"//"+codeArray[index]   
     }    
-  
     code = code.join('\n');
     return code;
   };
