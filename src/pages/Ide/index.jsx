@@ -378,9 +378,9 @@ function getLineNumber(text, charIndex) {
     if (inst === 'CALL') return 3;
     const noOpInst = new Set(['RET', 'PUSHA', 'POPA']);
     if (noOpInst.has(inst)) return 1;
-    const reducedInst = new Set(['MOVS','NOT', 'NEG', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL','LODS']);
+    const reducedInst = new Set(["CMPS",'LODS','MOVS','NOT', 'NEG', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL']);
     if (reducedInst.has(inst)) {
-      if (inst === 'RD' || inst === 'WRT') return 1;
+      if (inst === 'RD' || inst === 'WRT' || inst === 'LODS'|| inst === 'CMPS' || inst === 'MOVS') return 1;
       if (tokens.length < 2) return 1;
       const operand = tokens[1];
       return (isImmediate(operand) || (operand.startsWith('[') && operand.endsWith(']'))) ? 2 : 1;

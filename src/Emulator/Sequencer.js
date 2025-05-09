@@ -561,7 +561,12 @@ class Sequenceur{
         if(is_animated){
             let key=hex2bin(Inshex).substring(0,4);
             console.log("key ",key);
-            if(key>="0010" ){//instructions with 1 general byte
+            if (key === "1110") {
+                console.log("hicham hna movs");  
+            }
+            if(key>="0010"  ){//instructions with 1 general byte
+                console.log("hicham rak fi if");
+                console.log("key ",key);
                 animations.push({
                     value:"",
                     nom:"QueueToIr",
@@ -592,6 +597,7 @@ class Sequenceur{
                 });
             }else{//instruction with 2 general bytes
                 let Inshex2=queue.getinstwithoutshift();
+                console.log("hicham rana fl else");
                 animations.push({
                     value:"",
                     nom:"QueueToIr",
@@ -607,7 +613,7 @@ class Sequenceur{
                     anim:QueueToIr.anim,
                 });
                 animations.push({
-                    value:Inshex.toString()+Inshex2.toString(),
+                    value:Inshex?.toString()+Inshex2?.toString(),
                     nom:"fitToIr",
                     name: "IR",
                     target:fitToIr.target,
@@ -685,10 +691,11 @@ class Sequenceur{
 
  
         let instruction=this.RI.getvalue();
+        console.log("Instruction",instruction);
         let key=instruction.substring(0,4);
         let index=0;
         let instrObject;
-        if(key=="1111"){
+        if(key=="1111" ){
             animations.push({
                 value:"STOP",
                 target:fitToDecode.target,
@@ -1051,8 +1058,10 @@ class Sequenceur{
                 let taille=instruction.charAt(7);
                 index=hash(key);
                 instrObject=hashmap[index].instrObject;
+                console.log("hicham hhh" )
+                console.log("INSTname",instrObject )
                 animateDecoderSequencer(animations,instrObject.name);
-                if(!(key == '0011001'  | key=='0011010'|key=='0011110'| key =='0010000' | key =='0010001')){
+                if(!(key == '0011001'  | key=='0011010'| key =='0010000' | key =='0010001')){
                     if (key == '0011100') { //RDS Instruction
                         let str = prompt('String Input:');
                         if (!str) {

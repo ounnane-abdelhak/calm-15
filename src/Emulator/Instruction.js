@@ -95,10 +95,11 @@ function getInstLeng(instruction) {
     "ROR",
     "ROL",
     "MOVS",
-    "LODS"
+    'LODS',
+    "CMPS"
   ]);
   if (reducedInst.has(inst)) {
-    if (inst === "RD" || inst === "WRT") return 1;
+    if (inst === "RD" || inst === "WRT"|| inst === 'LODS' || inst === 'MOVS') return 1;
     if (tokens.length < 2) return 1;
     const operand = tokens[1];
     return isImmediate(operand) ||
@@ -2138,6 +2139,78 @@ const BusCacheToIO = {
     });
   },
 };
+const AdrToIp = {
+  value: "",
+  target: ".ball",
+  time: () => 3000 * nsp(),
+  anim: (val, h, w) => {
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.7%",
+        width: "1.5%",
+        borderRadius: "50%",
+        x: w * 0.77,
+        y: h * 0.25,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.to(".ball", { y: h * 0.136, duration: 1 * nsp(), delay: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
+const MdrToUnderIp = {
+  value: "",
+  target: ".box-data",
+  time: () => 3000 * nsp(),
+  anim: (val, h, w) => {
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497 },
+      { x: w * 0.708, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
+  },
+};
+const AdrBusToAdr = {
+  value: "",
+  target: ".box-ADR",
+  time: () => 3000 * nsp(),
+  anim: (val, h, w) => {
+    const startX = w * 0.746;
+    const endX = w * 0.76;
+
+    gsap.fromTo(
+      ".box-ADR",
+      { x: startX, opacity: "0" },
+      { x: startX, opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.to(".box-ADR", {
+      x: endX,
+
+      duration: 1 * nsp(),
+      delay: 1 * nsp(),
+    });
+    gsap.to(".box-ADR", {
+      x: endX,
+
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
+  },
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 class InstructionCALL {
   constructor() {
@@ -2301,6 +2374,30 @@ class InstructionRET {
           anim: MdrToBus.anim,
         },
         //add here the rest of pop animation
+        {
+          value: "",
+          target: MdrToUnderIp.target,
+          time: MdrToUnderIp.time,
+          anim: MdrToUnderIp.anim,
+        },
+        {
+          value: "",
+          target: UnderIpToAddBus.target,
+          time: UnderIpToAddBus.time,
+          anim: UnderIpToAddBus.anim,
+        },
+        {
+          value: "adr",
+          target: AdrBusToAdr.target,
+          time: AdrBusToAdr.time,
+          anim: AdrBusToAdr.anim,
+        },
+        {
+          value: "",
+          target: AdrToIp.target,
+          time: AdrToIp.time,
+          anim: AdrToIp.anim,
+        },
       ];
     };
   }
@@ -7705,7 +7802,7 @@ class InstructionPOPA {
           anim: MCanim.anim,
         },
         {
-          //////animation pf pop in MC
+          //////animation of pop in MC
           value: this.value1,
           target: fitToMdr.target,
           time: fitToMdr.time,
@@ -8984,20 +9081,45 @@ class InstructionCMPS {
     this.name = "CMPS";
     this.steps = [
       () => {
-        let temp;
+        let temp1;
+        let temp2;
         let res;
-        memory.setRam(Registers[3].getvalue());
+        //idr 6
+        //br 5
+        memory.setRam(Registers[6].getvalue());
         memory.read(false);
-        temp = memory.getRim();
-        memory.setRam(Registers[4].getvalue());
+        temp1 = memory.getRim();
+        memory.setRam(Registers[5].getvalue());
         memory.read(false);
-        res = memory.getRim();
-        console.log("here is CMPS");
-        Alu1.Flags[0] = "1";
+        temp2 = memory.getRim();
+        
+        res =temp1 - temp2 ;
+
+        if(res == 0){
+          Alu1.Flags[0] = "1";
+        }
+        if(res < 0){
+          Alu1.Flags[0] = "1";
+        }
+        
+
+
+       
         Alu1.Flags[1] = "1";
         Alu1.Flags[2] = "1";
         Alu1.Flags[3] = "1";
         Alu1.Flags[4] = "1";
+
+        Registers[6].setvalue(
+          (parseInt(Registers[6].getvalue(), 2) + 2)
+            .toString(2)
+            .padStart(16, "0")
+        );
+        Registers[5].setvalue(
+          (parseInt(Registers[5].getvalue(), 2) + 2)
+            .toString(2)
+            .padStart(16, "0")
+        );
       },
     ];
     this.buildanim = function () {

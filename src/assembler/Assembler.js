@@ -953,12 +953,16 @@ export class  Assembler{
                             case 'LODS':
                             oppcode = '35'
                             break;
+                            case 'CMPS':
+                            oppcode = '37'
+                            break;
+                          
                         default:
                             break;
                     }
                     let instcode;
-                    if ( oppcode === '35'  ) {
-                        instcode=oppcode;  
+                    if ( oppcode === '35' ||  oppcode === '37') {
+                        instcode=oppcode;
                     }else{
                         var adr = FuncInterface.decimalToHex(input[1].value,4);
                         instcode=oppcode+adr;

@@ -111,7 +111,7 @@ export class SemanticAnalysis {
                                 } else {
                                     Errorcalm.SemanticError.push(new Errorcalm("INST1 must have an operand",null,i))
                                 }
-                            }else if (lexicalList[i][0].value == "WRT" || lexicalList[i][0].value == "RD" || lexicalList[i][0].value == "MOVS"|| lexicalList[i][0].value === 'LODS' ) {
+                            }else if (lexicalList[i][0].value == "WRT" || lexicalList[i][0].value == "RD" || lexicalList[i][0].value == "MOVS"|| lexicalList[i][0].value === 'LODS' || lexicalList[i][0].value === 'CMPS' ) {
                                 if (lexicalList[i].length !== 1) {
                                     Errorcalm.LexicalError.push(new Errorcalm(`${lexicalList[i][0].value} Instruction can't have operands`,null,i));
                                 } else {
