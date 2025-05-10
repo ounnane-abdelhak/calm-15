@@ -99,7 +99,7 @@ function getInstLeng(instruction) {
     "CMPS"
   ]);
   if (reducedInst.has(inst)) {
-    if (inst === "RD" || inst === "WRT"|| inst === 'LODS' || inst === 'MOVS') return 1;
+    if (inst === "RD" || inst === "WRT"|| inst === 'LODS' || inst === 'CMPS'|| inst === 'MOVS') return 1;
     if (tokens.length < 2) return 1;
     const operand = tokens[1];
     return isImmediate(operand) ||
@@ -2139,6 +2139,78 @@ const BusCacheToIO = {
     });
   },
 };
+const AdrToIp = {
+  value: "",
+  target: ".ball",
+  time: () => 3000 * nsp(),
+  anim: (val, h, w) => {
+    gsap.fromTo(
+      ".ball",
+      {
+        height: "2.7%",
+        width: "1.5%",
+        borderRadius: "50%",
+        x: w * 0.77,
+        y: h * 0.25,
+        opacity: "0",
+      },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.to(".ball", { y: h * 0.136, duration: 1 * nsp(), delay: 1 * nsp() });
+    gsap.to(".ball", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
+  },
+};
+const MdrToUnderIp = {
+  value: "",
+  target: ".box-data",
+  time: () => 3000 * nsp(),
+  anim: (val, h, w) => {
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497, opacity: "0" },
+      { opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.fromTo(
+      ".box-data",
+      { x: w * 0.497 },
+      { x: w * 0.708, duration: 1 * nsp(), delay: 1 * nsp() }
+    );
+    gsap.to(".box-data", {
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
+  },
+};
+const AdrBusToAdr = {
+  value: "",
+  target: ".box-ADR",
+  time: () => 3000 * nsp(),
+  anim: (val, h, w) => {
+    const startX = w * 0.746;
+    const endX = w * 0.76;
+
+    gsap.fromTo(
+      ".box-ADR",
+      { x: startX, opacity: "0" },
+      { x: startX, opacity: "1", duration: 1 * nsp() }
+    );
+    gsap.to(".box-ADR", {
+      x: endX,
+
+      duration: 1 * nsp(),
+      delay: 1 * nsp(),
+    });
+    gsap.to(".box-ADR", {
+      x: endX,
+
+      opacity: "0",
+      duration: 1 * nsp(),
+      delay: 2 * nsp(),
+    });
+  },
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 class InstructionCALL {
   constructor() {
@@ -2302,6 +2374,30 @@ class InstructionRET {
           anim: MdrToBus.anim,
         },
         //add here the rest of pop animation
+        {
+          value: "",
+          target: MdrToUnderIp.target,
+          time: MdrToUnderIp.time,
+          anim: MdrToUnderIp.anim,
+        },
+        {
+          value: "",
+          target: UnderIpToAddBus.target,
+          time: UnderIpToAddBus.time,
+          anim: UnderIpToAddBus.anim,
+        },
+        {
+          value: "adr",
+          target: AdrBusToAdr.target,
+          time: AdrBusToAdr.time,
+          anim: AdrBusToAdr.anim,
+        },
+        {
+          value: "",
+          target: AdrToIp.target,
+          time: AdrToIp.time,
+          anim: AdrToIp.anim,
+        },
       ];
     };
   }
@@ -7706,7 +7802,7 @@ class InstructionPOPA {
           anim: MCanim.anim,
         },
         {
-          //////animation pf pop in MC
+          //////animation of pop in MC
           value: this.value1,
           target: fitToMdr.target,
           time: fitToMdr.time,
@@ -8995,8 +9091,10 @@ class InstructionCMPS {
         let temp1;
         let temp2;
         let res;
-        //idr 6
-        //br 5
+        let res1;
+        let i =0 ;
+        let count = 0 ;
+      
         memory.setRam(Registers[6].getvalue());
         memory.read(false);
         temp1 = memory.getRim();
@@ -9004,23 +9102,32 @@ class InstructionCMPS {
         memory.read(false);
         temp2 = memory.getRim();
         
-        res =temp1 - temp2 ;
+        res =temp1- temp2 ;
+        res1 = res.toString();
+        res1 = parseInt(res1, 16);
+
+        let res2 = TwosComplement(res1,16);
+      
+        while( i< res2.length){
+            if (res2[i] == "1") {
+              count ++ ;
+            }
+            i++ ;
+        }
 
         if(res == 0){
           Alu1.Flags[0] = "1";
         }
         if(res < 0){
-          Alu1.Flags[0] = "1";
+          Alu1.Flags[1] = "1";
         }
-        
-
-
-       
-        Alu1.Flags[1] = "1";
-        Alu1.Flags[2] = "1";
-        Alu1.Flags[3] = "1";
-        Alu1.Flags[4] = "1";
-
+        if (count%2 === 0){
+          Alu1.Flags[3] = "1";
+        }
+        if(res%2 == 1){
+          Alu1.Flags[4] = "1";
+        }
+      
         Registers[6].setvalue(
           (parseInt(Registers[6].getvalue(), 2) + 2)
             .toString(2)
