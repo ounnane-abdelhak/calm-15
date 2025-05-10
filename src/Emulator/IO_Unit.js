@@ -1,7 +1,22 @@
 import { Register } from "./Register";
 
 class IOController {
-    constructor() {}
+    constructor() {
+        this.MAR = new Register();
+        this.CC = 0;
+    }
+    setMAR(value) {
+        this.MAR.setvalue(value);
+    }
+    getMAR() {
+        return this.MAR;
+    }
+    setCC(value) {
+        this.CC = value;
+    }
+    getCC() {
+        return this.CC;
+    }
 }
 
 class IOUnit {

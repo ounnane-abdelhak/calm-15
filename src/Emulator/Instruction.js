@@ -8189,6 +8189,8 @@ class InstructionREADS {
 
         let string = this.value1;
         let address = this.addresse1;
+        ioUnit.ioController.setMAR(Dec2bin(address));
+        ioUnit.ioController.setCC(0);
         let i = 0;
         while (string[i]) {
           ioUnit.buffer.setvalue(
@@ -8203,8 +8205,10 @@ class InstructionREADS {
           memory.write(); //write in both MC and Cache
           i++;
           address++;
+          ioUnit.ioController.CC++;
         }
         Alu1.Flags[7] = "0";
+        ioUnit.ioController.setCC(0);
       },
     ];
     this.buildanim = function () {
@@ -8424,6 +8428,8 @@ class InstructionWRITES {
         pos += getInstLeng(getcode()[getinst(pos)]);
         Alu1.Flags[7] = "1";
         let adr = this.addresse1;
+        ioUnit.ioController.setMAR(Dec2bin(adr));
+        ioUnit.ioController.setCC(0);
         let result = "";
         let char = "";
         let ascii = "";
@@ -8445,10 +8451,11 @@ class InstructionWRITES {
           }
           adr++;
           count++;
+          ioUnit.ioController.CC++;
         }
         txt += result;
         Alu1.Flags[7] = "0";
-
+        ioUnit.ioController.setCC(0);
         settext(txt);
       },
     ];
