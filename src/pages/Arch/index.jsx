@@ -684,11 +684,11 @@ const Arch = (props) => {
       }
       const cfg = props.anim[i];
       simulate(i);
-      const timeValue = typeof cfg.time === 'function' 
+      const timeValue =()=>{return typeof cfg.time === 'function' 
       ? cfg.time() 
-      : cfg.time ?? 1000; 
+      : cfg.time ?? 1000; }
   
-      dl2.current = timeValue * (nsp()); 
+      dl2.current = timeValue() * (nsp()); 
       i++;
       incanim(i);
       curtime.current =setTimeout(runAnimation, dl2.current*0.8);
