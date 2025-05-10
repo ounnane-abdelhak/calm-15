@@ -669,46 +669,38 @@ const Arch = (props) => {
   };
   const stopan = useRef(true);
   const curtime = useRef(null);
-  const dl2 = useRef(1000);
+  const dl2 = useRef(0);
   const continu = () => {
     setcont("continue");
     document.getElementById("next").disabled = true;
     document.getElementById("continue").disabled = true;
     stopan.current = false;
-    let currentIndex = inanim;
+    let i = inanim;
 
     const runAnimation = () => {
-      if (stopan.current || currentIndex >= (props.anim?.length || 0)) {
-        document.getElementById("next").disabled = false;
-        document.getElementById("continue").disabled = false;
-        return;
-      }
-
-      const cfg = props.anim[currentIndex];
-      simulate(currentIndex);
-      const timeValue = typeof cfg.time === 'function' 
+      const cfg = props.anim[i];
+      simulate(i);
+      const timeValue =()=>{return typeof cfg.time === 'function' 
       ? cfg.time() 
-      : cfg.time ?? 1000; 
+      : cfg.time ?? 1000; }
   
-  dl2.current = timeValue * (nsp() || 1); 
-      
-      incanim(currentIndex);
-      currentIndex++;
-      curtime.current = setTimeout(runAnimation, dl2.current*0.8);
+      dl2.current = timeValue() * (nsp()); 
+      i++;
+      incanim(i);
+      curtime.current =setTimeout(runAnimation, dl2.current*0.8);
 
     };
-
     runAnimation();
   };
 
   const stop = () => {
 
-    stopan.current = true;  
+    stopan.current =true;  
     dl2.current=0;
+    dl.current=0
     clearTimeout(curtime.current);
-
-    document.getElementById("next").disabled = false;
-    document.getElementById("continue").disabled = false;
+        document.getElementById("next").disabled = false;
+        document.getElementById("continue").disabled = false;
   };
   const allow = useRef(false);
   const allowtmp = useRef(0);
@@ -753,7 +745,7 @@ const Arch = (props) => {
       const timeValue = typeof cfg.time === 'function' ? cfg.time() : 1000 * nsp();
 
       animate(0, cfg, h, w, dl.current, chaine);
-      dl.current =dl.current+timeValue*0.8 + 1;
+      dl.current =dl.current+timeValue + 1;
 
     };
 

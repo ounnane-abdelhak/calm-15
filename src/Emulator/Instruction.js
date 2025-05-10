@@ -81,7 +81,7 @@ function getInstLeng(instruction) {
     return isImmediate(tokens[2]) ? 4 : 2;
   }
   if (inst === "CALL") return 3;
-  const noOpInst = new Set(["RET", "PUSHA", "POPA"]);
+  const noOpInst = new Set(["RET", "PUSHA", "POPA","STOP"]);
   if (noOpInst.has(inst)) return 1;
   const reducedInst = new Set([
     "NOT",
