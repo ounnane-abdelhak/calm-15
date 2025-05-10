@@ -1,63 +1,193 @@
+/*
+  Inspired Navbar CSS - style_green_only_v1.css
+
+  Color Palette: Green Only (various shades and gradients)
+  - Navbar: Green gradient or solid green color.
+  - Links: White or very light green for contrast.
+  - Accent/Hover: Brighter or contrasting green.
+  - Sidebar: Green theme, possibly a slightly different shade or gradient.
+*/
+
+/* General Reset & Body */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background-color: #f4f7f6; /* Light, neutral page background */
+  color: #333;
+}
+
 .navbar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 25%;
-  background-color: #1be985;
-  padding: 0 3.1rem;
-  box-shadow: 0 5px 15px #000, 0 30px 30px rgba(0, 0, 0, 0.08),
-    0 15px 15px rgba(0, 0, 0, 0.08), 0 10px 8px rgba(0, 0, 0.08),
-    0 4px 4px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0, 0, 0, 0.08);
-  border-radius: 2.5rem;
-  margin: 1% auto;
-
+  background: linear-gradient(to right, #388E3C, #66BB6A); /* Green gradient */
+  padding: 1rem 2.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin: 0 auto;
+  width: 100%;
   position: sticky;
-  top: 1%;
-  width: 75%;
-  z-index: 10;
+  top: 0;
+  z-index: 1000;
+  transition: top 0.3s ease-in-out, background-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
 }
 
-.links {
-  width: 60%;
+.navbar a img.logo-image {
+  height: 36px;
+  width: auto;
+  display: block;
+  transition: transform 0.3s ease;
+  /* Ensure logo is visible on green background */
 }
 
+.navbar a img.logo-image:hover {
+  transform: scale(1.05);
+}
+
+/* Hamburger Menu Icon */
+.menu-icon {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 24px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1010;
+  margin-left: 1rem;
+}
+
+.menu-icon-bar {
+  width: 100%;
+  height: 2px;
+  background-color: #ffffff; /* White bars for contrast on green navbar */
+  border-radius: 2px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Hamburger animation */
+.sidebar-open .menu-icon-bar:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+.sidebar-open .menu-icon-bar:nth-child(2) {
+  opacity: 0;
+}
+.sidebar-open .menu-icon-bar:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Links container - Desktop */
 .links ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.5rem;
 }
 
-.a {
+.links .a { 
   text-decoration: none;
-  list-style: none;
+  color: #ffffff; /* White for links on green background */
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
   position: relative;
-  display: block;
-  font-size: 1.25rem;
-  font-weight: 900;
-  color: #24292e;
-  font-family: "Mona Sans", system-ui;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  border-radius: 6px;
 }
 
-.a :after {
-  content: "";
-  width: 0%;
-  height: 2px;
-  display: block;
-  margin-top: auto;
-  align-items: center;
-  transition: 0.5s;
-}
-.a :hover::after {
-  width: 100%;
-  background: #24292e;
-}
-
-.a li {
+.links .a li {
   display: inline-block;
-  font-weight: 900;
-  font-size: 1.875rem;
-  transition: 1s;
+  padding: 0;
+  margin: 0;
 }
-.a li:hover {
-  transform: scale(1.3, 1.3);
+
+.links .a:hover {
+  color: #E8F5E9; /* Very light green/off-white on hover */
+  background-color: rgba(255, 255, 255, 0.1); /* Subtle light overlay on hover */
+}
+
+.links .a.active-link { 
+  color: #C8E6C9; /* Light green for active link */
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.links .a::after {
+  display: none;
+}
+
+/* Responsive Design - Mobile / Tablet */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(to right, #2E7D32, #4CAF50); /* Slightly different green for mobile if needed */
+  }
+
+  .menu-icon {
+    display: flex;
+  }
+
+  .links { /* Sidebar container */
+    position: fixed;
+    top: 0;
+    left: -100%; 
+    width: 280px; 
+    height: 100vh;
+    background: linear-gradient(to bottom, #43A047, #81C784); /* Green gradient for sidebar */
+    box-shadow: 4px 0px 15px rgba(0, 0, 0, 0.2);
+    padding-top: 4rem; 
+    transition: left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+    z-index: 1005;
+    overflow-y: auto; 
+    box-sizing: border-box;
+  }
+
+  .links.sidebar-open {
+    left: 0; 
+  }
+
+  .links ul {
+    flex-direction: column;
+    align-items: flex-start; 
+    gap: 0.25rem; 
+    width: 100%;
+    padding: 1rem; 
+    box-sizing: border-box;
+  }
+
+  .links .a {
+    display: block;
+    width: calc(100% - 2rem); 
+    padding: 0.9rem 1rem;
+    font-size: 1.05rem;
+    text-align: left;
+    border-bottom: none; 
+    margin: 0.25rem auto; 
+    color: #ffffff; /* White for sidebar links */
+  }
+
+  .links .a:hover {
+    color: #E8F5E9; /* Lighter green on hover */
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.75rem 1rem;
+  }
+  .navbar a img.logo-image {
+    height: 32px;
+  }
+  .links {
+    width: 250px; 
+  }
+  .links .a {
+    font-size: 1rem;
+    padding: 0.8rem 1rem;
+  }
 }
