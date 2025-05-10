@@ -676,15 +676,19 @@ const Arch = (props) => {
     document.getElementById("continue").disabled = true;
     stopan.current = false;
     let i = inanim;
-
     const runAnimation = () => {
+       if (stopan.current || i >= (props.anim?.length || 0)) {
+        document.getElementById("next").disabled = false;
+        document.getElementById("continue").disabled = false;
+        return;
+      }
       const cfg = props.anim[i];
       simulate(i);
-      const timeValue =()=>{return typeof cfg.time === 'function' 
+      const timeValue = typeof cfg.time === 'function' 
       ? cfg.time() 
-      : cfg.time ?? 1000; }
+      : cfg.time ?? 1000; 
   
-      dl2.current = timeValue() * (nsp()); 
+      dl2.current = timeValue * (nsp()); 
       i++;
       incanim(i);
       curtime.current =setTimeout(runAnimation, dl2.current*0.8);
