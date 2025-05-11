@@ -40,7 +40,17 @@
         "points": 10
     },
     {
-        "question": "How many bytes ares there in the general purpose registers:",
+        "question": "How many bits are there in the data bus:",
+        "options": [
+            "1- 8 bits",
+            "2- 16 bits",
+            "3- 32 bits"
+        ],
+        "correctOption": 2,
+        "points": 10
+    },
+    {
+        "question": "How many bytes are there in the general purpose registers:",
         "options": [
             "1- One byte",
             "2- Two Bytes",
@@ -65,16 +75,6 @@
             "Yes",
             "No, all of them are on 16 bits ",
             "Neither of the two"
-        ],
-        "correctOption": 3,
-        "points": 10
-    },
-    {
-        "question": "How many bits are there in the flag register: ",
-        "options": [
-            "1- 6 bits",
-            "2- 7 bits",
-            "3- 8 bits"
         ],
         "correctOption": 3,
         "points": 10
