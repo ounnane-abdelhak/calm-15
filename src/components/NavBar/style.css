@@ -193,4 +193,6 @@ body {
 }
 li {
   font-size: 25px;
+    color:#333;
+    font-weight:bolder
 }
