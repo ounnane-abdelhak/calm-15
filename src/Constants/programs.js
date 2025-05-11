@@ -12,12 +12,24 @@ const programs = [
         content:"mov r1, 4 //n\nmov r2, 1 //result\n\n//program\nmul r1, r2 //multiply n to result\nmov r2, acc //move the result to r2\nsub r1, 1 //decrement n by 1\nmov r1, acc //move the result to r1\nbne 8 //move to instruction @ if n not null"
     },
     {
-        title: "Example 4",
-        content:"mov r1, 10\nmov r2, 20\nadd r1,r2"
+        title: "Recursive Factorial",
+        content:"//result in R2\nfactorial proc\nmul r1, r2\nmov r2, acc\nsub r1, 1\nmov r1, acc\ncmp r1, 1\nbe end\ncall factorial\nend:ret\nfactorial endp\nmov r1, 5\nmov r2, 2\ncall factorial"
     },
     {
-        title: "Example 5",
-        content:"mov r3, 55"
+        title: "Hello, World !",
+        content:"str msg \"Hello, World !$\" \nwrts msg"
+    },
+    {
+        title: "Read a Character and Display It",
+        content:"rd \nwrt"
+    },
+    {
+        title: "Check if a number is even or odd",
+        content:"str even \"even$\" \nstr odd \"odd$\" \nmov idr ,0\nmov r1, 6 //put the number here\ndiv r1, 2\ncmp r4, 0\nbne od\nwrts even\nbri end\nod:\nwrts odd\nend:\nmov r1, 1"
+    },
+    {
+        title: "Simple counter (from 1 to 10)",
+        content:"str minus \"-$\"\nmov r4, 48\nloop:\nadd r4, 1\nmov r4, acc\nwrt\nwrts minus\ncmp r4, 57\nbe end\nbri loop\nend: \nmov r4, 49\nwrt\nmov r4, 48\nwrt"
     },
 ]
 
