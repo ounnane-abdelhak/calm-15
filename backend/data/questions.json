@@ -29,10 +29,31 @@
       "points": 10
     },
     {
+<<<<<<< HEAD
       "question": "How many bytes are there in the general purpose registers:",
       "options": ["1- One byte", "2- Two Bytes", "3- Three Bytes"],
       "correctOption": 2,
       "points": 10
+=======
+        "question": "How many bits are there in the data bus:",
+        "options": [
+            "1- 8 bits",
+            "2- 16 bits",
+            "3- 32 bits"
+        ],
+        "correctOption": 2,
+        "points": 10
+    },
+    {
+        "question": "How many bytes are there in the general purpose registers:",
+        "options": [
+            "1- One byte",
+            "2- Two Bytes",
+            "3- Three Bytes"
+        ],
+        "correctOption": 2,
+        "points": 10
+>>>>>>> 306b36b0bc834c0ca986368add395389e75cef46
     },
     {
       "question": "What are the component that doesn't belong to the memory unit:",
@@ -51,6 +72,7 @@
       "points": 10
     },
     {
+<<<<<<< HEAD
       "question": "How many bits are there in the flag register: ",
       "options": ["1- 6 bits", "2- 7 bits", "3- 8 bits"],
       "correctOption": 3,
@@ -65,6 +87,16 @@
       ],
       "correctOption": 2,
       "points": 10
+=======
+        "question": "The cache memory is bigger than the central memory :",
+        "options": [
+            "1- Yes, it's bigger",
+            "2- No, it's smaller",
+            "3- They are equal"
+        ],
+        "correctOption": 2,
+        "points": 10
+>>>>>>> 306b36b0bc834c0ca986368add395389e75cef46
     },
     {
       "question": "What are pointers in assembly?",

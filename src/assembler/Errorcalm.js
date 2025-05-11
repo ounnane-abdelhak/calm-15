@@ -34,8 +34,9 @@ export class Errorcalm{
     }
     static printError(){
         let theError;
+        Errorcalm.LexicalError = [...new Set(Errorcalm.LexicalError)];
+        Errorcalm.SemanticError = [...new Set(Errorcalm.SemanticError)];
         const numerr = Errorcalm.LexicalError.length + Errorcalm.SemanticError.length;
-        console.log( Errorcalm.LexicalError, Errorcalm.SemanticError)
         if(numerr ==0){
             return ''
         }else{
