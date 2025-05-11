@@ -11,8 +11,7 @@ const Overlay = ({children, close}) => {
         <>
             <motion.div className="overlay" onClick={close} variants={variants} initial={"closed"} exit={"closed"}
                         animate={"open"} key={"overlay"}>
-                {children}<
-                /motion.div>
+                {children}</motion.div>
         </>
     );
 

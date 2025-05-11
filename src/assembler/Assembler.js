@@ -788,7 +788,7 @@ export class  Assembler{
                         case 'POPA':
                             return '23';
                             case 'STOP':
-                             return 'F';                        
+                             return 'FF';                        
                             
                     }
                 case 'INST1':

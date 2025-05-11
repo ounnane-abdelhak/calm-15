@@ -81,7 +81,7 @@ function getInstLeng(instruction) {
     return isImmediate(tokens[2]) ? 4 : 2;
   }
   if (inst === "CALL") return 3;
-  const noOpInst = new Set(["RET", "PUSHA", "POPA"]);
+  const noOpInst = new Set(["RET", "PUSHA", "POPA","STOP"]);
   if (noOpInst.has(inst)) return 1;
   const reducedInst = new Set([
     "NOT",
@@ -2245,7 +2245,7 @@ class InstructionCALL {
         while (
           !found &&
           i < getcode().length &&
-          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+          !["STOP","BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
             code2()[i][0]
           )
         ) {
@@ -2333,7 +2333,7 @@ class InstructionRET {
         while (
           !found &&
           i < getcode().length &&
-          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+          !["STOP","BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
             code2()[i][0]
           )
         ) {
@@ -6373,7 +6373,7 @@ class InstructionBR {
         while (
           !found &&
           i < getcode().length &&
-          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+          !["STOP","BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
             code2()[i][0]
           )
         ) {
@@ -6428,7 +6428,7 @@ class InstructionBE {
         while (
           !found &&
           i < getcode().length &&
-          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+          !["STOP","BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
             code2()[i][0]
           )
         ) {
@@ -6484,7 +6484,7 @@ class InstructionBNE {
         while (
           !found &&
           i < getcode().length &&
-          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+          !["STOP","BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
             code2()[i][0]
           )
         ) {
@@ -6540,7 +6540,7 @@ class InstructionBS {
         while (
           !found &&
           i < getcode().length &&
-          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+          !["STOP","BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
             code2()[i][0]
           )
         ) {
@@ -6596,7 +6596,7 @@ class InstructionBI {
         while (
           !found &&
           i < getcode().length &&
-          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+          !["STOP","BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
             code2()[i][0]
           )
         ) {
@@ -6655,7 +6655,7 @@ class InstructionBIE {
         while (
           !found &&
           i < getcode().length &&
-          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+          !["STOP","BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
             code2()[i][0]
           )
         ) {
@@ -6714,7 +6714,7 @@ class InstructionBSE {
         while (
           !found &&
           i < getcode().length &&
-          !["BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
+          !["STOP","BNE", "BE", "BRI", "BS", "BI", "BSE", "BIE", "RET"].includes(
             code2()[i][0]
           )
         ) {

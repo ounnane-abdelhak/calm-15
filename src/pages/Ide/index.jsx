@@ -376,7 +376,7 @@ function getLineNumber(text, charIndex) {
       return isImmediate(tokens[2]) ? 4 : 2;
     }
     if (inst === 'CALL') return 3;
-    const noOpInst = new Set(['RET', 'PUSHA', 'POPA']);
+    const noOpInst = new Set(['RET', 'PUSHA', 'POPA',"STOP"]);
     if (noOpInst.has(inst)) return 1;
     const reducedInst = new Set(["CMPS",'LODS','MOVS','NOT', 'NEG', 'SHL', 'SHR', 'RD', 'WRT', 'PUSH', 'POP', 'ROR', 'ROL']);
     if (reducedInst.has(inst)) {
@@ -607,15 +607,12 @@ let tab=[];
 for (let i = 0; i < procs.codeWithoutProcedures.length; i++) {
   ss+=getInstLeng(procs.codeWithoutProcedures[i])  ;
 }
-ss+=getInstLeng("BRI 8")
+ss+=getInstLeng("STOP")
 ss1=ss;
 for (let j = 0; j < procs.procedures.length; j++) {
   tab=[...tab,... procs.procedures[j].body]
-for (let i = 0; i < procs.procedures[j].body.length; i++) {
-  ss+=getInstLeng(procs.procedures[j].body[i])  ;
 }
-}
-let recode=[...procs.codeWithoutProcedures,`BRI ${ss}`,...tab];
+let recode=[...procs.codeWithoutProcedures,`STOP`,...tab];
 
 for (let i = 0; i < procs.procedures.length; i++) {
   Assembler.PROClist.push({name : procs.procedures[i].name ,adr : ss1})
@@ -685,10 +682,9 @@ codeArray.forEach(line => {
     code3.push(processedTokens);
   }
 });
-console.log("ggg ",code3[0])
 let found=false;
 let l = 0;
-while(!found && l<codeArray.length && !["BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code3[l])){
+while(!found && l<codeArray.length && !["STOP","BNE","BE","BRI","BS","BI","BSE","BIE","RET"].includes(code3[l])){
 num=0;
 line=code3[l];
 if(line[0]=="CALL"){found=true;
@@ -702,7 +698,7 @@ l++;
 if(found && !adrs.includes(num)){
   pushadrs(num)
 }
-console.log("slnv  ",codeArray,"  ")
+console.log("slnv  ",codeArray,"  ",labelTable)
 setcode(codeArray);
 if (nb === 0) {
       return codeArray;
