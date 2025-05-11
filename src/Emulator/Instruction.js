@@ -1033,19 +1033,19 @@ const IOToUnderIP = {
 const RegToUnderIP = {
   value: "",
   target: ".box-data",
-  time: 3000 * nsp,
+  time: () => 3000 * nsp(),
   anim: (val, h, w) => {
     gsap.fromTo(
       ".box-data",
       { x: w * 0.44, opacity: "0" },
-      { opacity: "1", duration: 1 * nsp }
+      { opacity: "1", duration: 1 * nsp() }
     );
     gsap.fromTo(
       ".box-data",
       { x: w * 0.44 },
-      { x: w * 0.708, duration: 1 * nsp, delay: 1 * nsp }
+      { x: w * 0.708, duration: 1 * nsp(), delay: 1 * nsp() }
     );
-    gsap.to(".box-data", { opacity: "0", duration: 1 * nsp, delay: 2 * nsp });
+    gsap.to(".box-data", { opacity: "0", duration: 1 * nsp(), delay: 2 * nsp() });
   },
 };
 
@@ -1446,24 +1446,23 @@ const infitToRual1 = {
   },
 };
 
-const fitToRual2 = {
+const fitToRual2={
   value: "",
   target: ".ball",
   time: () => 1000 * nsp(),
   anim: (val, h, w) => {
-    gsap.fromTo(
-      ".ball",
-      {
-        borderRadius: "20px",
-        width: w * 0.067,
-        height: h * 0.05,
-        x: w * 0.275,
-        y: h * 0.658,
-        opacity: "0",
-      },
-      { opacity: "1", duration: 1 * nsp() }
-    );
-  },
+    gsap.fromTo(".ball", {
+      borderRadius: "20px",
+      width: w * 0.067,
+      height: h * 0.05,
+      x: w * 0.275,
+      y: h * 0.658,
+      opacity: "0"
+    },{
+      opacity:"1",
+      duration: 1 * nsp()
+    });
+  }
 };
 
 const fitToR2 = {
@@ -9138,10 +9137,224 @@ class InstructionCMPS {
             .toString(2)
             .padStart(16, "0")
         );
+        return {
+          value1: temp1,
+          value2: temp2
+        }
       },
     ];
     this.buildanim = function () {
-      return [];
+      const flags = Alu1.getAllFlags();
+      const idrValue = parseInt(Registers[6].getvalue(), 2).toString(16);
+      const brValue = parseInt(Registers[5].getvalue(), 2).toString(16);
+      return [
+        {
+          nom: "IDR",
+          value: idrValue.padStart(4, "0"),
+          target: fitToIdr.target,
+          time: fitToIdr.time,
+          anim: fitToIdr.anim,
+        },
+        {
+          nom: "IDR",
+          value: idrValue.padStart(4, "0"),
+          target: infitToIdr.target,
+          time: infitToIdr.time,
+          anim: infitToIdr.anim,
+        },
+        {
+          value: idrValue.padStart(4, "0"),
+          target: RegToUnderIP.target,
+          time: RegToUnderIP.time,
+          anim: RegToUnderIP.anim,
+        },
+        {
+          value: "",
+          target: UnderIpToAddBus.target,
+          time: UnderIpToAddBus.time,
+          anim: UnderIpToAddBus.anim,
+        },
+        {
+          value: idrValue,
+          target: UnderIPToMar.target,
+          time: UnderIPToMar.time,
+          anim: UnderIPToMar.anim,
+        },
+        {
+          value: idrValue,
+          target: fitToMar.target,
+          time: fitToMar.time,
+          anim: fitToMar.anim,
+        },
+        {
+          value: idrValue,
+          target: infitToMar.target,
+          time: infitToMar.time,
+          anim: infitToMar.anim,
+        },
+        {
+          value: "READ",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          value: String(this.value1).padStart(4, "0"),
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: String(this.value1).padStart(4, "0"),
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: "",
+          target: MdrToBus.target,
+          time: MdrToBus.time,
+          anim: MdrToBus.anim,
+        },
+        {
+          value: String(this.value1).padStart(4, "0"),
+          target: MdrToRual1.target,
+          time: MdrToRual1.time,
+          anim: MdrToRual1.anim,
+        },
+        {
+          value: this.value1,
+          target: fitToRual2.target,
+          time: fitToRual2.time,
+          anim: fitToRual2.anim,
+        },
+        {
+          value: this.value1,
+          target: infitToRual1.target,
+          time: infitToRual1.time,
+          anim: infitToRual1.anim,
+        },
+        {
+          nom: "BR",
+          value: brValue.padStart(4, "0"),
+          target: fitToBr.target,
+          time: fitToBr.time,
+          anim: fitToBr.anim,
+        },
+        {
+          nom: "BR",
+          value: brValue.padStart(4, "0"),
+          target: infitToBr.target,
+          time: infitToBr.time,
+          anim: infitToBr.anim,
+        },
+        {
+          value: brValue.padStart(4, "0"),
+          target: RegToUnderIP.target,
+          time: RegToUnderIP.time,
+          anim: RegToUnderIP.anim,
+        },
+        {
+          value: "",
+          target: UnderIpToAddBus.target,
+          time: UnderIpToAddBus.time,
+          anim: UnderIpToAddBus.anim,
+        },
+        {
+          value: brValue,
+          target: UnderIPToMar.target,
+          time: UnderIPToMar.time,
+          anim: UnderIPToMar.anim,
+        },
+        {
+          value: brValue,
+          target: fitToMar.target,
+          time: fitToMar.time,
+          anim: fitToMar.anim,
+        },
+        {
+          value: brValue,
+          target: infitToMar.target,
+          time: infitToMar.time,
+          anim: infitToMar.anim,
+        },
+        {
+          value: "READ",
+          target: MCanim.target,
+          time: MCanim.time,
+          anim: MCanim.anim,
+        },
+        {
+          value: String(this.value2).padStart(4, "0"),
+          target: fitToMdr.target,
+          time: fitToMdr.time,
+          anim: fitToMdr.anim,
+        },
+        {
+          value: String(this.value2).padStart(4, "0"),
+          target: infitToMdr.target,
+          time: infitToMdr.time,
+          anim: infitToMdr.anim,
+        },
+        {
+          value: "",
+          target: MdrToBus.target,
+          time: MdrToBus.time,
+          anim: MdrToBus.anim,
+        },
+        {
+          value: String(this.value2).padStart(4, "0"),
+          target: MdrToRual2.target,
+          time: MdrToRual2.time,
+          anim: MdrToRual2.anim,
+        },
+        {
+          value: this.value2,
+          target: fitToRual1.target,
+          time: fitToRual1.time,
+          anim: fitToRual1.anim,
+        },
+        {
+          value: this.value2,
+          target: infitToRual1.target,
+          time: infitToRual1.time,
+          anim: infitToRual1.anim,
+        },
+        {
+          value: "CMPS",
+          target: addanim.target,
+          time: addanim.time,
+          anim: addanim.anim,
+        },
+        {
+          value: "",
+          flag: flags[0] === "1" ? "1-ZERO" : "0-ZERO",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[1] === "1" ? "1-SIGN" : "0-SIGN",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[2] === "1" ? "1-CARRY" : "0-CARRY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+        {
+          value: "",
+          flag: flags[3] === "1" ? "1-PARITY" : "0-PARITY",
+          target: "",
+          time: 0,
+          anim: () => {},
+        },
+      ];
     };
   }
 }

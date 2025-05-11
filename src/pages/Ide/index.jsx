@@ -445,13 +445,11 @@ function getLineNumber(text, charIndex) {
 let i=0;
 if(exist && i==0){i++;
   let ss=exist.pop()
-  console.log("error",ss)
   while(ss?.error){
       Errorcalm.SemanticError.push(new Errorcalm(ss.error, null, ss.line));
     ss=exist.pop();
   }
 }
-console.log("error2",Errorcalm.SemanticError)
 
     let codeWithoutMacros = lines.replace(macroRegex, '');
     codeWithoutMacros = codeWithoutMacros.split('\n').filter(line => line.trim() !== '');
@@ -494,7 +492,6 @@ console.log("error2",Errorcalm.SemanticError)
     const labelTable = [];
     const codeArray = [...codeWithoutMacros];
 
-    console.log("codelabel",labelTable)
  let code2 = [];
  lines2.forEach(line => {
   let inQuotes = false;
@@ -562,7 +559,6 @@ console.log("error2",Errorcalm.SemanticError)
                  }
                  Assembler.STRlist.push({ name: line[1], begin: offset*2});
                  offset += line[2].length-2;
-                 console.log("yourstr",Assembler.STRlist);
                }
              } else {
                Errorcalm.SemanticError.push(new Errorcalm("STR name is not valid", null, i));
@@ -645,7 +641,6 @@ recode.forEach((line) => {
 if (labelTable) {
   labelTable.forEach((label) => {
     let pos = 0;
-     console.log("yournum",label.line)
     for (let i = 0; i < label.line; i++) {
          pos += getInstLeng(codeArray[i].toUpperCase());
 
@@ -698,7 +693,6 @@ l++;
 if(found && !adrs.includes(num)){
   pushadrs(num)
 }
-console.log("slnv  ",codeArray,"  ",labelTable)
 setcode(codeArray);
 if (nb === 0) {
       return codeArray;

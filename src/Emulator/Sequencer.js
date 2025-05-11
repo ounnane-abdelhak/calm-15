@@ -2602,6 +2602,10 @@ class Sequenceur{
             instrObject.taille = 0;
             instrObject.addresse1 = instrObject.value1;
         }
+        if (instrObject.name === "CMPS") {
+            instrObject.value1 = res.value1;
+            instrObject.value2 = res.value2;
+        }
         let animationSteps= instrObject.buildanim();
         if(is_animated===1 && animationSteps.length>0){
             for (let i = 0; i < animationSteps.length; i++) {
