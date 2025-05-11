@@ -20,7 +20,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(to right, #388E3C, #66BB6A); /* Green gradient */
+  background: linear-gradient(to right, #2fad36,  rgb(30, 209, 123)); /* Green gradient */
   padding: 1rem 2.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   margin: 0 auto;
@@ -190,4 +190,9 @@ body {
     font-size: 1rem;
     padding: 0.8rem 1rem;
   }
+}
+li {
+  font-size: 25px;
+    color:#333;
+    font-weight:bolder
 }

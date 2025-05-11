@@ -192,7 +192,7 @@ function hexToBin(hexString) {
           case "0011001":
             newstr = "CALL";
             break;
-          case "0011010":
+          case "0011110":
             newstr = "RET";
             break;
           case "0010000":
