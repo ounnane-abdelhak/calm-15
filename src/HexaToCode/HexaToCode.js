@@ -69,6 +69,10 @@ function hexToBin(hexString) {
   let str1=hexToBin(hexcode).substring(0,4);
   let str2=hexToBin(hexcode).substring(4,7);
   let str3=hexToBin(hexcode)[7];
+
+  console.log("str1",str1);
+  console.log("str2",str2);
+  console.log("str3",str3);
   
   
   
@@ -79,7 +83,7 @@ function hexToBin(hexString) {
   if(parseInt(str1, 2)>=4){
       let opcode1=str1;
       let opcode2=str2;
-      if(parseInt(str1, 2)<14){
+      if(parseInt(str1, 2)<=14){
   
       switch (opcode1) {
           case "0100":
@@ -112,12 +116,15 @@ function hexToBin(hexString) {
           case "1101":
             newstr = "ROL";
             break;
+          case "1110":
+            newstr = "MOVS";
+            break;
           default:
             newstr = "error";
         }
   
      if(newstr!="error"){ 
-        if (newstr == 'RD' || newstr == 'WRT') {
+        if (newstr == 'RD' || newstr == 'WRT'|| newstr == 'MOVS') {
           return newstr;
         } else {
           if (str3==='1') {
@@ -187,6 +194,7 @@ function hexToBin(hexString) {
      }
   }else if(parseInt(str1, 2)>=2 && parseInt(str1, 2)<=3){
       let opcode=str1+str2;
+      console.log("opcode", opcode)
       let size=str3;
       switch (opcode) {
           case "0011001":
@@ -228,12 +236,18 @@ function hexToBin(hexString) {
           case "0011101":
             newstr = "WRTS";
             break;
+          case "0011010":
+            newstr = "LODS";
+            break;
+          case "0011011":
+            newstr = "CMPS";
+            break;
           default:
             newstr = "error";
         }
         
         //it needs an adress 
-        if (newstr !== "error" && newstr !== "PUSHA" && newstr !== "POPA" && newstr !== "RET"){
+        if (newstr !== "error" && newstr !== "PUSHA" && newstr !== "POPA" && newstr !== "RET" && newstr !== "LODS" && newstr !== "CMPS"){
             let adr=hexToBin(hexcode).substring(8,24);
             if (adr.length!=16) {
               newstr="error"

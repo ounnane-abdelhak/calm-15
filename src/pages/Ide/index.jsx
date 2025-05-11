@@ -789,11 +789,12 @@ code[index]=hexaArray[index]+"//"+codeArray[index]
                     const editor = codeMirrorRef.current.editor;
                     editor.setValue('');
                     let code="";
-                   
-                    for (let m = 0; m <  handleStoreCode(0).length; m++) {
-                      code+=HexaToCode(handleStoreCode(0)[m])+"\n";
-               
-                    } 
+                    const array = handleStoreCode(0);
+                    for (let m = 0; m <  array.length; m++) {
+                      if (array[m] !== "STOP" && array[m] !== "FF") {
+                        code+=HexaToCode(array[m])+"\n";
+                      }
+                    }
                     editor.setValue(code);
                     setChecktest(!checktest);
                     setIsCode(true);
@@ -823,10 +824,12 @@ code[index]=hexaArray[index]+"//"+codeArray[index]
                           const editor = codeMirrorRef.current.editor;
                           editor.setValue('');
                           let code="";
-                          for (let m = 0; m <  handleStoreCode(0).length; m++) {
-                            code+=HexaToCode(handleStoreCode(0)[m])+"\n";
-                    
-                          }
+                          const array = handleStoreCode(0);
+                          for (let m = 0; m <  array.length; m++) {
+                            if (array[m] !== "STOP" && array[m] !== "FF") {
+                              code+=HexaToCode(array[m])+"\n";
+                            }
+                          } 
                           editor.setValue(code);
                           setIsCode(true);
                           setIsHexa(false);
