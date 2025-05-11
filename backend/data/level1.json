@@ -1,0 +1,84 @@
+[
+  {
+    "level": "1",
+    "question": "How many units are connected to the data bus:",
+    "options": ["4 units", "5 units", "6 units"],
+    "correctOption": 2,
+    "points": 10
+  },
+  {
+    "level": "1",
+    "question": "Addressing modes that doesn't exist in the calM:",
+    "options": ["1- Based", "2- indexed indirect", "3- Based indexed"],
+    "correctOption": 2,
+    "points": 10
+  },
+  {
+    "level": "1",
+    "question": "Instruction formats are:",
+    "options": [
+      "1- Reduced Format",
+      "2- General Format ",
+      "3- Neither of the two"
+    ],
+    "correctOption": 1,
+    "points": 10
+  },
+  {
+    "level": "1",
+    "question": "How many bits are there in the flag register:",
+    "options": ["1- 6 bits", "2- 7 bits", "3- 8 bits"],
+    "correctOption": 3,
+    "points": 10
+  },
+  {
+    "level": "1",
+    "question": "How many bytes are there in the general purpose registers:",
+    "options": ["1- One byte", "2- Two Bytes", "3- Three Bytes"],
+    "correctOption": 2,
+    "points": 10
+  },
+  {
+    "level": "1",
+    "question": "What are the component that doesn't belong to the memory unit:",
+    "options": ["1-IP", "2-CM", "3-MDR/MAR"],
+    "correctOption": 1,
+    "points": 10
+  },
+  {
+    "level": "1",
+    "question": "All of the instructions are on 8 bits: ",
+    "options": ["Yes", "No, all of them are on 16 bits ", "Neither of the two"],
+    "correctOption": 3,
+    "points": 10
+  },
+  {
+    "level": "1",
+    "question": "How many bits are there in the flag register: ",
+    "options": ["1- 6 bits", "2- 7 bits", "3- 8 bits"],
+    "correctOption": 3,
+    "points": 10
+  },
+  {
+    "level": "1",
+    "question": "The cache memory is bigger than the central memory :",
+    "options": [
+      "1- Yes, it's bigger",
+      "2- No, it's smaller",
+      "3- They are equal"
+    ],
+    "correctOption": 2,
+    "points": 10
+  },
+  {
+    "level": "1",
+    "question": "What are pointers in assembly?",
+    "options": [
+      "1- Variable type that stores integers",
+      "2- Memory address that stores another memory address",
+      "3- An I/O peripheral"
+    ],
+    "correctOption": 2,
+    "points": 10
+  }
+]

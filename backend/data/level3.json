@@ -1,0 +1,72 @@
+[
+  {
+    "level": "3",
+    "question": "ADD R4,R5,1",
+    "options": ["1- True", "2- False"],
+    "correctOption": 2,
+    "points": 10
+  },
+  {
+    "level": "3",
+    "question": "MOV R1,10",
+    "options": ["1- True", "2- False"],
+    "correctOption": 1,
+    "points": 10
+  },
+  {
+    "level": "3",
+    "question": "XORR SR ",
+    "options": ["1- True", "2- False"],
+    "correctOption": 2,
+    "points": 10
+  },
+  {
+    "level": "3",
+    "question": "NOT 20*",
+    "options": ["1- True", "2- False"],
+    "correctOption": 2,
+    "points": 10
+  },
+  {
+    "level": "3",
+    "question": "NAND BR, SR",
+    "options": ["1- True", "2- False"],
+    "correctOption": 1,
+    "points": 10
+  },
+  {
+    "level": "3",
+    "question": "SUB RI ,20",
+    "options": ["1- True", "2- False"],
+    "correctOption": 2,
+    "points": 10
+  },
+  {
+    "level": "3",
+    "question": "MOV R2,BR*+10",
+    "options": ["1- True", "2- False"],
+    "correctOption": 1,
+    "points": 10
+  },
+  {
+    "level": "3",
+    "question": "NAND BR, SR",
+    "options": ["1- True", "2- False"],
+    "correctOption": 1,
+    "points": 10
+  },
+  {
+    "level": "3",
+    "question": "XOR IR",
+    "options": ["1- True", "2- False"],
+    "correctOption": 2,
+    "points": 10
+  },
+  {
+    "level": "3",
+    "question": "XOR R1,5",
+    "options": ["1- True", "2- False"],
+    "correctOption": 2,
+    "points": 10
+  }
+]

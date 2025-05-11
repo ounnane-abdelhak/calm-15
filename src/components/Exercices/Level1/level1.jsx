@@ -64,17 +64,16 @@ export default function Level1() {
   const numQuestions = questions.length;
   console.log(numQuestions);
   useEffect(function () {
-    fetch("http://localhost:5000/api/v1/learn/adressing-modes")
+    fetch("http://localhost:5000/api/v1/learn/adressing-modes/level/1")
       .then((res) => res.json())
-      .then(
-        (data) => dispatch({ type: "dataReceived", payload: data.data.data }) // ✅ just the array
+      .then((data) =>
+        dispatch({ type: "dataReceived", payload: data.data.data })
       )
       .catch((err) => {
         console.error("Fetch failed", err);
         dispatch({ type: "dataFailed" });
       });
   }, []);
-
   return (
     <>
       <NavBar />
