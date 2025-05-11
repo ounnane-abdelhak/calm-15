@@ -1,0 +1,61 @@
+.addressing-table-container {
+  max-width: 40em;
+  margin: 3em auto;
+  background-color: var(--container-color);
+  border-radius: 20px;
+  border: 2px solid var(--main-accent-color);
+  overflow: hidden;
+  font-family: "JetBrains Mono", monospace;
+  color: white;
+  box-shadow: 0 0 20px rgba(27, 233, 133, 0.15);
+}
+
+.addressing-title {
+  text-align: center;
+  padding: 1.5em;
+  font-size: 2em;
+  background-color: #1b1f24;
+  color: var(--main-accent-color);
+  font-family: "Mona Sans", sans-serif;
+  border-bottom: 2px solid var(--main-accent-color);
+}
+
+.addressing-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.2em;
+}
+
+.addressing-table th,
+.addressing-table td {
+  padding: 1.2em;
+  border-bottom: 1px solid #151212;
+  text-align: center;
+}
+
+.addressing-table thead {
+  background-color: #2d2d2d;
+  color: #1be985;
+  font-size: 1.3em;
+}
+
+.addressing-table tbody tr:hover {
+  background-color: #333;
+  transition: background 0.3s ease;
+}
+.addressing-table-container {
+  max-width: 60em;
+  margin: 4em auto;
+}
+
+.addressing-title {
+  font-size: 2.5em;
+}
+
+.addressing-table {
+  font-size: 1.4em;
+}
+
+.addressing-table thead {
+  font-size: 1.5em;
+}
