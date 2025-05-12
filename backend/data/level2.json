@@ -1,0 +1,72 @@
+[
+  {
+    "level": "2",
+    "question": "MOV R1, 5",
+    "options": ["19400005", "1901", "01400005"],
+    "correctOption": 1,
+    "points": 10
+  },
+  {
+    "level": "2",
+    "question": "SUB R1, R2",
+    "options": ["03400001", "13400007", "0301"],
+    "correctOption": 3,
+    "points": 10
+  },
+  {
+    "level": "2",
+    "question": "MOV R1, R4",
+    "options": ["1903", "1901", "194000016"],
+    "correctOption": 1,
+    "points": 10
+  },
+  {
+    "level": "2",
+    "question": "CMP ACC, R4",
+    "options": ["270003", "1901", "1323"],
+    "correctOption": 3,
+    "points": 10
+  },
+  {
+    "level": "2",
+    "question": "ADD R1, 16",
+    "options": ["19400010", "0108", "014000010"],
+    "correctOption": 3,
+    "points": 10
+  },
+  {
+    "level": "2",
+    "question": "WRT",
+    "options": ["97", "1901", "01400005"],
+    "correctOption": 1,
+    "points": 10
+  },
+  {
+    "level": "2",
+    "question": "RD",
+    "options": ["19400005", "87", "195800016"],
+    "correctOption": 2,
+    "points": 10
+  },
+  {
+    "level": "2",
+    "question": "BRI LOOP",
+    "options": ["19400003", "1901", "310003"],
+    "correctOption": 3,
+    "points": 10
+  },
+  {
+    "level": "2",
+    "question": "RDS ADR",
+    "options": ["19500000", "390000", "05480000"],
+    "correctOption": 2,
+    "points": 10
+  },
+  {
+    "level": "2",
+    "question": "DIV R4, 16",
+    "options": ["05480010", "07580010", "19500010"],
+    "correctOption": 2,
+    "points": 10
+  }
+]

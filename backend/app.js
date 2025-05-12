@@ -24,7 +24,7 @@ app.use(helmet());
 // the added one
 app.use(
   cors({
-    origin: "http://localhost:3001", // Change to your frontend's domain
+    origin: "http://localhost:3000", // Change to your frontend's domain
     credentials: true, // Allow cookies to be sent
   })
 );

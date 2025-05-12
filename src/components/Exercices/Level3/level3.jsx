@@ -1,104 +1,113 @@
-import { useState } from "react";
-import { Footer } from "../../../containers";
-import NavBar from "../../NavBar";
+import React, { useEffect, useReducer } from "react";
 import "./level3.css";
+import { NavBar } from "../..";
 
-import Select from "react-select";
-const questions = [
-  {
-    num: "1",
-    qst: "ADD R4,R5,1",
-  },
-  {
-    num: "2",
-    qst: "MOV R1,10",
-  },
-  {
-    num: "3",
-    qst: "XORR SR ",
-  },
-  {
-    num: "4",
-    qst: "NOT 20*",
-  },
-  {
-    num: "5",
-    qst: "NAND BR, SR",
-  },
-  {
-    num: "6",
-    qst: "SUB RI ,20",
-  },
-  {
-    num: "7",
-    qst: "MOV R2,BR*+10",
-  },
-  {
-    num: "8",
-    qst: "NAND BR, SR",
-  },
-  {
-    num: "9",
-    qst: "XOR IR",
-  },
-];
-const options1 = [
-  { value: 0, label: " False" },
-  { value: 1, label: "True" },
-];
+import Main from "../Main";
+import Loader from "../Loader";
+import Error from "../Error";
+import StartScreen from "../StartScreen";
+
+import Question from "../Question";
+import NextButton from "../NextButton";
+
+import FinishScreen from "../FinishScreen";
+const initialState = {
+  questions: [],
+  //loading , error, ready , active , finished
+  status: "loading",
+  index: 0,
+  answer: null,
+  points: 0,
+  highscore: 0,
+};
+function reducer(state, action) {
+  switch (action.type) {
+    case "dataReceived":
+      return { ...state, questions: action.payload, status: "ready" };
+    case "dataFailed":
+      return { ...state, status: "error" };
+
+    case "start":
+      return { ...state, status: "active" };
+    case "newAnswer":
+      const question = state.questions.at(state.index);
+      return {
+        ...state,
+        answer: action.payload,
+        points:
+          action.payload === question.correctOption
+            ? state.points + question.points
+            : state.points,
+      };
+    case "nextQuestion":
+      return { ...state, index: state.index + 1, answer: null };
+    case "finished":
+      return {
+        ...state,
+        status: "finished",
+        highscore:
+          state.points > state.highscore ? state.points : state.highscore,
+      };
+    case "restart":
+      return { ...initialState, questions: state.questions, status: "ready" };
+
+    default:
+      throw new Error("Unknown action");
+  }
+}
 
 export default function Level3() {
-  const [submitted, setSubmitted] = useState(false);
-
-  return (
-    <div className="level3">
-      <NavBar />
-      {submitted ? (
-        <ResultPage />
-      ) : (
-        <>
-          <Questionsswiper />
-          <button className="submit-btn" onClick={() => setSubmitted(true)}>
-            Submit
-          </button>
-        </>
-      )}
-      <Footer></Footer>
-    </div>
-  );
-}
-const Questionsswiper = () => {
-  const datacamp = questions.map((data) => {
-    return <Question num={data.num} qst={data.qst} />;
-  });
-
-  return <div>{datacamp}</div>;
-};
-
-function Question({ num, qst }) {
+  const [{ questions, status, index, answer, points, highscore }, dispatch] =
+    useReducer(reducer, initialState);
+  const numQuestions = questions.length;
+  console.log(numQuestions);
+  useEffect(function () {
+    fetch("http://localhost:5000/api/v1/learn/adressing-modes/level/3")
+      .then((res) => res.json())
+      .then((data) =>
+        dispatch({ type: "dataReceived", payload: data.data.data })
+      )
+      .catch((err) => {
+        console.error("Fetch failed", err);
+        dispatch({ type: "dataFailed" });
+      });
+  }, []);
   return (
     <>
-      <div className="container3">
-        <h1 className="question3"> Question {num}</h1>
+      <NavBar />
 
-        <div className="ABC3">
-          <h1 className="Q3">{qst}</h1>
-          <div className="R3">
-            <li>1- False</li>
-            <li>2- True</li>
-          </div>
-
-          <Select options={options1} className="ABC_3" />
-        </div>
-      </div>
+      <Main>
+        {status === "loading" && <Loader />}
+        {status === "error" && <Error />}
+        {status === "ready" && (
+          <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
+        )}
+        {status === "active" && (
+          <>
+            <Question
+              question={questions[index]}
+              dispatch={dispatch}
+              answer={answer}
+              index={index}
+              numQuestions={numQuestions}
+              points={points}
+            />
+            <NextButton
+              dispatch={dispatch}
+              answer={answer}
+              numQuestions={numQuestions}
+              index={index}
+            />
+          </>
+        )}
+        {status === "finished" && (
+          <FinishScreen
+            points={points}
+            highscore={highscore}
+            dispatch={dispatch}
+          />
+        )}
+      </Main>
     </>
   );
 }
-const ResultPage = () => {
-  return (
-    <div className="result-box">
-      <h2 className="result-title">Quiz Results</h2>
-      <p className="result-text">Thanks for completing the quiz! 🎉</p>
-    </div>
-  );
-};
