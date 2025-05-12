@@ -4,8 +4,8 @@ Expression ::= ( INST1 ( REG | NUM ) )
                | ( INST2 [ REGIND [*] + ] ( REG | NUM [*] [*] ) , ( REG | NUM [*] [*] ) )
                | ( INST3 ( REG | NUM* [*] ) , ( REG | NUM [*] [*] ) )
 
-INST0 ::= RET | PUSHA | POPA
-INST1 ::= NEG | NOT | SHL | SHR | READ | WRITE | PUSH | POP | ROR | ROL | CALL | BE | BNE | BZ | BI | BIE | BSE | BR
+INST0 ::= RET | PUSHA | POPA | MOVS | LODS | CMPS | RD | WRT
+INST1 ::= NEG | NOT | SHL | SHR | PUSH | POP | ROR | ROL | CALL | BE | BNE | BZ | BI | BIE | BSE | BR | RDS | WRTS
 INST2 ::= NAND | CMP | ADD | SUB | MUL | DIV | AND | OR | XOR | NOR
 INST3 ::= MOV
 
