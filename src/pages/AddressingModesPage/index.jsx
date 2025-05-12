@@ -1,35 +1,86 @@
-//import components
-import { NavBar, AddressingModeCard } from "../../components";
+import { NavBar } from "../../components";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Bot from "../../components/ChatBot";
 import "./style.css";
-// import {properties} from "../../Constants/modesDescription";
+import ModalDemo from "./ModelDemo";
 
 const AdressingModes = () => {
-  // TODO: fix the description props passing
+  const [addressingModesInfos, setaddressingModesInfos] = useState([
+    {
+      id: 1,
+      modeName: "Immediate",
+      description:
+        "Getting the information " +
+        "immediately from the instruction code after decoding it, so the operand  would be in the second part of " +
+        "the instruction (depending if where in the general format or the reduced format) to be used in the " +
+        "execution with no memory access and that's why it's called immediate.",
+    },
+    {
+      id: 2,
+      modeName: "Direct",
+      description:
+        "Getting the information directly from it's memory address that is " +
+        "provided by the instruction, so here we'll have to do one memory access to " +
+        "retrieve the information.",
+    },
+    {
+      id: 3,
+      modeName: "Indirect",
+      description:
+        "Getting the information indirectly from the address that is stored in the address provided by the " +
+        "instruction, at first it may sound a bit confusing but you'll see how much is this mode important when " +
+        "you'll deal with pointers, no more spoils because you'll learn them in data structures, but I'll only want " +
+        "you to remember that it's an memory address “pointing” the memory address that contains the information " +
+        "that we want and so we'll have to do 2 memory accesses to get to it, the first one is to get the physical " +
+        "address of the information and the second one is to retrieve the data.",
+    },
+    {
+      id: 4,
+      modeName: "Based",
+      description:
+        "Getting the " +
+        "information based on the address stored in the base register, so we'll have to do some " +
+        "calculation by adding the value that we have in the instruction to the address found in the " +
+        "base register to get the physical address of the data, it is used mostly to retrieve data from " +
+        "arrays based on the first element of the array and it requires 1 memory access.",
+    },
+    {
+      id: 5,
+      modeName: "Indexed",
 
-  const [addressingModesInfos, setaddressingModesInfos] = useState([]);
+      description:
+        "Getting the " +
+        "information based on the address stored in the base register, so we'll have to do some " +
+        "calculation by adding the value that we have in the instruction to the address found in the " +
+        "index register to get the physical address of the data, it is used mostly to retrieve data from " +
+        "arrays based on the first element of the array and it requires 1 memory access.",
+    },
+    {
+      id: 6,
+      modeName: "Based Indexed",
+      description: "hello",
+    },
+  ]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedMode, setSelectedMode] = useState(null);
 
-  useEffect(() => {
-    const URL =
-      process.env.REACT_APP_API_URL + "/documentation/addressing-modes/all";
+  const handleRowClick = (mode) => {
+    setSelectedMode(mode);
+    setModalOpen(true);
+  };
 
-    axios
-      .get(URL)
-      .then((res) => {
-        console.log(res.data.data);
-        setaddressingModesInfos(res.data.data);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedMode(null);
+  };
 
   return (
     <>
       <NavBar />
-      <div class="addressing-table-container">
-        <h2 class="addressing-title">Addressing Modes</h2>
-        <table class="addressing-table">
+      <div className="addressing-table-container">
+        <h2 className="addressing-title">Addressing Modes</h2>
+        <table className="addressing-table">
           <thead>
             <tr>
               <th>Mode</th>
@@ -37,41 +88,30 @@ const AdressingModes = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Immediate</td>
-              <td>000</td>
-            </tr>
-            <tr>
-              <td>Direct</td>
-              <td>001</td>
-            </tr>
-            <tr>
-              <td>Indirect</td>
-              <td>010</td>
-            </tr>
-            <tr>
-              <td>Based</td>
-              <td>011</td>
-            </tr>
-            <tr>
-              <td>Indexed</td>
-              <td>100</td>
-            </tr>
-            <tr>
-              <td>Based indexed</td>
-              <td>101</td>
-            </tr>
-            <tr>
-              <td>Shift on 8 bits</td>
-              <td>110</td>
-            </tr>
-            <tr>
-              <td>Shift on 16 bits</td>
-              <td>111</td>
-            </tr>
+            {addressingModesInfos.map((mode, idx) => (
+              <tr key={idx} onClick={() => handleRowClick(mode)}>
+                <td>{mode.modeName}</td>
+                <td>{mode.modeName}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
+
+      {modalOpen && (
+        <ModalDemo
+          onClose={closeModal}
+          content={
+            <div>
+              <h3>{selectedMode?.modeName}</h3>
+              <p>{selectedMode?.description}</p>
+              <p>
+                <strong>Code:</strong> {selectedMode?.modeName}
+              </p>
+            </div>
+          }
+        />
+      )}
 
       <Bot />
     </>
