@@ -19,7 +19,6 @@ const Components = () => {
       <div className="globalContainer">
         <div className="imageContainer">
           <p className="title">calM Architecture</p>
-          <img src={calmArchi} alt="calm Architecture Picture" className="calmArchi"/>
         </div>
         {
           Object.keys(categories).map(categoryName => 

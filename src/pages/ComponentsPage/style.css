@@ -1,6 +1,7 @@
 .imageContainer{
     margin-top: 2rem;
     position: relative;
+    height: 70vh;
     display: flex;
     flex-wrap: wrap;
     width: 60%;
@@ -12,6 +13,10 @@
     padding: 5em;
     border-radius: 2.5rem;
     background-color: #24292e;
+    background-image: url('/src/assets/images/calm/calmArchitecture.png');
+    background-size: contain; /* or contain, or specific dimensions */
+    background-position: center; /* positions the image */
+    background-repeat: no-repeat; /* prevents repeating */
     box-shadow: 0 0 0 0.5px #000, 0 30px 30px rgba(0, 0, 0, 0.08),
     0 15px 15px rgba(0, 0, 0, 0.08), 0 10px 8px rgba(0, 0, 0.08),
     0 4px 4px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0, 0, 0, 0.08);
