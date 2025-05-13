@@ -20,7 +20,7 @@ const Profile = ({ currentUser, updateCurrentUser }) => {
             setPrograms(parsedUser.savedPrograms || []); // Initialize programs from localStorage
 
             // Fetch the latest programs from the backend
-            const URL = `http://localhost:5000/api/v1/users/${parsedUser.id}/code/all`;
+            const URL = `https://calm-back-1.onrender.com/api/v1/users/${parsedUser.id}/code/all`;
             axios.get(URL)
                 .then((response) => {
                     setPrograms(response.data.data); // Update programs with the latest data
@@ -35,7 +35,7 @@ const Profile = ({ currentUser, updateCurrentUser }) => {
     }, []);
 
     const handlePasswordResetRequest = (e) => {
-        const URL = `http://localhost:5000/api/v1/users/forgotPassword`;
+        const URL = `https://calm-back-1.onrender.com/api/v1/users/forgotPassword`;
         console.log('Reset Password button clicked, sending request to:', URL);
 
         axios.post(URL, { email: currentUser.email })
@@ -51,7 +51,7 @@ const Profile = ({ currentUser, updateCurrentUser }) => {
     }
 
     const logout = () => {
-        const URL = 'http://localhost:5000/api/v1/users/logout'; // Updated to include /users prefix
+        const URL = 'https://calm-back-1.onrender.com/api/v1/users/logout'; // Updated to include /users prefix
         axios.get(URL) // Changed to GET request to match backend implementation
             .then(res => {
                 updateCurrentUser(null);

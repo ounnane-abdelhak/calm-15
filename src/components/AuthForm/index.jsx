@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import "./style.css";
 
-const BASE_URL = 'http://localhost:5000/api/v1/users'; // Updated to include /users prefix
+const BASE_URL = 'https://calm-back-1.onrender.com/api/v1/users'; // Updated to include /users prefix
 
 const AuthForm = ({ currentRoute, updateCurrentUser }) => {
     const [name, setName] = useState('');

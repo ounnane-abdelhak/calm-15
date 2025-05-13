@@ -1,2 +1,0 @@
-# ChatBot
-Chatbot API

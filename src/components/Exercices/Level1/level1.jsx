@@ -64,7 +64,7 @@ export default function Level1() {
   const numQuestions = questions.length;
   console.log(numQuestions);
   useEffect(function () {
-    fetch("http://localhost:5000/api/v1/learn/adressing-modes/level/1")
+    fetch("https://calm-back-1.onrender.com/api/v1/learn/adressing-modes/level/1", {credentials: "include",})
       .then((res) => res.json())
       .then((data) =>
         dispatch({ type: "dataReceived", payload: data.data.data })

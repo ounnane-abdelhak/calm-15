@@ -27,7 +27,7 @@ const PasswordForgotPage = () => {
         formError.innerText = '';
 
         try {
-            const response = await axios.post('http://localhost:5000/api/v1/users/forgotPassword', { email });
+            const response = await axios.post('https://calm-back-1.onrender.com/api/v1/users/forgotPassword', { email });
             console.log('Password reset email sent:', response);
             setHasValidated(true);
         } catch (err) {

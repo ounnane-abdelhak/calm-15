@@ -37,7 +37,7 @@ const ResetPasswordPage = () => {
             return;
         }
 
-        const URL = `http://localhost:5000/api/v1/users/resetPassword/${token}`;
+        const URL = `https://calm-back-1.onrender.com/api/v1/users/resetPassword/${token}`;
         const button = document.querySelector('.auth-button');
         button.disabled = true;
 
