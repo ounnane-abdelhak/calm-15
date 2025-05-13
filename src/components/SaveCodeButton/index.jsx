@@ -12,7 +12,7 @@ const SaveCodeButton = ({ code, currentUser, editMode }) => {
         try {
             console.log('Calling isLoggedIn endpoint...');
             console.log('Sending request to isLoggedIn endpoint with credentials...');
-            const isLoggedInResponse = await axios.get('http://localhost:5000/api/v1/users/isLoggedIn', { withCredentials: true }); // Ensure cookies are sent
+            const isLoggedInResponse = await axios.get('https://calm-back-1.onrender.com/api/v1/users/isLoggedIn', { withCredentials: true }); // Ensure cookies are sent
             console.log('isLoggedIn response:', isLoggedInResponse.data);
 
             if (!isLoggedInResponse.data.isLoggedIn) {
@@ -29,7 +29,7 @@ const SaveCodeButton = ({ code, currentUser, editMode }) => {
                 return;
             }
 
-            const URL = `http://localhost:5000/api/v1/users/${currentUser.id}/code` +
+            const URL = `https://calm-back-1.onrender.com/api/v1/users/${currentUser.id}/code` +
                 (editMode.isEditMode === true ? "/edit" : "/add");
 
             if (editMode.isEditMode === true) {

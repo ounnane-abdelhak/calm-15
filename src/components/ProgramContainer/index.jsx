@@ -12,7 +12,7 @@ const ProgramContainer = ({ userId, program, removeProgram }) => {
     const handleDeleteProgram = (e) => {
         // const program = programs.filter(program => program.name === e.target)
 
-        const URL = `http://localhost:5000/api/v1/users/${userId}/code/delete?id=${program._id}`; // Updated to use `program._id`
+        const URL = `https://calm-back-1.onrender.com/api/v1/users/${userId}/code/delete?id=${program._id}`; // Updated to use `program._id`
 
         axios.delete(URL)
             .then(response => {
