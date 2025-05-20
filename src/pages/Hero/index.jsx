@@ -30,7 +30,7 @@ const Hero = () => {
             <section className="slogan-container">
 
                 <img alt="" src={Slogan} className="slogan"/>
-                <div className="logo-container">
+                <div className="logo-container2">
                     <div className="logo">
                         <img src={logoHero} className="logoHero" alt="calM logo"/>
                     </div>

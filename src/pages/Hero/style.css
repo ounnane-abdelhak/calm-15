@@ -97,6 +97,16 @@
     font-family: "Mona Sans", system-ui;
     scroll-timeline: squareTimeline;
 }
+.logo-container2 {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: stretch;
+    /* background: #24292E; */
+    border-radius: 30px;
+    font-family: "Mona Sans", system-ui;
+    scroll-timeline: squareTimeline;
+}
 
 .slogan-description {
     width: 40%;
@@ -644,9 +654,7 @@ footer {
 }
 
 /* Appliquer l'animation au texte */
-.keep-in-touch {
 
-}
 
 
 /* Animer le texte au défilement de la page */
