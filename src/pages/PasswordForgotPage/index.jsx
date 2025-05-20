@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React from 'react'
 import { useState } from 'react'
+import { NavBar } from '../../components/';
 
 const PasswordForgotPage = () => {
 
@@ -47,6 +48,7 @@ const PasswordForgotPage = () => {
 
     return (
         <>
+            <NavBar />
             <div className='auth-form-container'>
                 <h2>Password Reset Page</h2>
                 {

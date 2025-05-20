@@ -1,84 +1,87 @@
-/*
-  Inspired Navbar CSS - style_green_only_v1.css
+/* Modern, Clean NavBar CSS */
 
-  Color Palette: Green Only (various shades and gradients)
-  - Navbar: Green gradient or solid green color.
-  - Links: White or very light green for contrast.
-  - Accent/Hover: Brighter or contrasting green.
-  - Sidebar: Green theme, possibly a slightly different shade or gradient.
-*/
-
-/* General Reset & Body */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  background-color: #f4f7f6; /* Light, neutral page background */
-  color: #333;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f7fafc;
+  color: #222;
 }
 
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(to right, #2fad36,  rgb(30, 209, 123)); /* Green gradient */
-  padding: 1rem 2.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  margin: 0 auto;
-  width: 100%;
+  background: #1A1F25;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  box-shadow: 0 2px 12px rgba(30, 209, 123, 0.08);
   position: sticky;
+  border-bottom: 2px solid #1ed17b;
   top: 0;
   z-index: 1000;
-  transition: top 0.3s ease-in-out, background-color 0.3s ease, box-shadow 0.3s ease;
-  box-sizing: border-box;
+  width: 100%;
+  transition: box-shadow 0.3s, background 0.3s;
 }
 
-.navbar a img.logo-image {
-  height: 36px;
-  width: auto;
+.logo-container {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #32b438 60%, #1ed17b 100%);
+  border-radius: 50%;
+  padding: 0.25rem;
+  box-shadow: 0 2px 8px rgba(30, 209, 123, 0.10);
+  transition: box-shadow 0.3s;
+ 
+}
+
+.logo-container:hover {
+  box-shadow: 0 4px 16px rgba(30, 209, 123, 0.18);
+}
+
+.logo-image {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
   display: block;
-  transition: transform 0.3s ease;
-  /* Ensure logo is visible on green background */
 }
 
-.navbar a img.logo-image:hover {
-  transform: scale(1.05);
-}
-
-/* Hamburger Menu Icon */
 .menu-icon {
   display: none;
   flex-direction: column;
-  justify-content: space-around;
-  width: 24px;
-  height: 20px;
-  background: transparent;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  background: none;
   border: none;
   cursor: pointer;
+  z-index: 1100;
   padding: 0;
-  z-index: 1010;
   margin-left: 1rem;
+  transition: filter 0.2s;
 }
-
 .menu-icon-bar {
   width: 100%;
-  height: 2px;
-  background-color: #ffffff; /* White bars for contrast on green navbar */
+  height: 3px;
+  background: #1ed17b;
   border-radius: 2px;
-  transition: all 0.3s ease-in-out;
+  margin: 3px 0;
+  transition: all 0.3s cubic-bezier(.4,2.3,.3,1);
 }
-
-/* Hamburger animation */
-.sidebar-open .menu-icon-bar:nth-child(1) {
+.menu-icon.open .menu-icon-bar:nth-child(1) {
   transform: translateY(6px) rotate(45deg);
 }
-.sidebar-open .menu-icon-bar:nth-child(2) {
+.menu-icon.open .menu-icon-bar:nth-child(2) {
   opacity: 0;
 }
-.sidebar-open .menu-icon-bar:nth-child(3) {
+.menu-icon.open .menu-icon-bar:nth-child(3) {
   transform: translateY(-6px) rotate(-45deg);
 }
 
-/* Links container - Desktop */
+.links {
+  display: flex;
+  align-items: center;
+  transition: left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
 .links ul {
   list-style: none;
   margin: 0;
@@ -88,111 +91,133 @@ body {
   gap: 0.5rem;
 }
 
-.links .a { 
+.nav-link {
   text-decoration: none;
-  color: #ffffff; /* White for links on green background */
-  font-size: 0.95rem;
+  color: #a5a5a5;
+  font-size: 1.05rem;
   font-weight: 500;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 2.1rem 0.35rem 2.1rem;
+  border-radius: 6px 6px 0 0;
   position: relative;
-  transition: color 0.2s ease, background-color 0.2s ease;
-  border-radius: 6px;
-}
-
-.links .a li {
+  transition: color 0.18s, background 0.18s;
+  background: none;
   display: inline-block;
-  padding: 0;
-  margin: 0;
 }
-
-.links .a:hover {
-  color: #E8F5E9; /* Very light green/off-white on hover */
-  background-color: rgba(255, 255, 255, 0.1); /* Subtle light overlay on hover */
+.nav-link:hover {
+  color: #1ed17b;
+  background: #989898;
 }
-
-.links .a.active-link { 
-  color: #C8E6C9; /* Light green for active link */
+.active-link {
+  color: #2fad36;
   font-weight: 600;
-  background-color: rgba(255, 255, 255, 0.15);
+}
+.active-link::after {
+  content: '';
+  display: block;
+  height: 3px;
+  width: 80%;
+  margin: 0 auto;
+  background: linear-gradient(90deg, #2fad36 60%, #1ed17b 100%);
+  border-radius: 2px 2px 0 0;
+  position: absolute;
+  left: 10%;
+  bottom: 0;
 }
 
-.links .a::after {
+li {
+  font-size: 1rem;
+  color: inherit;
+  font-weight: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-close {
   display: none;
 }
 
-/* Responsive Design - Mobile / Tablet */
-@media (max-width: 768px) {
+/* Responsive Design */
+@media (max-width: 900px) {
   .navbar {
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(to right, #2E7D32, #4CAF50); /* Slightly different green for mobile if needed */
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
   }
-
+}
+@media (max-width: 768px) {
   .menu-icon {
     display: flex;
   }
-
-  .links { /* Sidebar container */
+  .links {
     position: fixed;
     top: 0;
-    left: -100%; 
-    width: 280px; 
+    left: -100vw;
+    width: 80vw;
+    max-width: 320px;
     height: 100vh;
-    background: linear-gradient(to bottom, #43A047, #81C784); /* Green gradient for sidebar */
-    box-shadow: 4px 0px 15px rgba(0, 0, 0, 0.2);
-    padding-top: 4rem; 
-    transition: left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
-    z-index: 1005;
-    overflow-y: auto; 
-    box-sizing: border-box;
+    background: #1A1F25;
+    box-shadow: 4px 0 24px rgba(30, 209, 123, 0.10);
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 4.5rem;
+    transition: left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 1200;
+    overflow-y: auto;
   }
-
   .links.sidebar-open {
-    left: 0; 
+    left: 0;
   }
-
   .links ul {
     flex-direction: column;
-    align-items: flex-start; 
-    gap: 0.25rem; 
+    align-items: flex-start;
+    gap: 0.25rem;
     width: 100%;
-    padding: 1rem; 
-    box-sizing: border-box;
+    padding: 0 1.5rem;
   }
-
-  .links .a {
-    display: block;
-    width: calc(100% - 2rem); 
-    padding: 0.9rem 1rem;
-    font-size: 1.05rem;
+  .nav-link {
+    width: 100%;
+    padding: 0.9rem 0.9rem 0.7rem 0.9rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
     text-align: left;
-    border-bottom: none; 
-    margin: 0.25rem auto; 
-    color: #ffffff; /* White for sidebar links */
+    margin: 0.15rem 0;
   }
-
-  .links .a:hover {
-    color: #E8F5E9; /* Lighter green on hover */
-    background-color: rgba(255, 255, 255, 0.15);
+  .active-link::after {
+    left: 0;
+    width: 100%;
+  }
+  .sidebar-close {
+    display: block;
+    position: absolute;
+    top: 1.1rem;
+    right: 1.2rem;
+    background: none;
+    border: none;
+    font-size: 2.2rem;
+    color: #1ed17b;
+    cursor: pointer;
+    z-index: 1300;
+    line-height: 1;
+    padding: 0;
+    transition: color 0.2s;
+  }
+  .sidebar-close:hover {
+    color: #2fad36;
   }
 }
-
 @media (max-width: 480px) {
   .navbar {
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.5rem;
   }
-  .navbar a img.logo-image {
-    height: 32px;
+  .logo-image {
+    width: 2rem;
+    height: 2rem;
   }
   .links {
-    width: 250px; 
+    width: 95vw;
+    max-width: 98vw;
   }
-  .links .a {
+  .nav-link {
     font-size: 1rem;
-    padding: 0.8rem 1rem;
+    padding: 0.8rem 0.5rem 0.6rem 0.5rem;
   }
-}
-li {
-  font-size: 25px;
-    color:#333;
-    font-weight:bolder
 }

@@ -1,70 +1,235 @@
+/* Modern Authentication Form CSS - Improved Design */
+
 .auth-form-container {
-  width: 30%;
-  margin: 0 auto;
+  width: 400px;
+  max-width: 90%;
+  margin: 2rem auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 80vh;
-  padding: 5rem;
-  border-radius: 10px;
-  min-height: 70vh;
-  /* background-image: linear-gradient(0deg, #1BE985, #4DFCB8, #1BE985); */
-  /* background-image: linear-gradient(0deg, #4DFCB8, #1BE985, #4DFCB8); */
-  background-color: #1be985;
+  min-height: 500px;
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  position: relative;
+  overflow: hidden;
 }
 
-.auth-button:hover {
-  background-color: #10e167;
-  color: white;
+/* Modern gradient background with animation */
+.auth-form-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #1BE985, #4DFCB8, #068239);
+  background-size: 200% 200%;
+  z-index: -1;
+  animation: gradientAnimation 15s ease infinite;
+  border-radius: 16px;
 }
-.auth-form-container {
-  margin-top: 1.5rem;
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.auth-form-container h2 {
+  color: #068239;
   margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-align: center;
 }
+
 .auth-form {
   width: 100%;
   display: flex;
   flex-direction: column;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .auth-form-label {
-  align-items: center;
-  text-align: left;
-  padding: 0.25rem 0;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
 }
 
 .auth-form-input {
-  margin: 0.5rem 0;
-  padding: 1rem;
-  border: none;
-  border-radius: 10px;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #f9f9f9;
+}
+
+.auth-form-input:focus {
+  outline: none;
+  border-color: #1BE985;
+  box-shadow: 0 0 0 2px rgba(27, 233, 133, 0.2);
+  background-color: white;
+}
+
+.auth-form-input::placeholder {
+  color: #aaa;
+  font-size: 0.9rem;
 }
 
 #form-error {
   color: #ff3030;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  min-height: 20px;
 }
 
 .auth-button {
   border: none;
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
+  background: linear-gradient(to right, #1BE985, #068239);
+  padding: 0.85rem;
+  border-radius: 8px;
   cursor: pointer;
-  color: #068239;
-  font-weight: bold;
+  color: white;
+  font-weight: 600;
   font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 10px rgba(27, 233, 133, 0.3);
+}
+
+.auth-button:hover {
+  background: linear-gradient(to right, #068239, #1BE985);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(27, 233, 133, 0.4);
+}
+
+.auth-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(27, 233, 133, 0.4);
 }
 
 .auth-button:disabled {
-  background-color: #ddd;
-  cursor: default;
+  background: linear-gradient(to right, #a9e9c9, #a9e9c9);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .auth-link-button {
   background: none;
   border: none;
-  color: white;
-  text-decoration: underline;
-  font-weight: normal;
+  color: #068239;
+  text-decoration: none;
+  font-weight: 500;
   cursor: pointer;
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.auth-link-button::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: #068239;
+  transition: width 0.3s ease;
+}
+
+.auth-link-button:hover::after {
+  width: 100%;
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+  .auth-form-container {
+    width: 90%;
+    padding: 2rem 1.5rem;
+    margin: 1rem auto;
+  }
+  
+  .auth-form {
+    padding: 1.25rem;
+  }
+  
+  .auth-button {
+    padding: 0.75rem;
+  }
+}
+
+/* Add subtle animation for form elements */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-form-container > * {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.auth-form > *:nth-child(1) { animation-delay: 0.1s; }
+.auth-form > *:nth-child(2) { animation-delay: 0.2s; }
+.auth-form > *:nth-child(3) { animation-delay: 0.3s; }
+.auth-form > *:nth-child(4) { animation-delay: 0.4s; }
+.auth-form > *:nth-child(5) { animation-delay: 0.5s; }
+.auth-form > *:nth-child(6) { animation-delay: 0.6s; }
+
+/* Custom checkbox styling for "Remember me" */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-right: 8px;
+  position: relative;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: all 0.2s ease;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #1BE985;
+  border-color: #1BE985;
+}
+
+input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Password visibility toggle */
+.password-toggle {
+  position: relative;
+}
+
+.password-toggle-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #aaa;
+  transition: color 0.2s ease;
+}
+
+.password-toggle-icon:hover {
+  color: #068239;
 }

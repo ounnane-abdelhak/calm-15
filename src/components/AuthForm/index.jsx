@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import "./style.css";
 
-const BASE_URL = 'https://calm-back-1.onrender.com/api/v1/users'; // Updated to include /users prefix
+const BASE_URL = 'https://calm-back-1.onrender.com/api/v1/users';
 
 const AuthForm = ({ currentRoute, updateCurrentUser }) => {
     const [name, setName] = useState('');
@@ -34,8 +34,7 @@ const AuthForm = ({ currentRoute, updateCurrentUser }) => {
 
         const formError = document.getElementById('form-error');
         let URL = `${BASE_URL}`;
-        
-        // Set the correct endpoint based on the current route
+
         if (currentRoute === '/register' || currentRoute === '/signup') {
             URL += '/signup';
         } else {
@@ -43,10 +42,9 @@ const AuthForm = ({ currentRoute, updateCurrentUser }) => {
         }
 
         document.querySelector('.auth-button').disabled = true;
-        formError.innerText = ''; // Clear previous errors
+        formError.innerText = '';
 
         if (currentRoute === '/resetPassword') {
-            // For reset password, we need to include the token from URL
             axios
                 .patch(`${URL}/${token}`, { 
                     password, 
@@ -64,7 +62,6 @@ const AuthForm = ({ currentRoute, updateCurrentUser }) => {
                     document.querySelector('.auth-button').disabled = false;
                 });
         } else if (currentRoute === '/login') {
-            // Handle login
             axios
                 .post(URL, { email, password })
                 .then((res) => {
@@ -90,7 +87,6 @@ const AuthForm = ({ currentRoute, updateCurrentUser }) => {
                 return;
             }
 
-            // Make sure we're using the correct endpoint
             const signupURL = `${BASE_URL}/signup`;
             
             axios
