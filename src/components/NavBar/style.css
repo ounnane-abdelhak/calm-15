@@ -5,6 +5,7 @@ body {
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background-color: #f7fafc;
   color: #222;
+  padding-top: 4.5rem; /* Add padding equal to navbar height */
 }
 
 .navbar {
@@ -15,11 +16,13 @@ body {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
   box-shadow: 0 2px 12px rgba(30, 209, 123, 0.08);
-  position: sticky;
+  position: fixed;
   border-bottom: 2px solid #1ed17b;
   z-index: 1000;
   width: 100%;
   transition: box-shadow 0.3s, background 0.3s;
+  top: 0;
+  left: 0;
 }
 
 .logo-container {
