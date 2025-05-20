@@ -35,7 +35,6 @@ const NavBar = () => {
                     <li><Link className={location.pathname === "/ide" ? "nav-link active-link" : "nav-link"} to="/ide" onClick={closeSidebar}>Emulate</Link></li>
                     <li><Link className={location.pathname === "/profile" ? "nav-link active-link" : "nav-link"} to="/profile" onClick={closeSidebar}>Profile</Link></li>
                 </ul>
-                {/* Close button for sidebar on mobile */}
                 <button className="sidebar-close" onClick={closeSidebar} aria-label="Close navigation menu">&times;</button>
             </div>
         </nav>
