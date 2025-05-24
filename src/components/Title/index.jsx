@@ -4,11 +4,11 @@ import title from "../../assets/images/logos/calmtitle.svg"
 const Title= () => {
     return <>
     <img src={title} alt="" style={{
-        width:"35em",
+        width:"32em",
         gridColumn: "1 / span 4",
         gridRow: "1 / span 2",
         position: "relative",
-        left: "8%",
+        left: "5%",
     }}/>
     
     </>
