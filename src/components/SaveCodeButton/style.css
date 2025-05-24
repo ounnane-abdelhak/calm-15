@@ -6,7 +6,7 @@
     width: 2.5rem;
     height: 2.5rem;
     bottom:10%;
-    position: fixed;
+    z-index:500 ;
     background: var(--main-accent-color);
     border-radius: 10rem;
 

@@ -6,6 +6,8 @@
   border-radius: 4px;
   margin: 10px;
   outline: none;
+  margin-bottom: 5rem;
+  z-index:500 ;
 }
 
 #speed::-webkit-slider-runnable-track {
@@ -13,6 +15,7 @@
   height: 8px;
   background: transparent;
   border-radius: 4px;
+  z-index:500 ;
 }
 
 #speed::-webkit-slider-thumb {
@@ -26,6 +29,7 @@
   cursor: pointer;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s ease, background 0.2s ease;
+  z-index:500 ;
 }
 
 #speed::-webkit-slider-thumb:hover {
@@ -41,11 +45,12 @@
   border-radius: 10px;
 }
 .arch-contain {
-  position: absolute;
+  position: fixed;
   width: 70%;
   /* left: 15%; */
   top: 3%;
   left: 0.7%;
+  z-index: 1000;
 }
 
 .archi {

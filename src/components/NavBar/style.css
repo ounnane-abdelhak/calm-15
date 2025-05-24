@@ -39,7 +39,7 @@ body {
 }
 
 .logo-container:hover {
-  box-shadow: 0 4px 16px rgba(30, 209, 123, 0.18);
+  box-shadow: 0 4px 20px rgba(30, 209, 123, 0.18);
 }
 
 .logo-image {
@@ -103,6 +103,7 @@ body {
   font-weight: 500;
   padding: 0.5rem 5rem 0.35rem 5rem;
   margin-right: 2rem;
+  margin-left: 2rem;
   border-radius: 6px 6px 0 0;
   position: relative;
   transition: color 0.18s, background 0.18s;
@@ -110,11 +111,15 @@ body {
   display: inline-block;
 }
 .nav-link:hover {
-  color: #1ed17b;
-  background: #e9e9e9;
+  background: #1ed17b;
+  color: #000000;
 }
 .active-link {
   color: #2fad36;
+  font-weight: 600;
+}
+.active-link::hover {
+  color: #000000;
   font-weight: 600;
 }
 .active-link::after {

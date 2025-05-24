@@ -38,7 +38,9 @@
 }
 
 .auth-form-container h2 {
-  color: #068239;
+   background: linear-gradient(to right,#068239, #27f893);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
   margin-bottom: 1.5rem;
   font-weight: 600;
   text-align: center;
@@ -154,7 +156,7 @@
 /* Responsive design improvements */
 @media (max-width: 768px) {
   .auth-form-container {
-    width: 90%;
+    width: 85%;
     padding: 2rem 1.5rem;
     margin: 1rem auto;
   }

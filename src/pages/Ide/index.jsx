@@ -895,7 +895,8 @@ console.log("the error",error)
 
             {done && 
               <div className="codeContainer console">
-                <div style={{width:"35%",position:"fixed",backgroundColor:"black", borderRadius: "0.6rem"}}>
+                <div style={{width:"35%",position:"absolute",backgroundColor:"black", borderRadius: "0.6rem"}}>
+                  
                   <button className='ide-exec-button' onClick={()=>{
                   
 
@@ -1011,6 +1012,7 @@ console.log("the error",error)
                     cache
                   </button>
                   }
+                
                 </div>
                 {reg && 
                   <div className="IdeReg">
@@ -1107,8 +1109,10 @@ ${result}`}</pre>
               </div>
             }
           </div>
-          <HelpSection helpDescription={helpDescription}/>
-          <SaveCodeButton code={code} currentUser={currentUser} editMode={editMode}/>
+          <div className="help-save-container">
+            <HelpSection helpDescription={helpDescription}/>
+            <SaveCodeButton code={code} currentUser={currentUser} editMode={editMode}/>
+          </div>
         </>
       }
       {simul && 

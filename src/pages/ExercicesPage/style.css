@@ -336,18 +336,22 @@ body {
 
 .exercice-component-button {
     align-self: flex-start;
-    background-color: var(--main-accent-color, #1be985f4);
-    color: var(--main-background-color, #1b1f24);
-    border: none;
+    background-color: #1BE985;
+    color: #1b1f24;
+    border: 2px solid transparent;
     border-radius: 2rem;
     padding: 0.5rem 1.5rem;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    text-decoration: none;
 }
 
 .exercice-component-button:hover {
-    background-color: #0ad975;
+    background-color: transparent;
+    border-color: #1BE985;
+    color: #1BE985;
+    box-shadow: 0 0 15px rgba(27, 233, 133, 0.4);
 }
 
 /* Media Queries */
