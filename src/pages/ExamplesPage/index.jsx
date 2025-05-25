@@ -49,7 +49,9 @@ const ExamplesPage = () => {
             </div>
         </section>
         
-        <Bot/>
+        <div style={{ zIndex: 1200}}>
+  <Bot/>
+</div>
     
         <Footer></Footer>
     </>

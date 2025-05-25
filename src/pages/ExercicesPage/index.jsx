@@ -70,7 +70,9 @@ function ExercicesPage(props) {
                 />
             </div>
             
-            <Bot/>
+            <div style={{ zIndex: 1200}}>
+  <Bot/>
+</div>
             <Footer/>
         </>
     );

@@ -31,7 +31,9 @@ const Components = () => {
           )
         }
       </div>
-      <Bot/>
+      <div style={{ zIndex: 1200}}>
+  <Bot/>
+</div>
     
     </>
   );
