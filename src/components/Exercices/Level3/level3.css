@@ -33,6 +33,10 @@ body {
 
 .level3 {
   background-color: #1b1f24;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 body {

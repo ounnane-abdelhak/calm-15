@@ -28,6 +28,10 @@
 
 .level2{
 background-color: #1B1F24;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
 }
 
 
