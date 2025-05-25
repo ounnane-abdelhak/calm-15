@@ -33,6 +33,8 @@ flex-direction: column;
 justify-content: center;
 align-items: center;
 z-index: 500;
+width: 90%;
+margin: 0 auto;
 }
 
 
