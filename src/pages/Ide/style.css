@@ -1,4 +1,13 @@
-.convert-btn{
+/* Base styles that apply to all screen sizes */
+.help-save-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.convert-btn {
   margin-left: 2rem;
   margin-top: 0.5rem;
   border-radius: 5px;
@@ -6,9 +15,11 @@
   color: white;
   font-family: 'JetBrains Mono', monospace;
 }
+
 .dxTOMC {
   border: 2px solid white;
 }
+
 .dqCNfl {
   color: rgb(255 250 250) !important;
   font-size: 14px !important;
@@ -16,30 +27,13 @@
   padding: 0px 10px !important;
   font-weight: 800 !important;
 }
-/* .hBbmLh {
-  width: 140px !important;
-  display: inline-block !important;
-  margin: 0 1rem;
-}
 
-.ermrOj{
-  height: 1rem;
-    width: 2rem;
-}
-.ermrOj::before{
-  height: 14px !important;
-    width: 14px !important;
-    left: -1px !important;
-}
-.rgrFR:checked + span::before {
-  transform: translateX(17px) !important;
-} */
-#cont{
+#cont {
   height: 25rem;
   background-color: #263238;
 }
 
-.codeContainer{
+.codeContainer {
   width: 50vw;
   height: 25rem;
   border-radius: 10px;
@@ -48,42 +42,130 @@
   text-align: left;
   font-size: 1.25rem;
 }
-  
-.console{
+
+.console {
   background-color: #000;
   overflow-y: auto;
 }
+
 .console::-webkit-scrollbar {
-  width:8px;
+  width: 8px;
 }
+
 .console::-webkit-scrollbar-track {
-  -webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.3); 
-  border-radius:5px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+  border-radius: 5px;
 }
+
 .console::-webkit-scrollbar-thumb {
-  border-radius:5px;
+  border-radius: 5px;
   background: #ffffff56;
 }
 
-.ide-exec-button{
+.ide-exec-button {
   background-color: #1be985;
-    border-radius: 0.625rem;
-    font-family: JetBrains Mono,monospace;
-    margin: 0.5rem;
-    padding: 0 0.25rem;
-    width: 4.4rem;
-    font-size: 12px;
-    height: 2.3rem;
+  border-radius: 0.625rem;
+  font-family: JetBrains Mono, monospace;
+  margin: 0.5rem;
+  position: relative;
+  padding: 0 0.25rem;
+  width: 4.4rem;
+  font-size: 12px;
+  height: 2.3rem;
 }
-.ide_container{
+
+.ide_container {
   margin: auto;
   width: 90%;
   gap: 20%;
+  height: 100%;
+  z-index: 500;
 }
 
 .ktfEWP {
-  border : 2px solid gray !important;
+  border: 2px solid gray !important;
 }
-.aregide{
+
+.aregide {
   width: 3rem;
+}
+#speed {
+  z-index: 500;
+}
+/* Responsive styles for smaller screens */
+@media (max-width: 768px) {
+  .ide_container {
+    flex-direction: column;
+    gap: 1rem;
+    width: 90%;
+    z-index: 500;
+  }
+
+  .codeContainer {
+    width: 100%;
+    height: 20rem;
+  }
+
+  .help-save-container {
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+
+
+  /* Adjust the button group layout */
+  .togglebutton {
+    position: static !important;
+    margin-top: 0.5rem;
+  }
+
+  /* Adjust the console buttons layout */
+  .console > div:first-child {
+    width: 100% !important;
+    position: relative !important;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* Make tables scrollable on small screens */
+  .contentTableMCIde {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Adjust register display */
+  .IdeReg {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+  .codeContainer {
+    height: 15rem;
+    font-size: 1rem;
+  }
+
+  .convert-btn {
+    margin-left: 0.5rem;
+    font-size: 0.8rem;
+    padding: 0.2rem;
+  }
+
+  .ide-exec-button {
+    width: auto;
+    padding: 0 0.5rem;
+    font-size: 0.8rem;
+    height: auto;
+  }
+
+  /* Stack the code/hexa toggle and buttons vertically */
+  .codeContainer > div:first-child {
+    flex-direction: column;
+    gap: 0.5rem !important;
+  }
 }

@@ -20,14 +20,7 @@
     grid-template-rows: repeat(4, 1fr);
     grid-row-gap: 0.5rem;
 }
-.greenArrow{
-    width: 40%;
-    height: 40%;
-    grid-column: 3 / 5; /* place the element in the 3rd and 4th columns */
-    grid-row: 4;
-    justify-self: center;
-    align-self: end;
-}
+
 
 
 .get-started-button {
@@ -40,19 +33,25 @@
     bottom: 12rem;
     margin-top: 1.5rem;
     border-radius: 1.875rem;
-    background: #1BE985;
+    background-color: #1BE985;
     cursor: pointer;
     z-index: 1;
     text-align: center;
-    /*box-shadow: 2px 2px 2px rgba(45, 42, 42, 0.66);*/
-    border: 1px solid black;
-    box-shadow: 0 0 0 1px #000, 0 30px 30px rgba(0, 0, 0, 0.07),
-    0 15px 15px rgba(0, 0, 0, 0.06), 0 10px 8px rgba(0, 0, 0, 0.05),
-    0 4px 4px rgba(0, 0, 0, 0.04), 0 2px 2px rgba(0, 0, 0, 0.03);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    font-family: 'Mona sans', system-ui;
+    font-weight: 700;
+    font-size: 100%;
+    color: #1B1F24;
 }
-.get-started-button:hover{
-    box-shadow: 0 25px 30px -20px var(--main-accent-color);
+.get-started-button:hover {
+    background-color: transparent;
+    border-color: #1BE985;
+    color: #1BE985;
+    box-shadow: 0 0 15px rgba(27, 233, 133, 0.4);
 }
+
+
 
 /* Slogan Section */
 .slogan-container {
@@ -88,6 +87,16 @@
 }
 
 .logo-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: stretch;
+    /* background: #24292E; */
+    border-radius: 30px;
+    font-family: "Mona Sans", system-ui;
+    scroll-timeline: squareTimeline;
+}
+.logo-container2 {
     width: 100%;
     display: flex;
     justify-content: space-evenly;
@@ -364,36 +373,32 @@ body {
 }
 
 .learn-button {
-
     width: 18.75rem;
     height: 5rem;
     align-self: center;
     background-color: #1BE985;
     border-radius: 1.875rem;
-    border: 1px solid black;
-    box-shadow: 0 0 0 1px #000, 0 30px 30px rgba(0, 0, 0, 0.07),
-    0 15px 15px rgba(0, 0, 0, 0.06), 0 10px 8px rgba(0, 0, 0, 0.05),
-    0 4px 4px rgba(0, 0, 0, 0.04), 0 2px 2px rgba(0, 0, 0, 0.03);
-    font-size: 200%;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
     font-family: 'Mona sans', system-ui;
     font-weight: 700;
-    /*transition: transform 0.3s ease-in-out;*/
-    text-align: center;
+    font-size: 200%;
     display: flex;
-    align-content: center;
     align-items: center;
     justify-content: center;
+    color: #1B1F24;
 }
 
 .learn-button:hover {
-
-    border: 1px solid black;
-    /*transform: translatey(-0.5rem);*/
-    /*transition: 0.3s;*/
-    box-shadow: 0 25px 30px -20px var(--main-accent-color);
+    background-color: transparent;
+    border-color: #1BE985;
+    color: #1BE985;
+    box-shadow: 0 0 15px rgba(27, 233, 133, 0.4);
     cursor: pointer;
-    font-weight: 900;
-    /*transform: scale(1.1);*/
+}
+
+.learn-button:hover .no-underline {
+    color: #1BE985;
 }
 
 /* Emulation-Simulation Section */
@@ -484,25 +489,31 @@ body {
 .lets-code-button {
     width: 18.75rem;
     height: 5rem;
-    /*margin-top: 4em;*/
     grid-row: 2 / 3;
     grid-column: 2 / 3;
-
     border-radius: 1.875rem;
-    border: 1px solid black;
-
     background-color: #1BE985;
-    box-shadow: 0 0 0 1px #000, 0 30px 30px rgba(0, 0, 0, 0.07),
-    0 15px 15px rgba(0, 0, 0, 0.06), 0 10px 8px rgba(0, 0, 0, 0.05),
-    0 4px 4px rgba(0, 0, 0, 0.04), 0 2px 2px rgba(0, 0, 0, 0.03);
-
-    font-size: 200%;
-    align-items: center;
-    justify-content: center;
-    display: flex;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
     font-family: 'Mona sans', system-ui;
     font-weight: 700;
-    /*transition: transform 0.3s ease-in-out;*/
+    font-size: 200%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1B1F24;
+}
+
+.lets-code-button:hover {
+    background-color: transparent;
+    border-color: #1BE985;
+    color: #1BE985;
+    box-shadow: 0 0 15px rgba(27, 233, 133, 0.4);
+    cursor: pointer;
+}
+
+.lets-code-button:hover .no-underline {
+    color: #1BE985;
 }
 
 .no-underline {
@@ -517,16 +528,6 @@ body {
 .threeIcons {
     height: 80%;
     width: 80%;
-}
-
-.lets-code-button:hover {
-    border: 1px solid black;
-    /*transform: translatey(-0.5rem);*/
-    /*transition: 0.3s;*/
-    box-shadow: 0 25px 30px -20px var(--main-accent-color);
-    cursor: pointer;
-    font-weight: 900;
-    /*transform: scale(1.1);*/
 }
 
 /* Keep in touch section */
@@ -644,9 +645,7 @@ footer {
 }
 
 /* Appliquer l'animation au texte */
-.keep-in-touch {
 
-}
 
 
 /* Animer le texte au défilement de la page */
@@ -720,10 +719,306 @@ footer {
     margin: 2rem 2rem 2rem 2rem;
 }
 
-.greenArrow{
-    position: absolute;
-    bottom:1rem;
-    left:50%;
-    width:70px;
-    height: 70px;
-}
+
+/* Small Screen Responsive Overrides - Only apply to screens 768px and below */
+@media only screen and (max-width: 1024px) {
+    /* Global adjustments */
+    body {
+      overflow-x: hidden;
+    }
+    
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    /* Get Started Container */
+    #get-started-container {
+      padding: 1rem;
+      display: flex;
+      flex-direction:column ;
+      align-items: center;
+    }
+    
+    .get-started-button {
+      width: 90%;
+      max-width: 16rem;
+      height: auto;
+      padding: 0.5rem;
+      position: relative;
+      right: auto;
+      bottom: auto;
+      margin: 1rem auto;
+    }
+    
+    /* Slogan Section */
+    .slogan-container {
+      margin: 3rem 0 1rem 0;
+      height: auto;
+      padding: 1rem;
+      width: 90%;
+    }
+    
+    .slogan {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      margin: 1rem auto;
+    }
+    
+    .logo-container2 {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .logo {
+      height: auto;
+      width: 90%;
+      max-width: 16rem;
+      padding: 1rem;
+      margin: 1rem auto;
+    }
+    
+    .logoHero {
+      width: 100%;
+      max-width: 14rem;
+      margin: 0 auto;
+    }
+    
+    .slogan-description {
+      width: 90%;
+      font-size: 1rem;
+      padding: 1rem;
+      margin: 1rem auto;
+    }
+    
+    /* Why Calm Section */
+    .why-calm-section {
+      margin: 2rem 0;
+      padding: 1rem;
+      width: 90%;
+    }
+    
+    .whycalm {
+      height: auto;
+      width: 90%;
+      max-width: 300px;
+      position: static;
+      margin: 1rem auto;
+    }
+    
+    .why-calm-container {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .why-calm-description {
+      width: 90%;
+      font-size: 1rem;
+      padding: 1rem;
+      margin: 1rem auto;
+    }
+    
+    .esi-logo {
+      width: 40%;
+      height: auto;
+      margin: 1rem auto;
+    }
+    
+    /* What We Offer Section */
+    .what-we-offer-section {
+      margin: 2rem 0;
+      padding: 1rem;
+      width: 90%;
+    }
+    
+    .what-we-offer {
+      width: 90%;
+      max-width: 300px;
+      height: auto;
+      margin: 1rem auto;
+    }
+    
+    .what-we-offer-container {
+      width: 100%;
+    }
+    
+    .what-we-offer-description {
+      width: 90%;
+      font-size: 1rem;
+      margin: 1rem auto;
+    }
+    
+    .cardsContainer {
+      width: 100%;
+    }
+    
+    .cardsSubContainer {
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    
+    .whatWeOfferCard {
+      width: 90%;
+      max-width: 14rem;
+      height: auto;
+      min-height: 12rem;
+      margin: 0.5rem auto;
+    }
+    
+    /* Learn Section */
+    .learn-section {
+      height: auto;
+      margin: 2rem 0;
+      padding: 1rem;
+      gap: 2rem;
+      width: 90%;
+    }
+    
+    .learn {
+      width: 90%;
+      max-width: 300px;
+      height: auto;
+      position: static;
+      margin: 1rem auto;
+    }
+    
+    .learn-description {
+      width: 90%;
+      font-size: 1rem;
+      padding: 1rem;
+      margin: 1rem auto;
+    }
+    
+    .learn-button {
+      width: 90%;
+      max-width: 16rem;
+      height: auto;
+      min-height: 3.5rem;
+      font-size: 1.2rem;
+      margin: 1rem auto;
+    }
+    
+    /* Emulation-Simulation Section */
+    .emulation-simulation-section {
+      margin: 2rem 0;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 90%;
+    }
+    
+    .emulation-container, .simulation-container {
+      width: 90%;
+      height: auto;
+      margin: 0.5rem auto;
+      padding: 1rem;
+    }
+    
+    .emul {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .emul-1 {
+      font-size: 1rem;
+      margin: 0;
+      padding: 0.5rem;
+    }
+    
+    .lets-code-button {
+      width: 90%;
+      max-width: 16rem;
+      height: auto;
+      min-height: 3.5rem;
+      font-size: 1.2rem;
+      margin: 1rem auto;
+      grid-row: auto;
+      grid-column: auto;
+    }
+    
+    /* Keep in Touch Section */
+    .keep-in-touch-section {
+      padding: 1rem;
+      margin: 2rem 0;
+      width: 90%;
+    }
+    
+    .keep-in-touch {
+      font-size: 1.8rem;
+      margin: 1rem auto;
+    }
+    
+    .discord-server-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      grid-template-rows: auto;
+      grid-template-columns: auto;
+      gap: 1rem;
+    }
+    
+    .part6-3 {
+      grid-row: auto;
+      grid-column: auto;
+      margin: 1rem auto;
+    }
+    
+    .part6-4 {
+      width: 90%;
+      font-size: 1rem;
+      padding: 1rem;
+      margin: 0.5rem auto;
+      grid-row: auto;
+      grid-column: auto;
+    }
+    
+    /* Green Arrow */
+
+    
+    /* Add beautiful animations for small screens */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+      from { 
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    /* Apply animations to elements on small screens */
+    .slogan, .what-we-offer, .learn, .whycalm {
+      animation: fadeIn 1s ease-out;
+    }
+    
+    .logo, .emulation-container, .simulation-container, .whatWeOfferCard {
+      animation: slideUp 1s ease-out;
+    }
+    
+    .esi-logo, .discord-image {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .get-started-button, .learn-button, .lets-code-button {
+      transition: transform 0.3s ease;
+    }
+    
+    .get-started-button:hover, .learn-button:hover, .lets-code-button:hover {
+      transform: translateY(-5px);
+    }
+  }
+  

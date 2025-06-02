@@ -75,7 +75,7 @@ export default function Level1() {
       });
   }, []);
   return (
-    <>
+    <div className="level1">
       <NavBar />
 
       <Main>
@@ -110,6 +110,6 @@ export default function Level1() {
           />
         )}
       </Main>
-    </>
+    </div>
   );
 }

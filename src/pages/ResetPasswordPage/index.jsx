@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import axios from 'axios';
-
+import { NavBar } from '../../components/';
 const ResetPasswordPage = () => {
     const navigate = useNavigate();
     //get the reset token
@@ -62,6 +62,7 @@ const ResetPasswordPage = () => {
 
     return (
         <>
+            <NavBar />
             <div className='auth-form-container'>
                 <h2>Password Reset Page</h2>
                 {

@@ -32,6 +32,9 @@ background-color: #1B1F24;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 500;
+  width: 90%;
+  margin: 0 auto;
 }
 .questions{
   margin: auto;
